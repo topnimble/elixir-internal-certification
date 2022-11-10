@@ -1,6 +1,10 @@
 defmodule ElixirInternalCertificationWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :elixir_internal_certification
 
+  if Application.compile_env(:elixir_internal_certification, :sql_sandbox) do
+    plug Phoenix.Ecto.SQL.Sandbox
+  end
+
   # The session will be stored in the cookie and signed,
   # this means its contents can be read but not tampered with.
   # Set :encryption_salt if you would also like to encrypt it.
@@ -19,7 +23,7 @@ defmodule ElixirInternalCertificationWeb.Endpoint do
   plug Plug.Static,
     at: "/",
     from: :elixir_internal_certification,
-    gzip: false,
+    gzip: true,
     only: ~w(assets fonts images favicon.ico robots.txt)
 
   # Code reloading can be explicitly enabled under the

@@ -1,0 +1,19 @@
+version: "3.8"
+
+services:
+  build:
+    build:
+      context: .
+      cache_from:
+        - elixir_internal_certification-build
+      target: build
+    image: elixir_internal_certification-build
+
+  app:
+    build:
+      context: .
+      cache_from:
+        - elixir_internal_certification-build
+        - elixir_internal_certification
+      target: app
+    image: elixir_internal_certification

@@ -25,8 +25,18 @@ config :elixir_internal_certification, ElixirInternalCertificationWeb.Endpoint,
   debug_errors: true,
   secret_key_base: "lfaOPr/JERtXiBKgzP3FNuF1Kqb5ceVmcfGg25NNL+KhpCcliZkcbXcApCExS2qt",
   watchers: [
+    app_sass: {
+      DartSass,
+      :install_and_run,
+      [:app, ~w(--embed-source-map --source-map-urls=absolute --watch)]
+    },
+    npm: [
+      "run",
+      "postcss.watch",
+      cd: Path.expand("../assets", __DIR__)
+    ],
     # Start the esbuild watcher by calling Esbuild.install_and_run(:default, args)
-    esbuild: {Esbuild, :install_and_run, [:default, ~w(--sourcemap=inline --watch)]}
+    esbuild: {Esbuild, :install_and_run, [:app, ~w(--sourcemap=inline --watch)]}
   ]
 
 # ## SSL Support
@@ -73,3 +83,6 @@ config :phoenix, :stacktrace_depth, 20
 
 # Initialize plugs at runtime for faster development compilation
 config :phoenix, :plug_init_mode, :runtime
+
+config :mix_test_interactive,
+  clear: true

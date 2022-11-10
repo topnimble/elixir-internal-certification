@@ -8,7 +8,7 @@ import Config
 config :elixir_internal_certification, ElixirInternalCertification.Repo,
   username: "postgres",
   password: "postgres",
-  hostname: "localhost",
+  hostname: System.get_env("DB_HOST") || "localhost",
   database: "elixir_internal_certification_test#{System.get_env("MIX_TEST_PARTITION")}",
   pool: Ecto.Adapters.SQL.Sandbox,
   pool_size: 10
@@ -18,7 +18,15 @@ config :elixir_internal_certification, ElixirInternalCertification.Repo,
 config :elixir_internal_certification, ElixirInternalCertificationWeb.Endpoint,
   http: [ip: {127, 0, 0, 1}, port: 4002],
   secret_key_base: "0OOHdKyBySwg/kOAuoAAqTe7vAjhaY6LyS6L1LM3CnX7avvBErW3ogcL+5e26abz",
-  server: false
+  server: true
+
+config :elixir_internal_certification, :sql_sandbox, true
+
+config :wallaby,
+  otp_app: :elixir_internal_certification,
+  chromedriver: [headless: System.get_env("CHROME_HEADLESS", "true") === "true"],
+  screenshot_dir: "tmp/wallaby_screenshots",
+  screenshot_on_failure: true
 
 # In test we don't send emails.
 config :elixir_internal_certification, ElixirInternalCertification.Mailer,
@@ -27,5 +35,12 @@ config :elixir_internal_certification, ElixirInternalCertification.Mailer,
 # Print only warnings and errors during test
 config :logger, level: :warn
 
+config :elixir_internal_certification, Oban, crontab: false, queues: false, plugins: false
+
 # Initialize plugs at runtime for faster test compilation
 config :phoenix, :plug_init_mode, :runtime
+
+# Configurations for ExVCR
+config :exvcr,
+  vcr_cassette_library_dir: "test/support/fixtures/vcr_cassettes",
+  ignore_localhost: true

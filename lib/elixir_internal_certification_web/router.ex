@@ -10,9 +10,18 @@ defmodule ElixirInternalCertificationWeb.Router do
     plug :put_secure_browser_headers
   end
 
+  # coveralls-ignore-start
   pipeline :api do
     plug :accepts, ["json"]
   end
+
+  # coveralls-ignore-stop
+
+  forward Application.compile_env(
+            :elixir_internal_certification,
+            ElixirInternalCertificationWeb.Endpoint
+          )[:health_path],
+          ElixirInternalCertificationWeb.HealthPlug
 
   scope "/", ElixirInternalCertificationWeb do
     pipe_through :browser
@@ -38,7 +47,9 @@ defmodule ElixirInternalCertificationWeb.Router do
     scope "/" do
       pipe_through :browser
 
+      # coveralls-ignore-start
       live_dashboard "/dashboard", metrics: ElixirInternalCertificationWeb.Telemetry
+      # coveralls-ignore-stop
     end
   end
 

@@ -6,20 +6,6 @@ import Config
 # and secrets from environment variables or elsewhere. Do not define
 # any compile-time configuration in here, as it won't be applied.
 # The block below contains prod specific runtime configuration.
-
-# ## Using releases
-#
-# If you use `mix release`, you need to explicitly enable the server
-# by passing the PHX_SERVER=true when you start it:
-#
-#     PHX_SERVER=true bin/elixir_internal_certification start
-#
-# Alternatively, you can use `mix phx.gen.release` to generate a `bin/server`
-# script that automatically sets the env var above.
-if System.get_env("PHX_SERVER") do
-  config :elixir_internal_certification, ElixirInternalCertificationWeb.Endpoint, server: true
-end
-
 if config_env() == :prod do
   database_url =
     System.get_env("DATABASE_URL") ||
@@ -48,10 +34,18 @@ if config_env() == :prod do
       You can generate one by calling: mix phx.gen.secret
       """
 
-  host = System.get_env("PHX_HOST") || "example.com"
+  host =
+    System.get_env("PHX_HOST") ||
+      raise """
+      Environment variable PHX_HOST is missing.
+      Set the Heroku endpoint to this variable.
+      """
+
   port = String.to_integer(System.get_env("PORT") || "4000")
 
   config :elixir_internal_certification, ElixirInternalCertificationWeb.Endpoint,
+    health_path: System.fetch_env!("HEALTH_PATH"),
+    server: true,
     url: [host: host, port: 443, scheme: "https"],
     http: [
       # Enable IPv6 and bind on all interfaces.

@@ -19,10 +19,15 @@ defmodule ElixirInternalCertificationWeb.ConnCase do
 
   using do
     quote do
+      use ExVCR.Mock, adapter: ExVCR.Adapter.Hackney
+
+      use Mimic
+
       # Import conveniences for testing with connections
       import Plug.Conn
       import Phoenix.ConnTest
       import ElixirInternalCertificationWeb.ConnCase
+      import ElixirInternalCertification.Factory
 
       alias ElixirInternalCertificationWeb.Router.Helpers, as: Routes
 

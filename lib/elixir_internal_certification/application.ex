@@ -15,7 +15,8 @@ defmodule ElixirInternalCertification.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: ElixirInternalCertification.PubSub},
       # Start the Endpoint (http/https)
-      ElixirInternalCertificationWeb.Endpoint
+      ElixirInternalCertificationWeb.Endpoint,
+      {Oban, oban_config()}
       # Start a worker by calling: ElixirInternalCertification.Worker.start_link(arg)
       # {ElixirInternalCertification.Worker, arg}
     ]
@@ -32,5 +33,10 @@ defmodule ElixirInternalCertification.Application do
   def config_change(changed, _new, removed) do
     ElixirInternalCertificationWeb.Endpoint.config_change(changed, removed)
     :ok
+  end
+
+  # Conditionally disable crontab, queues, or plugins here.
+  defp oban_config do
+    Application.get_env(:elixir_internal_certification, Oban)
   end
 end

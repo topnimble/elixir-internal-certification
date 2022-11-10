@@ -1,6 +1,9 @@
 # The directory Mix will write compiled artifacts to.
 /_build/
 
+# tmp
+**/tmp/
+
 # If you run "mix test --cover", coverage assets end up here.
 /cover/
 
@@ -32,3 +35,15 @@ elixir_internal_certification-*.tar
 npm-debug.log
 /assets/node_modules/
 
+# Mac OS
+.DS_Store
+
+# IDE
+.idea
+.vscode
+
+# Iex
+.iex.exs
+
+# Ignore ElixirLS files
+.elixir_ls
