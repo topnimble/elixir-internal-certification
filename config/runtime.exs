@@ -35,7 +35,7 @@ if config_env() == :prod do
       """
 
   host =
-    System.get_env("PHX_HOST") ||
+    System.get_env("RENDER_EXTERNAL_HOSTNAME") ||
       raise """
       Environment variable PHX_HOST is missing.
       Set the Heroku endpoint to this variable.
