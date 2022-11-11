@@ -17,7 +17,7 @@ defmodule ElixirInternalCertificationWeb.Router do
 
   # coveralls-ignore-stop
 
-  forward Application.compile_env(
+  forward Application.get_env(
             :elixir_internal_certification,
             ElixirInternalCertificationWeb.Endpoint
           )[:health_path],
