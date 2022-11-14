@@ -1,6 +1,8 @@
 defmodule ElixirInternalCertificationWeb.Router do
   use ElixirInternalCertificationWeb, :router
 
+  alias ElixirInternalCertificationWeb.RouterHelper
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -17,11 +19,7 @@ defmodule ElixirInternalCertificationWeb.Router do
 
   # coveralls-ignore-stop
 
-  forward Application.compile_env(
-            :elixir_internal_certification,
-            ElixirInternalCertificationWeb.Endpoint
-          )[:health_path],
-          ElixirInternalCertificationWeb.HealthPlug
+  forward RouterHelper.health_path(), ElixirInternalCertificationWeb.HealthPlug
 
   scope "/", ElixirInternalCertificationWeb do
     pipe_through :browser

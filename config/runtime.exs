@@ -35,10 +35,10 @@ if config_env() == :prod do
       """
 
   host =
-    System.get_env("PHX_HOST") ||
+    System.get_env("RENDER_EXTERNAL_HOSTNAME") ||
       raise """
-      Environment variable PHX_HOST is missing.
-      Set the Heroku endpoint to this variable.
+      Environment variable RENDER_EXTERNAL_HOSTNAME is missing.
+      Set the Render endpoint to this variable.
       """
 
   port = String.to_integer(System.get_env("PORT") || "4000")
