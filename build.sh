@@ -14,4 +14,4 @@ MIX_ENV=prod mix assets.deploy
 MIX_ENV=prod mix release --overwrite
 
 # Run Ecto migrations
-_build/prod/rel/elixir_internal_certification/bin/elixir_internal_certification eval "ElixirInternalCertification.Release.migrate"
+_build/prod/rel/elixir_internal_certification/bin/elixir_internal_certification eval "ElixirInternalCertification.ReleaseTasks.migrate"

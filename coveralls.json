@@ -11,7 +11,6 @@
     "lib/elixir_internal_certification_web/views/error_helpers.ex",
     "lib/elixir_internal_certification_web/controllers/api/fallback_controller.ex",
     "test/support",
-    "lib/elixir_internal_certification/release.ex",
     "lib/elixir_internal_certification_web/router_helper.ex"
   ],
   "coverage_options": {
