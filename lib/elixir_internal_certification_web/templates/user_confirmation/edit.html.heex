@@ -1,7 +1,7 @@
 <h1>Confirm account</h1>
 
 <.form let={_f} for={:user} action={Routes.user_confirmation_path(@conn, :update, @token)}>
-  <div>
+  <div class="mt-3">
     <%= submit "Confirm my account", class: "w-100 btn btn-lg btn-primary" %>
   </div>
 </.form>
