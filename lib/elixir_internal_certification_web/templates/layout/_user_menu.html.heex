@@ -1,10 +1,20 @@
-<ul>
+<div>
 <%= if @current_user do %>
-  <li><%= @current_user.email %></li>
-  <li><%= link "Settings", to: Routes.user_settings_path(@conn, :edit) %></li>
-  <li><%= link "Log out", to: Routes.user_session_path(@conn, :delete), method: :delete %></li>
+  <div class="dropdown text-end">
+    <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+      <img src="" alt="" class="rounded-circle" width="32" height="32">
+      <%= @current_user.email %>
+    </a>
+    <ul class="dropdown-menu text-small" style="">
+      <li><%= link "Settings", to: Routes.user_settings_path(@conn, :edit), class: "dropdown-item" %></li>
+      <li><hr class="dropdown-divider"></li>
+      <li><%= link "Log out", to: Routes.user_session_path(@conn, :delete), method: :delete, class: "dropdown-item" %></li>
+    </ul>
+  </div>
 <% else %>
-  <li><%= link "Register", to: Routes.user_registration_path(@conn, :new) %></li>
-  <li><%= link "Log in", to: Routes.user_session_path(@conn, :new) %></li>
+  <div class="text-end">
+    <%= link "Register", to: Routes.user_registration_path(@conn, :new), class: "btn btn-warning" %>
+    <%= link "Log in", to: Routes.user_session_path(@conn, :new), class: "btn btn-outline-dark me-2" %>
+  </div>
 <% end %>
-</ul>
+</div>
