@@ -13,8 +13,8 @@
   </div>
 <% else %>
   <div class="text-end">
-    <%= link "Register", to: Routes.user_registration_path(@conn, :new), class: "btn btn-warning" %>
-    <%= link "Log in", to: Routes.user_session_path(@conn, :new), class: "btn btn-outline-dark me-2" %>
+    <%= link "Register", to: Routes.user_registration_path(@conn, :new), class: "btn btn-outline-secondary" %>
+    <%= link "Log in", to: Routes.user_session_path(@conn, :new), class: "btn btn-primary" %>
   </div>
 <% end %>
 </div>
