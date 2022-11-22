@@ -1,20 +1,36 @@
 <div>
-<%= if @current_user do %>
-  <div class="dropdown text-end">
-    <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-      <img src="" alt="" class="rounded-circle" width="32" height="32">
-      <%= @current_user.email %>
-    </a>
-    <ul class="dropdown-menu text-small" style="">
-      <li><%= link "Settings", to: Routes.user_settings_path(@conn, :edit), class: "dropdown-item" %></li>
-      <li><hr class="dropdown-divider"></li>
-      <li><%= link "Log out", to: Routes.user_session_path(@conn, :delete), method: :delete, class: "dropdown-item" %></li>
-    </ul>
-  </div>
-<% else %>
-  <div class="text-end">
-    <%= link "Register", to: Routes.user_registration_path(@conn, :new), class: "btn btn-outline-secondary" %>
-    <%= link "Log in", to: Routes.user_session_path(@conn, :new), class: "btn btn-primary" %>
-  </div>
-<% end %>
+  <%= if @current_user do %>
+    <div class="dropdown text-end">
+      <a
+        href="#"
+        class="d-block link-dark text-decoration-none dropdown-toggle"
+        data-bs-toggle="dropdown"
+        aria-expanded="false"
+      >
+        <img src="" alt="" class="rounded-circle" width="32" height="32" />
+        <%= @current_user.email %>
+      </a>
+      <ul class="dropdown-menu text-small" style="">
+        <li>
+          <%= link("Settings", to: Routes.user_settings_path(@conn, :edit), class: "dropdown-item") %>
+        </li>
+        <li><hr class="dropdown-divider" /></li>
+        <li>
+          <%= link("Log out",
+            to: Routes.user_session_path(@conn, :delete),
+            method: :delete,
+            class: "dropdown-item"
+          ) %>
+        </li>
+      </ul>
+    </div>
+  <% else %>
+    <div class="text-end">
+      <%= link("Register",
+        to: Routes.user_registration_path(@conn, :new),
+        class: "btn btn-outline-secondary"
+      ) %>
+      <%= link("Log in", to: Routes.user_session_path(@conn, :new), class: "btn btn-primary") %>
+    </div>
+  <% end %>
 </div>
