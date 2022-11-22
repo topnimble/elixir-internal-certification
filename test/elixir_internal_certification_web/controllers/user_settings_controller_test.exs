@@ -1,8 +1,9 @@
 defmodule ElixirInternalCertificationWeb.UserSettingsControllerTest do
   use ElixirInternalCertificationWeb.ConnCase, async: true
 
-  alias ElixirInternalCertification.Accounts
   import ElixirInternalCertification.AccountsFixtures
+
+  alias ElixirInternalCertification.Accounts
 
   setup :register_and_log_in_user
 
@@ -15,8 +16,8 @@ defmodule ElixirInternalCertificationWeb.UserSettingsControllerTest do
 
     test "redirects if user is not logged in" do
       conn = build_conn()
-      conn = get(conn, Routes.user_settings_path(conn, :edit))
-      assert redirected_to(conn) == Routes.user_session_path(conn, :new)
+      conn_2 = get(conn, Routes.user_settings_path(conn, :edit))
+      assert redirected_to(conn_2) == Routes.user_session_path(conn_2, :new)
     end
   end
 
@@ -108,9 +109,9 @@ defmodule ElixirInternalCertificationWeb.UserSettingsControllerTest do
       refute Accounts.get_user_by_email(user.email)
       assert Accounts.get_user_by_email(email)
 
-      conn = get(conn, Routes.user_settings_path(conn, :confirm_email, token))
-      assert redirected_to(conn) == Routes.user_settings_path(conn, :edit)
-      assert get_flash(conn, :error) =~ "Email change link is invalid or it has expired"
+      conn_2 = get(conn, Routes.user_settings_path(conn, :confirm_email, token))
+      assert redirected_to(conn_2) == Routes.user_settings_path(conn_2, :edit)
+      assert get_flash(conn_2, :error) =~ "Email change link is invalid or it has expired"
     end
 
     test "does not update email with invalid token", %{conn: conn, user: user} do
@@ -122,8 +123,8 @@ defmodule ElixirInternalCertificationWeb.UserSettingsControllerTest do
 
     test "redirects if user is not logged in", %{token: token} do
       conn = build_conn()
-      conn = get(conn, Routes.user_settings_path(conn, :confirm_email, token))
-      assert redirected_to(conn) == Routes.user_session_path(conn, :new)
+      conn_2 = get(conn, Routes.user_settings_path(conn, :confirm_email, token))
+      assert redirected_to(conn_2) == Routes.user_session_path(conn_2, :new)
     end
   end
 end

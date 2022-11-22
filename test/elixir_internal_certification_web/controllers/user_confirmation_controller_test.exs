@@ -1,9 +1,9 @@
 defmodule ElixirInternalCertificationWeb.UserConfirmationControllerTest do
   use ElixirInternalCertificationWeb.ConnCase, async: true
 
-  alias ElixirInternalCertification.Accounts
-  alias ElixirInternalCertification.Repo
   import ElixirInternalCertification.AccountsFixtures
+
+  alias ElixirInternalCertification.{Accounts, Repo}
 
   setup do
     %{user: user_fixture()}
@@ -81,18 +81,18 @@ defmodule ElixirInternalCertificationWeb.UserConfirmationControllerTest do
       assert Repo.all(Accounts.UserToken) == []
 
       # When not logged in
-      conn = post(conn, Routes.user_confirmation_path(conn, :update, token))
-      assert redirected_to(conn) == "/"
-      assert get_flash(conn, :error) =~ "User confirmation link is invalid or it has expired"
+      conn_2 = post(conn, Routes.user_confirmation_path(conn, :update, token))
+      assert redirected_to(conn_2) == "/"
+      assert get_flash(conn_2, :error) =~ "User confirmation link is invalid or it has expired"
 
       # When logged in
-      conn =
+      conn_3 =
         build_conn()
         |> log_in_user(user)
-        |> post(Routes.user_confirmation_path(conn, :update, token))
+        |> post(Routes.user_confirmation_path(conn_2, :update, token))
 
-      assert redirected_to(conn) == "/"
-      refute get_flash(conn, :error)
+      assert redirected_to(conn_3) == "/"
+      refute get_flash(conn_3, :error)
     end
 
     test "does not confirm email with invalid token", %{conn: conn, user: user} do

@@ -1,9 +1,9 @@
 defmodule ElixirInternalCertificationWeb.UserResetPasswordControllerTest do
   use ElixirInternalCertificationWeb.ConnCase, async: true
 
-  alias ElixirInternalCertification.Accounts
-  alias ElixirInternalCertification.Repo
   import ElixirInternalCertification.AccountsFixtures
+
+  alias ElixirInternalCertification.{Accounts, Repo}
 
   setup do
     %{user: user_fixture()}

@@ -4,9 +4,9 @@ defmodule ElixirInternalCertification.Accounts do
   """
 
   import Ecto.Query, warn: false
-  alias ElixirInternalCertification.Repo
 
-  alias ElixirInternalCertification.Accounts.{User, UserToken, UserNotifier}
+  alias ElixirInternalCertification.Accounts.{User, UserNotifier, UserToken}
+  alias ElixirInternalCertification.Repo
 
   ## Database getters
 
@@ -146,17 +146,6 @@ defmodule ElixirInternalCertification.Accounts do
     end
   end
 
-  defp user_email_multi(user, email, context) do
-    changeset =
-      user
-      |> User.email_changeset(%{email: email})
-      |> User.confirm_changeset()
-
-    Ecto.Multi.new()
-    |> Ecto.Multi.update(:user, changeset)
-    |> Ecto.Multi.delete_all(:tokens, UserToken.user_and_contexts_query(user, [context]))
-  end
-
   @doc """
   Delivers the update email instructions to the given user.
 
@@ -283,12 +272,6 @@ defmodule ElixirInternalCertification.Accounts do
     end
   end
 
-  defp confirm_user_multi(user) do
-    Ecto.Multi.new()
-    |> Ecto.Multi.update(:user, User.confirm_changeset(user))
-    |> Ecto.Multi.delete_all(:tokens, UserToken.user_and_contexts_query(user, ["confirm"]))
-  end
-
   ## Reset password
 
   @doc """
@@ -349,5 +332,22 @@ defmodule ElixirInternalCertification.Accounts do
       {:ok, %{user: user}} -> {:ok, user}
       {:error, :user, changeset, _} -> {:error, changeset}
     end
+  end
+
+  defp user_email_multi(user, email, context) do
+    changeset =
+      user
+      |> User.email_changeset(%{email: email})
+      |> User.confirm_changeset()
+
+    Ecto.Multi.new()
+    |> Ecto.Multi.update(:user, changeset)
+    |> Ecto.Multi.delete_all(:tokens, UserToken.user_and_contexts_query(user, [context]))
+  end
+
+  defp confirm_user_multi(user) do
+    Ecto.Multi.new()
+    |> Ecto.Multi.update(:user, User.confirm_changeset(user))
+    |> Ecto.Multi.delete_all(:tokens, UserToken.user_and_contexts_query(user, ["confirm"]))
   end
 end

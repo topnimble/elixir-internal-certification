@@ -1,9 +1,10 @@
 defmodule ElixirInternalCertificationWeb.UserAuthTest do
   use ElixirInternalCertificationWeb.ConnCase, async: true
 
+  import ElixirInternalCertification.AccountsFixtures
+
   alias ElixirInternalCertification.Accounts
   alias ElixirInternalCertificationWeb.UserAuth
-  import ElixirInternalCertification.AccountsFixtures
 
   @remember_me_cookie "_elixir_internal_certification_web_user_remember_me"
 
@@ -147,21 +148,21 @@ defmodule ElixirInternalCertificationWeb.UserAuthTest do
       assert halted_conn.halted
       assert get_session(halted_conn, :user_return_to) == "/foo"
 
-      halted_conn =
+      halted_conn_2 =
         %{conn | path_info: ["foo"], query_string: "bar=baz"}
         |> fetch_flash()
         |> UserAuth.require_authenticated_user([])
 
-      assert halted_conn.halted
-      assert get_session(halted_conn, :user_return_to) == "/foo?bar=baz"
+      assert halted_conn_2.halted
+      assert get_session(halted_conn_2, :user_return_to) == "/foo?bar=baz"
 
-      halted_conn =
+      halted_conn_3 =
         %{conn | path_info: ["foo"], query_string: "bar", method: "POST"}
         |> fetch_flash()
         |> UserAuth.require_authenticated_user([])
 
-      assert halted_conn.halted
-      refute get_session(halted_conn, :user_return_to)
+      assert halted_conn_3.halted
+      refute get_session(halted_conn_3, :user_return_to)
     end
 
     test "does not redirect if user is authenticated", %{conn: conn, user: user} do

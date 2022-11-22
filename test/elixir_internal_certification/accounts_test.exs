@@ -1,9 +1,9 @@
 defmodule ElixirInternalCertification.AccountsTest do
   use ElixirInternalCertification.DataCase
 
-  alias ElixirInternalCertification.Accounts
-
   import ElixirInternalCertification.AccountsFixtures
+
+  alias ElixirInternalCertification.Accounts
   alias ElixirInternalCertification.Accounts.{User, UserToken}
 
   describe "get_user_by_email/1" do
@@ -80,8 +80,8 @@ defmodule ElixirInternalCertification.AccountsTest do
       assert "has already been taken" in errors_on(changeset).email
 
       # Now try with the upper cased email too, to check that email case is ignored.
-      {:error, changeset} = Accounts.register_user(%{email: String.upcase(email)})
-      assert "has already been taken" in errors_on(changeset).email
+      {:error, changeset_2} = Accounts.register_user(%{email: String.upcase(email)})
+      assert "has already been taken" in errors_on(changeset_2).email
     end
 
     test "registers users with a hashed password" do
@@ -184,8 +184,8 @@ defmodule ElixirInternalCertification.AccountsTest do
           Accounts.deliver_update_email_instructions(user, "current@example.com", url)
         end)
 
-      {:ok, token} = Base.url_decode64(token, padding: false)
-      assert user_token = Repo.get_by(UserToken, token: :crypto.hash(:sha256, token))
+      {:ok, token_2} = Base.url_decode64(token, padding: false)
+      assert user_token = Repo.get_by(UserToken, token: :crypto.hash(:sha256, token_2))
       assert user_token.user_id == user.id
       assert user_token.sent_to == user.email
       assert user_token.context == "change:current@example.com"
@@ -372,8 +372,8 @@ defmodule ElixirInternalCertification.AccountsTest do
           Accounts.deliver_user_confirmation_instructions(user, url)
         end)
 
-      {:ok, token} = Base.url_decode64(token, padding: false)
-      assert user_token = Repo.get_by(UserToken, token: :crypto.hash(:sha256, token))
+      {:ok, token_2} = Base.url_decode64(token, padding: false)
+      assert user_token = Repo.get_by(UserToken, token: :crypto.hash(:sha256, token_2))
       assert user_token.user_id == user.id
       assert user_token.sent_to == user.email
       assert user_token.context == "confirm"
@@ -425,8 +425,8 @@ defmodule ElixirInternalCertification.AccountsTest do
           Accounts.deliver_user_reset_password_instructions(user, url)
         end)
 
-      {:ok, token} = Base.url_decode64(token, padding: false)
-      assert user_token = Repo.get_by(UserToken, token: :crypto.hash(:sha256, token))
+      {:ok, token_2} = Base.url_decode64(token, padding: false)
+      assert user_token = Repo.get_by(UserToken, token: :crypto.hash(:sha256, token_2))
       assert user_token.user_id == user.id
       assert user_token.sent_to == user.email
       assert user_token.context == "reset_password"

@@ -3,20 +3,6 @@ defmodule ElixirInternalCertification.Accounts.UserNotifier do
 
   alias ElixirInternalCertification.Mailer
 
-  # Delivers the email using the application mailer.
-  defp deliver(recipient, subject, body) do
-    email =
-      new()
-      |> to(recipient)
-      |> from({"ElixirInternalCertification", "contact@example.com"})
-      |> subject(subject)
-      |> text_body(body)
-
-    with {:ok, _metadata} <- Mailer.deliver(email) do
-      {:ok, email}
-    end
-  end
-
   @doc """
   Deliver instructions to confirm account.
   """
@@ -75,5 +61,19 @@ defmodule ElixirInternalCertification.Accounts.UserNotifier do
 
     ==============================
     """)
+  end
+
+  # Delivers the email using the application mailer.
+  defp deliver(recipient, subject, body) do
+    email =
+      new()
+      |> to(recipient)
+      |> from({"ElixirInternalCertification", "contact@example.com"})
+      |> subject(subject)
+      |> text_body(body)
+
+    with {:ok, _metadata} <- Mailer.deliver(email) do
+      {:ok, email}
+    end
   end
 end
