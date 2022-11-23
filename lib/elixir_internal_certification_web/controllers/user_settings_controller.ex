@@ -6,9 +6,7 @@ defmodule ElixirInternalCertificationWeb.UserSettingsController do
 
   plug :assign_email_and_password_changesets
 
-  def edit(conn, _params) do
-    render(conn, "edit.html")
-  end
+  def edit(conn, _params), do: render(conn, "edit.html")
 
   def update(conn, %{"action" => "update_email"} = params) do
     %{"current_password" => password, "user" => user_params} = params

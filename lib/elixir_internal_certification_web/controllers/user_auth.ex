@@ -61,9 +61,8 @@ defmodule ElixirInternalCertificationWeb.UserAuth do
     user_token = get_session(conn, :user_token)
     user_token && Accounts.delete_session_token(user_token)
 
-    if live_socket_id = get_session(conn, :live_socket_id) do
-      ElixirInternalCertificationWeb.Endpoint.broadcast(live_socket_id, "disconnect", %{})
-    end
+    if live_socket_id = get_session(conn, :live_socket_id),
+      do: ElixirInternalCertificationWeb.Endpoint.broadcast(live_socket_id, "disconnect", %{})
 
     conn
     |> renew_session()
@@ -112,13 +111,10 @@ defmodule ElixirInternalCertificationWeb.UserAuth do
     end
   end
 
-  defp maybe_write_remember_me_cookie(conn, token, %{"remember_me" => "true"}) do
-    put_resp_cookie(conn, @remember_me_cookie, token, @remember_me_options)
-  end
+  defp maybe_write_remember_me_cookie(conn, token, %{"remember_me" => "true"}),
+    do: put_resp_cookie(conn, @remember_me_cookie, token, @remember_me_options)
 
-  defp maybe_write_remember_me_cookie(conn, _token, _params) do
-    conn
-  end
+  defp maybe_write_remember_me_cookie(conn, _token, _params), do: conn
 
   defp renew_session(conn) do
     conn
@@ -140,9 +136,8 @@ defmodule ElixirInternalCertificationWeb.UserAuth do
     end
   end
 
-  defp maybe_store_return_to(%{method: "GET"} = conn) do
-    put_session(conn, :user_return_to, current_path(conn))
-  end
+  defp maybe_store_return_to(%{method: "GET"} = conn),
+    do: put_session(conn, :user_return_to, current_path(conn))
 
   defp maybe_store_return_to(conn), do: conn
 

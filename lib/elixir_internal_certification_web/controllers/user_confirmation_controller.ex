@@ -3,9 +3,7 @@ defmodule ElixirInternalCertificationWeb.UserConfirmationController do
 
   alias ElixirInternalCertification.Accounts
 
-  def new(conn, _params) do
-    render(conn, "new.html")
-  end
+  def new(conn, _params), do: render(conn, "new.html")
 
   def create(conn, %{"user" => %{"email" => email}}) do
     if user = Accounts.get_user_by_email(email) do
@@ -24,9 +22,7 @@ defmodule ElixirInternalCertificationWeb.UserConfirmationController do
     |> redirect(to: "/")
   end
 
-  def edit(conn, %{"token" => token}) do
-    render(conn, "edit.html", token: token)
-  end
+  def edit(conn, %{"token" => token}), do: render(conn, "edit.html", token: token)
 
   # Do not log in the user after confirmation to avoid a
   # leaked token giving the user access to the account.
