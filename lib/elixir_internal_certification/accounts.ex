@@ -104,26 +104,6 @@ defmodule ElixirInternalCertification.Accounts do
   def change_user_email(user, attrs \\ %{}), do: User.email_changeset(user, attrs)
 
   @doc """
-  Emulates that the email will change without actually changing
-  it in the database.
-
-  ## Examples
-
-      iex> apply_user_email(user, "valid password", %{email: ...})
-      {:ok, %User{}}
-
-      iex> apply_user_email(user, "invalid password", %{email: ...})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def apply_user_email(user, password, attrs) do
-    user
-    |> User.email_changeset(attrs)
-    |> User.validate_current_password(password)
-    |> Ecto.Changeset.apply_action(:update)
-  end
-
-  @doc """
   Updates the user email using the given token.
 
   If the token matches, the user email is updated and the token is deleted.
