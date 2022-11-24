@@ -93,17 +93,6 @@ defmodule ElixirInternalCertification.Accounts do
   ## Settings
 
   @doc """
-  Returns an `%Ecto.Changeset{}` for changing the user email.
-
-  ## Examples
-
-      iex> change_user_email(user)
-      %Ecto.Changeset{data: %User{}}
-
-  """
-  def change_user_email(user, attrs \\ %{}), do: User.email_changeset(user, attrs)
-
-  @doc """
   Returns an `%Ecto.Changeset{}` for changing the user password.
 
   ## Examples

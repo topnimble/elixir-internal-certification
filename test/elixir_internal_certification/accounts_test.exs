@@ -117,13 +117,6 @@ defmodule ElixirInternalCertification.AccountsTest do
     end
   end
 
-  describe "change_user_email/2" do
-    test "returns a user changeset" do
-      assert %Ecto.Changeset{} = changeset = Accounts.change_user_email(%User{})
-      assert changeset.required == [:email]
-    end
-  end
-
   describe "change_user_password/2" do
     test "returns a user changeset" do
       assert %Ecto.Changeset{} = changeset = Accounts.change_user_password(%User{})
