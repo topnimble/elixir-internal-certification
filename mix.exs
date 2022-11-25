@@ -40,6 +40,7 @@ defmodule ElixirInternalCertification.MixProject do
   defp deps do
     [
       {:bcrypt_elixir, "~> 3.0"},
+      {:compass_credo_plugin, "~> 1.0"},
       {:credo, "~> 1.6.7", [runtime: false]},
       {:dart_sass, "~> 0.5.1", [runtime: Mix.env() == :dev]},
       {:dialyxir, "~> 1.2.0", [only: [:dev], runtime: false]},
@@ -68,8 +69,7 @@ defmodule ElixirInternalCertification.MixProject do
       {:swoosh, "~> 1.3"},
       {:telemetry_metrics, "~> 0.6"},
       {:telemetry_poller, "~> 1.0"},
-      {:wallaby, "~> 0.30.1", [only: :test, runtime: false]},
-      {:compass_credo_plugin, "~> 1.0"}
+      {:wallaby, "~> 0.30.1", [only: :test, runtime: false]}
     ]
   end
 
