@@ -35,7 +35,6 @@ defmodule ElixirInternalCertificationWeb.UserRegistrationControllerTest do
       conn_2 = get(conn, "/")
       response = html_response(conn_2, 200)
       assert response =~ email
-      assert response =~ "Settings</a>"
       assert response =~ "Log out</a>"
     end
 
