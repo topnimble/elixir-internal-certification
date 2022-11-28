@@ -12,10 +12,6 @@
       </a>
       <ul class="dropdown-menu text-small" style="">
         <li>
-          <%= link("Settings", to: Routes.user_settings_path(@conn, :edit), class: "dropdown-item") %>
-        </li>
-        <li><hr class="dropdown-divider" /></li>
-        <li>
           <%= link("Log out",
             to: Routes.user_session_path(@conn, :delete),
             method: :delete,
