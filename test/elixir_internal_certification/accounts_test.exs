@@ -95,12 +95,12 @@ defmodule ElixirInternalCertification.AccountsTest do
   end
 
   describe "change_user_registration/2" do
-    test "returns a changeset" do
+    test "given a changeset, returns a changeset" do
       assert %Ecto.Changeset{} = changeset = Accounts.change_user_registration(%User{})
       assert changeset.required == [:password, :email]
     end
 
-    test "allows fields to be set" do
+    test "given a changeset and valid user attributes, allows fields to be set" do
       email = unique_user_email()
       password = valid_user_password()
 
@@ -122,7 +122,7 @@ defmodule ElixirInternalCertification.AccountsTest do
       %{user: user_fixture()}
     end
 
-    test "generates a token", %{user: user} do
+    test "given a user, generates a token", %{user: user} do
       token = Accounts.generate_user_session_token(user)
       assert user_token = Repo.get_by(UserToken, token: token)
       assert user_token.context == "session"
@@ -145,23 +145,23 @@ defmodule ElixirInternalCertification.AccountsTest do
       %{user: user, token: token}
     end
 
-    test "returns user by token", %{user: user, token: token} do
+    test "given a valid token, returns user by token", %{user: user, token: token} do
       assert session_user = Accounts.get_user_by_session_token(token)
       assert session_user.id == user.id
     end
 
-    test "does not return user for invalid token" do
+    test "given an INVALID token, does NOT return user for invalid token" do
       refute Accounts.get_user_by_session_token("oops")
     end
 
-    test "does not return user for expired token", %{token: token} do
+    test "given an EXPIRED token, does NOT return user for expired token", %{token: token} do
       {1, nil} = Repo.update_all(UserToken, set: [inserted_at: ~N[2020-01-01 00:00:00]])
       refute Accounts.get_user_by_session_token(token)
     end
   end
 
   describe "delete_session_token/1" do
-    test "deletes the token" do
+    test "given a token, deletes the token" do
       user = user_fixture()
       token = Accounts.generate_user_session_token(user)
       assert Accounts.delete_session_token(token) == :ok
@@ -170,7 +170,7 @@ defmodule ElixirInternalCertification.AccountsTest do
   end
 
   describe "inspect/2" do
-    test "does not include password" do
+    test "given a password, does NOT include password" do
       refute inspect(%User{password: "123456"}) =~ "password: \"123456\""
     end
   end
