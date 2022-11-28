@@ -7,27 +7,27 @@ defmodule ElixirInternalCertification.AccountsTest do
   alias ElixirInternalCertification.Accounts.{User, UserToken}
 
   describe "get_user_by_email/1" do
-    test "does not return the user if the email does not exist" do
+    test "given the email does NOT exist, does NOT return the user" do
       refute Accounts.get_user_by_email("unknown@example.com")
     end
 
-    test "returns the user if the email exists" do
+    test "given the email exists, returns the user" do
       %{id: id} = user = user_fixture()
       assert %User{id: ^id} = Accounts.get_user_by_email(user.email)
     end
   end
 
   describe "get_user_by_email_and_password/2" do
-    test "does not return the user if the email does not exist" do
+    test "given the email does NOT exist, does NOT return the user" do
       refute Accounts.get_user_by_email_and_password("unknown@example.com", "hello world!")
     end
 
-    test "does not return the user if the password is not valid" do
+    test "given the password is NOT valid, does NOT return the user" do
       user = user_fixture()
       refute Accounts.get_user_by_email_and_password(user.email, "invalid")
     end
 
-    test "returns the user if the email and password are valid" do
+    test "given the email and password are valid, returns the user" do
       %{id: id} = user = user_fixture()
 
       assert %User{id: ^id} =
@@ -36,20 +36,20 @@ defmodule ElixirInternalCertification.AccountsTest do
   end
 
   describe "get_user!/1" do
-    test "raises if id is invalid" do
+    test "given ID is invalid, raises Ecto.NoResultsError" do
       assert_raise Ecto.NoResultsError, fn ->
         Accounts.get_user!(-1)
       end
     end
 
-    test "returns the user with the given id" do
+    test "given ID is valid, returns the user with the given ID" do
       %{id: id} = user = user_fixture()
       assert %User{id: ^id} = Accounts.get_user!(user.id)
     end
   end
 
   describe "register_user/1" do
-    test "requires email and password to be set" do
+    test "given EMPTY email and password, requires email and password to be set" do
       {:error, changeset} = Accounts.register_user(%{})
 
       assert %{
@@ -58,7 +58,7 @@ defmodule ElixirInternalCertification.AccountsTest do
              } = errors_on(changeset)
     end
 
-    test "validates email and password when given" do
+    test "given email and password, validates email and password" do
       {:error, changeset} = Accounts.register_user(%{email: "not valid", password: "not valid"})
 
       assert %{
@@ -67,14 +67,14 @@ defmodule ElixirInternalCertification.AccountsTest do
              } = errors_on(changeset)
     end
 
-    test "validates maximum values for email and password for security" do
+    test "given email and password are too long, validates maximum values for email and password for security" do
       too_long = String.duplicate("db", 100)
       {:error, changeset} = Accounts.register_user(%{email: too_long, password: too_long})
       assert "should be at most 160 character(s)" in errors_on(changeset).email
       assert "should be at most 72 character(s)" in errors_on(changeset).password
     end
 
-    test "validates email uniqueness" do
+    test "given a duplicated email, validates email uniqueness" do
       %{email: email} = user_fixture()
       {:error, changeset} = Accounts.register_user(%{email: email})
       assert "has already been taken" in errors_on(changeset).email
@@ -84,7 +84,7 @@ defmodule ElixirInternalCertification.AccountsTest do
       assert "has already been taken" in errors_on(changeset_2).email
     end
 
-    test "registers users with a hashed password" do
+    test "given an email, registers users with a hashed password" do
       email = unique_user_email()
       {:ok, user} = Accounts.register_user(valid_user_attributes(email: email))
       assert user.email == email
