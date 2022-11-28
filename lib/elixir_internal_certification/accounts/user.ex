@@ -55,14 +55,6 @@ defmodule ElixirInternalCertification.Accounts.User do
   end
 
   @doc """
-  Confirms the account by setting `confirmed_at`.
-  """
-  def confirm_changeset(user) do
-    now = NaiveDateTime.truncate(NaiveDateTime.utc_now(), :second)
-    change(user, confirmed_at: now)
-  end
-
-  @doc """
   Verifies the password.
 
   If there is no user or the user doesn't have a password, we call
