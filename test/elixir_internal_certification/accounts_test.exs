@@ -7,18 +7,18 @@ defmodule ElixirInternalCertification.AccountsTest do
   alias ElixirInternalCertification.Accounts.{User, UserToken}
 
   describe "get_user_by_email_and_password/2" do
-    test "given the email and password are valid, returns the user" do
+    test "given valid email and password, returns the user" do
       password = valid_user_password()
       %{id: id} = user = insert(:user, password: password)
 
       assert %User{id: ^id} = Accounts.get_user_by_email_and_password(user.email, password)
     end
 
-    test "given the email does NOT exist, does NOT return the user" do
+    test "given the email does NOT exist, returns nil" do
       assert Accounts.get_user_by_email_and_password("unknown@example.com", "hello world!") == nil
     end
 
-    test "given the password is NOT valid, does NOT return the user" do
+    test "given an INVALID password, returns nil" do
       user = insert(:user)
       assert Accounts.get_user_by_email_and_password(user.email, "invalid") == nil
     end
@@ -31,16 +31,7 @@ defmodule ElixirInternalCertification.AccountsTest do
   end
 
   describe "register_user/1" do
-    test "given email and password, validates email and password" do
-      {:error, changeset} = Accounts.register_user(%{email: "not valid", password: "not valid"})
-
-      assert %{
-               email: ["must have the @ sign and no spaces"],
-               password: ["should be at least 12 character(s)"]
-             } = errors_on(changeset)
-    end
-
-    test "given an email, registers users with a hashed password" do
+    test "given a VALID email, returns a valid changeset" do
       email = unique_user_email()
       {:ok, user} = Accounts.register_user(valid_user_attributes(email: email))
       assert user.email == email
@@ -49,7 +40,16 @@ defmodule ElixirInternalCertification.AccountsTest do
       assert is_nil(user.password)
     end
 
-    test "given EMPTY email and password, requires email and password to be set" do
+    test "given INVALID email and password, returns an INVALID changeset" do
+      {:error, changeset} = Accounts.register_user(%{email: "not valid", password: "not valid"})
+
+      assert %{
+               email: ["must have the @ sign and no spaces"],
+               password: ["should be at least 12 character(s)"]
+             } = errors_on(changeset)
+    end
+
+    test "given EMPTY email and password, returns an INVALID changeset" do
       {:error, changeset} = Accounts.register_user(%{})
 
       assert %{
@@ -58,14 +58,14 @@ defmodule ElixirInternalCertification.AccountsTest do
              } = errors_on(changeset)
     end
 
-    test "given email and password are too long, validates maximum values for email and password for security" do
+    test "given email and password are too long, returns an INVALID changeset" do
       too_long = String.duplicate("db", 100)
       {:error, changeset} = Accounts.register_user(%{email: too_long, password: too_long})
       assert "should be at most 160 character(s)" in errors_on(changeset).email
       assert "should be at most 72 character(s)" in errors_on(changeset).password
     end
 
-    test "given a duplicated email, validates email uniqueness" do
+    test "given a duplicated email, returns an INVALID changeset" do
       %{email: email} = insert(:user)
       {:error, changeset} = Accounts.register_user(%{email: email})
       assert "has already been taken" in errors_on(changeset).email
@@ -77,12 +77,7 @@ defmodule ElixirInternalCertification.AccountsTest do
   end
 
   describe "change_user_registration/2" do
-    test "given a changeset, returns a changeset" do
-      assert %Ecto.Changeset{} = changeset = Accounts.change_user_registration(%User{})
-      assert changeset.required == [:password, :email]
-    end
-
-    test "given a changeset and valid user attributes, allows fields to be set" do
+    test "given valid email and password, returns a valid changeset" do
       email = unique_user_email()
       password = valid_user_password()
 
@@ -97,6 +92,11 @@ defmodule ElixirInternalCertification.AccountsTest do
       assert get_change(changeset, :password) == password
       assert is_nil(get_change(changeset, :hashed_password))
     end
+
+    test "given EMPTY email and password, returns an INVALID changeset" do
+      assert %Ecto.Changeset{} = changeset = Accounts.change_user_registration(%User{})
+      assert changeset.required == [:password, :email]
+    end
   end
 
   describe "generate_user_session_token/1" do
@@ -104,7 +104,7 @@ defmodule ElixirInternalCertification.AccountsTest do
       %{user: insert(:user)}
     end
 
-    test "given a user, generates a token", %{user: user} do
+    test "given a user, returns a token", %{user: user} do
       token = Accounts.generate_user_session_token(user)
       assert user_token = Repo.get_by(UserToken, token: token)
       assert user_token.context == "session"
@@ -127,23 +127,23 @@ defmodule ElixirInternalCertification.AccountsTest do
       %{user: user, token: token}
     end
 
-    test "given a valid token, returns user by token", %{user: user, token: token} do
+    test "given a valid token, returns a user", %{user: user, token: token} do
       assert session_user = Accounts.get_user_by_session_token(token)
       assert session_user.id == user.id
     end
 
-    test "given an INVALID token, does NOT return user for invalid token" do
+    test "given an INVALID token, returns nil" do
       assert Accounts.get_user_by_session_token("oops") == nil
     end
 
-    test "given an EXPIRED token, does NOT return user for expired token", %{token: token} do
+    test "given an EXPIRED token, returns nil", %{token: token} do
       {1, nil} = Repo.update_all(UserToken, set: [inserted_at: ~N[2020-01-01 00:00:00]])
       assert Accounts.get_user_by_session_token(token) == nil
     end
   end
 
   describe "delete_session_token/1" do
-    test "given a token, deletes the token" do
+    test "given a valid token, returns :ok" do
       user = insert(:user)
       token = Accounts.generate_user_session_token(user)
       assert Accounts.delete_session_token(token) == :ok
@@ -152,7 +152,7 @@ defmodule ElixirInternalCertification.AccountsTest do
   end
 
   describe "inspect/2" do
-    test "given a password, does NOT include password" do
+    test "given a password, returns inspected data WITHOUT password" do
       assert inspect(%User{password: "123456"}) =~ "password: \"123456\"" == false
     end
   end
