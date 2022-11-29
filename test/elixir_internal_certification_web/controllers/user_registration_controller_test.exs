@@ -4,7 +4,7 @@ defmodule ElixirInternalCertificationWeb.UserRegistrationControllerTest do
   import ElixirInternalCertification.AccountsFixtures
 
   describe "GET /users/register" do
-    test "renders registration page", %{conn: conn} do
+    test "given an unauthenticated user, renders registration page", %{conn: conn} do
       conn = get(conn, Routes.user_registration_path(conn, :new))
       response = html_response(conn, 200)
       assert response =~ "<h1>Register</h1>"
@@ -12,7 +12,7 @@ defmodule ElixirInternalCertificationWeb.UserRegistrationControllerTest do
       assert response =~ "Register</a>"
     end
 
-    test "redirects if already logged in", %{conn: conn} do
+    test "given an authenticated user, redirects", %{conn: conn} do
       conn = conn |> log_in_user(insert(:user)) |> get(Routes.user_registration_path(conn, :new))
       assert redirected_to(conn) == "/"
     end
@@ -20,7 +20,7 @@ defmodule ElixirInternalCertificationWeb.UserRegistrationControllerTest do
 
   describe "POST /users/register" do
     @tag :capture_log
-    test "creates account and logs the user in", %{conn: conn} do
+    test "given valid data, creates account and logs the user in", %{conn: conn} do
       email = unique_user_email()
 
       conn =
@@ -38,7 +38,7 @@ defmodule ElixirInternalCertificationWeb.UserRegistrationControllerTest do
       assert response =~ "Log out</a>"
     end
 
-    test "render errors for invalid data", %{conn: conn} do
+    test "given INVALID data, render errors", %{conn: conn} do
       conn =
         post(conn, Routes.user_registration_path(conn, :create), %{
           "user" => %{"email" => "with spaces", "password" => "too short"}
