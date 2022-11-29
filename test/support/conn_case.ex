@@ -17,6 +17,8 @@ defmodule ElixirInternalCertificationWeb.ConnCase do
 
   use ExUnit.CaseTemplate
 
+  import ElixirInternalCertification.Factory
+
   using do
     quote do
       use ExVCR.Mock, adapter: ExVCR.Adapter.Hackney
@@ -50,7 +52,7 @@ defmodule ElixirInternalCertificationWeb.ConnCase do
   test context.
   """
   def register_and_log_in_user(%{conn: conn}) do
-    user = ElixirInternalCertification.AccountsFixtures.user_fixture()
+    user = insert(:user)
     %{conn: log_in_user(conn, user), user: user}
   end
 

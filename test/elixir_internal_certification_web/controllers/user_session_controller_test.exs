@@ -4,7 +4,7 @@ defmodule ElixirInternalCertificationWeb.UserSessionControllerTest do
   import ElixirInternalCertification.AccountsFixtures
 
   setup do
-    %{user: user_fixture()}
+    %{user: insert(:user, password: valid_user_password())}
   end
 
   describe "GET /users/log_in" do

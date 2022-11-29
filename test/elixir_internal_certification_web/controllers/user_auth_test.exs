@@ -1,8 +1,6 @@
 defmodule ElixirInternalCertificationWeb.UserAuthTest do
   use ElixirInternalCertificationWeb.ConnCase, async: true
 
-  import ElixirInternalCertification.AccountsFixtures
-
   alias ElixirInternalCertification.Accounts
   alias ElixirInternalCertificationWeb.UserAuth
 
@@ -17,7 +15,7 @@ defmodule ElixirInternalCertificationWeb.UserAuthTest do
       )
       |> init_test_session(%{})
 
-    %{user: user_fixture(), conn: conn}
+    %{user: insert(:user), conn: conn}
   end
 
   describe "log_in_user/3" do

@@ -8,7 +8,7 @@ defmodule ElixirInternalCertification.AccountsTest do
 
   describe "get_user_by_email/1" do
     test "given the email exists, returns the user" do
-      %{id: id} = user = user_fixture()
+      %{id: id} = user = insert(:user)
       assert %User{id: ^id} = Accounts.get_user_by_email(user.email)
     end
 
@@ -25,10 +25,11 @@ defmodule ElixirInternalCertification.AccountsTest do
 
   describe "get_user_by_email_and_password/2" do
     test "given the email and password are valid, returns the user" do
-      %{id: id} = user = user_fixture()
+      password = valid_user_password()
+      %{id: id} = user = insert(:user, password: password)
 
       assert %User{id: ^id} =
-               Accounts.get_user_by_email_and_password(user.email, valid_user_password())
+               Accounts.get_user_by_email_and_password(user.email, password)
     end
 
     test "given the email does NOT exist, does NOT return the user" do
@@ -36,7 +37,7 @@ defmodule ElixirInternalCertification.AccountsTest do
     end
 
     test "given the password is NOT valid, does NOT return the user" do
-      user = user_fixture()
+      user = insert(:user)
       refute Accounts.get_user_by_email_and_password(user.email, "invalid")
     end
 
@@ -49,7 +50,7 @@ defmodule ElixirInternalCertification.AccountsTest do
 
   describe "get_user!/1" do
     test "given ID is valid, returns the user with the given ID" do
-      %{id: id} = user = user_fixture()
+      %{id: id} = user = insert(:user)
       assert %User{id: ^id} = Accounts.get_user!(user.id)
     end
 
@@ -102,7 +103,7 @@ defmodule ElixirInternalCertification.AccountsTest do
     end
 
     test "given a duplicated email, validates email uniqueness" do
-      %{email: email} = user_fixture()
+      %{email: email} = insert(:user)
       {:error, changeset} = Accounts.register_user(%{email: email})
       assert "has already been taken" in errors_on(changeset).email
 
@@ -137,7 +138,7 @@ defmodule ElixirInternalCertification.AccountsTest do
 
   describe "generate_user_session_token/1" do
     setup do
-      %{user: user_fixture()}
+      %{user: insert(:user)}
     end
 
     test "given a user, generates a token", %{user: user} do
@@ -149,7 +150,7 @@ defmodule ElixirInternalCertification.AccountsTest do
       assert_raise Ecto.ConstraintError, fn ->
         Repo.insert!(%UserToken{
           token: user_token.token,
-          user_id: user_fixture().id,
+          user_id: insert(:user).id,
           context: "session"
         })
       end
@@ -158,7 +159,7 @@ defmodule ElixirInternalCertification.AccountsTest do
 
   describe "get_user_by_session_token/1" do
     setup do
-      user = user_fixture()
+      user = insert(:user)
       token = Accounts.generate_user_session_token(user)
       %{user: user, token: token}
     end
@@ -180,7 +181,7 @@ defmodule ElixirInternalCertification.AccountsTest do
 
   describe "delete_session_token/1" do
     test "given a token, deletes the token" do
-      user = user_fixture()
+      user = insert(:user)
       token = Accounts.generate_user_session_token(user)
       assert Accounts.delete_session_token(token) == :ok
       refute Accounts.get_user_by_session_token(token)

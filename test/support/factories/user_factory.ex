@@ -1,0 +1,25 @@
+defmodule ElixirInternalCertification.UserFactory do
+  alias ElixirInternalCertification.Accounts.User
+  alias Faker.Blockchain.Bitcoin, as: FakerBitcoin
+
+  defmacro __using__(_opts) do
+    quote do
+      def user_factory(attrs \\ %{}) do
+        password = attrs[:password] || generate_strong_password()
+
+        %User{
+          email: Faker.Internet.email(),
+          password: password,
+          hashed_password: Bcrypt.hash_pwd_salt(password)
+        }
+      end
+
+      defp generate_strong_password do
+        IO.iodata_to_binary([
+          FakerBitcoin.address(),
+          Enum.random(["!", "@", "#", "$", "%"])
+        ])
+      end
+    end
+  end
+end
