@@ -16,7 +16,7 @@ defmodule ElixirInternalCertification.AccountsTest do
       refute Accounts.get_user_by_email("unknown@example.com")
     end
 
-    test "given the email is EMPTY, raises FunctionClauseError" do
+    test "given the email is nil, raises FunctionClauseError" do
       assert_raise FunctionClauseError, fn ->
         Accounts.get_user_by_email(nil)
       end
@@ -40,7 +40,7 @@ defmodule ElixirInternalCertification.AccountsTest do
       refute Accounts.get_user_by_email_and_password(user.email, "invalid")
     end
 
-    test "given the email and password are EMPTY, raises FunctionClauseError" do
+    test "given the email and password are nil, raises FunctionClauseError" do
       assert_raise FunctionClauseError, fn ->
         Accounts.get_user_by_email_and_password(nil, nil)
       end
@@ -59,7 +59,7 @@ defmodule ElixirInternalCertification.AccountsTest do
       end
     end
 
-    test "given ID is EMPTY, raises ArgumentError" do
+    test "given ID is nil, raises ArgumentError" do
       assert_raise ArgumentError, fn ->
         Accounts.get_user!(nil)
       end
