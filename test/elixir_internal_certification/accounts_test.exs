@@ -9,6 +9,7 @@ defmodule ElixirInternalCertification.AccountsTest do
   describe "get_user_by_email/1" do
     test "given the email exists, returns the user" do
       %{id: id} = user = insert(:user)
+
       assert %User{id: ^id} = Accounts.get_user_by_email(user.email)
     end
 
