@@ -7,17 +7,24 @@ defmodule ElixirInternalCertification.AccountsTest do
   alias ElixirInternalCertification.Accounts.{User, UserToken}
 
   describe "get_user_by_email/1" do
-    test "given the email does NOT exist, does NOT return the user" do
-      refute Accounts.get_user_by_email("unknown@example.com")
-    end
-
     test "given the email exists, returns the user" do
       %{id: id} = user = user_fixture()
       assert %User{id: ^id} = Accounts.get_user_by_email(user.email)
     end
+
+    test "given the email does NOT exist, does NOT return the user" do
+      refute Accounts.get_user_by_email("unknown@example.com")
+    end
   end
 
   describe "get_user_by_email_and_password/2" do
+    test "given the email and password are valid, returns the user" do
+      %{id: id} = user = user_fixture()
+
+      assert %User{id: ^id} =
+               Accounts.get_user_by_email_and_password(user.email, valid_user_password())
+    end
+
     test "given the email does NOT exist, does NOT return the user" do
       refute Accounts.get_user_by_email_and_password("unknown@example.com", "hello world!")
     end
@@ -26,44 +33,46 @@ defmodule ElixirInternalCertification.AccountsTest do
       user = user_fixture()
       refute Accounts.get_user_by_email_and_password(user.email, "invalid")
     end
-
-    test "given the email and password are valid, returns the user" do
-      %{id: id} = user = user_fixture()
-
-      assert %User{id: ^id} =
-               Accounts.get_user_by_email_and_password(user.email, valid_user_password())
-    end
   end
 
   describe "get_user!/1" do
-    test "given ID is invalid, raises Ecto.NoResultsError" do
-      assert_raise Ecto.NoResultsError, fn ->
-        Accounts.get_user!(-1)
-      end
-    end
-
     test "given ID is valid, returns the user with the given ID" do
       %{id: id} = user = user_fixture()
       assert %User{id: ^id} = Accounts.get_user!(user.id)
     end
+
+    test "given ID is INVALID, raises Ecto.NoResultsError" do
+      assert_raise Ecto.NoResultsError, fn ->
+        Accounts.get_user!(-1)
+      end
+    end
   end
 
   describe "register_user/1" do
-    test "given EMPTY email and password, requires email and password to be set" do
-      {:error, changeset} = Accounts.register_user(%{})
-
-      assert %{
-               password: ["can't be blank"],
-               email: ["can't be blank"]
-             } = errors_on(changeset)
-    end
-
     test "given email and password, validates email and password" do
       {:error, changeset} = Accounts.register_user(%{email: "not valid", password: "not valid"})
 
       assert %{
                email: ["must have the @ sign and no spaces"],
                password: ["should be at least 12 character(s)"]
+             } = errors_on(changeset)
+    end
+
+    test "given an email, registers users with a hashed password" do
+      email = unique_user_email()
+      {:ok, user} = Accounts.register_user(valid_user_attributes(email: email))
+      assert user.email == email
+      assert is_binary(user.hashed_password)
+      assert is_nil(user.confirmed_at)
+      assert is_nil(user.password)
+    end
+
+    test "given EMPTY email and password, requires email and password to be set" do
+      {:error, changeset} = Accounts.register_user(%{})
+
+      assert %{
+               password: ["can't be blank"],
+               email: ["can't be blank"]
              } = errors_on(changeset)
     end
 
@@ -82,15 +91,6 @@ defmodule ElixirInternalCertification.AccountsTest do
       # Now try with the upper cased email too, to check that email case is ignored.
       {:error, changeset_2} = Accounts.register_user(%{email: String.upcase(email)})
       assert "has already been taken" in errors_on(changeset_2).email
-    end
-
-    test "given an email, registers users with a hashed password" do
-      email = unique_user_email()
-      {:ok, user} = Accounts.register_user(valid_user_attributes(email: email))
-      assert user.email == email
-      assert is_binary(user.hashed_password)
-      assert is_nil(user.confirmed_at)
-      assert is_nil(user.password)
     end
   end
 
