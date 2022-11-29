@@ -6,24 +6,6 @@ defmodule ElixirInternalCertification.AccountsTest do
   alias ElixirInternalCertification.Accounts
   alias ElixirInternalCertification.Accounts.{User, UserToken}
 
-  describe "get_user_by_email/1" do
-    test "given the email exists, returns the user" do
-      %{id: id} = user = insert(:user)
-
-      assert %User{id: ^id} = Accounts.get_user_by_email(user.email)
-    end
-
-    test "given the email does NOT exist, does NOT return the user" do
-      assert Accounts.get_user_by_email("unknown@example.com") == nil
-    end
-
-    test "given the email is nil, raises FunctionClauseError" do
-      assert_raise FunctionClauseError, fn ->
-        Accounts.get_user_by_email(nil)
-      end
-    end
-  end
-
   describe "get_user_by_email_and_password/2" do
     test "given the email and password are valid, returns the user" do
       password = valid_user_password()
@@ -45,25 +27,6 @@ defmodule ElixirInternalCertification.AccountsTest do
     test "given the email and password are nil, raises FunctionClauseError" do
       assert_raise FunctionClauseError, fn ->
         Accounts.get_user_by_email_and_password(nil, nil)
-      end
-    end
-  end
-
-  describe "get_user!/1" do
-    test "given ID is valid, returns the user with the given ID" do
-      %{id: id} = user = insert(:user)
-      assert %User{id: ^id} = Accounts.get_user!(user.id)
-    end
-
-    test "given ID is INVALID, raises Ecto.NoResultsError" do
-      assert_raise Ecto.NoResultsError, fn ->
-        Accounts.get_user!(-1)
-      end
-    end
-
-    test "given ID is nil, raises ArgumentError" do
-      assert_raise ArgumentError, fn ->
-        Accounts.get_user!(nil)
       end
     end
   end
