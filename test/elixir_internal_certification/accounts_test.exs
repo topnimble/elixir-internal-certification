@@ -15,6 +15,12 @@ defmodule ElixirInternalCertification.AccountsTest do
     test "given the email does NOT exist, does NOT return the user" do
       refute Accounts.get_user_by_email("unknown@example.com")
     end
+
+    test "given the email is EMPTY, raises FunctionClauseError" do
+      assert_raise FunctionClauseError, fn ->
+        Accounts.get_user_by_email(nil)
+      end
+    end
   end
 
   describe "get_user_by_email_and_password/2" do
@@ -33,6 +39,12 @@ defmodule ElixirInternalCertification.AccountsTest do
       user = user_fixture()
       refute Accounts.get_user_by_email_and_password(user.email, "invalid")
     end
+
+    test "given the email and password are EMPTY, raises FunctionClauseError" do
+      assert_raise FunctionClauseError, fn ->
+        Accounts.get_user_by_email_and_password(nil, nil)
+      end
+    end
   end
 
   describe "get_user!/1" do
@@ -44,6 +56,12 @@ defmodule ElixirInternalCertification.AccountsTest do
     test "given ID is INVALID, raises Ecto.NoResultsError" do
       assert_raise Ecto.NoResultsError, fn ->
         Accounts.get_user!(-1)
+      end
+    end
+
+    test "given ID is EMPTY, raises ArgumentError" do
+      assert_raise ArgumentError, fn ->
+        Accounts.get_user!(nil)
       end
     end
   end
