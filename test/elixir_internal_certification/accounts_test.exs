@@ -11,8 +11,7 @@ defmodule ElixirInternalCertification.AccountsTest do
       password = valid_user_password()
       %{id: id} = user = insert(:user, password: password)
 
-      assert %User{id: ^id} =
-               Accounts.get_user_by_email_and_password(user.email, password)
+      assert %User{id: ^id} = Accounts.get_user_by_email_and_password(user.email, password)
     end
 
     test "given the email does NOT exist, does NOT return the user" do
