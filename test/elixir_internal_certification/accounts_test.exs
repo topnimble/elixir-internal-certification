@@ -13,7 +13,7 @@ defmodule ElixirInternalCertification.AccountsTest do
     end
 
     test "given the email does NOT exist, does NOT return the user" do
-      refute Accounts.get_user_by_email("unknown@example.com")
+      assert Accounts.get_user_by_email("unknown@example.com") == nil
     end
 
     test "given the email is nil, raises FunctionClauseError" do
@@ -33,12 +33,12 @@ defmodule ElixirInternalCertification.AccountsTest do
     end
 
     test "given the email does NOT exist, does NOT return the user" do
-      refute Accounts.get_user_by_email_and_password("unknown@example.com", "hello world!")
+      assert Accounts.get_user_by_email_and_password("unknown@example.com", "hello world!") == nil
     end
 
     test "given the password is NOT valid, does NOT return the user" do
       user = insert(:user)
-      refute Accounts.get_user_by_email_and_password(user.email, "invalid")
+      assert Accounts.get_user_by_email_and_password(user.email, "invalid") == nil
     end
 
     test "given the email and password are nil, raises FunctionClauseError" do
@@ -170,12 +170,12 @@ defmodule ElixirInternalCertification.AccountsTest do
     end
 
     test "given an INVALID token, does NOT return user for invalid token" do
-      refute Accounts.get_user_by_session_token("oops")
+      assert Accounts.get_user_by_session_token("oops") == nil
     end
 
     test "given an EXPIRED token, does NOT return user for expired token", %{token: token} do
       {1, nil} = Repo.update_all(UserToken, set: [inserted_at: ~N[2020-01-01 00:00:00]])
-      refute Accounts.get_user_by_session_token(token)
+      assert Accounts.get_user_by_session_token(token) == nil
     end
   end
 
@@ -184,13 +184,13 @@ defmodule ElixirInternalCertification.AccountsTest do
       user = insert(:user)
       token = Accounts.generate_user_session_token(user)
       assert Accounts.delete_session_token(token) == :ok
-      refute Accounts.get_user_by_session_token(token)
+      assert Accounts.get_user_by_session_token(token) == nil
     end
   end
 
   describe "inspect/2" do
     test "given a password, does NOT include password" do
-      refute inspect(%User{password: "123456"}) =~ "password: \"123456\""
+      assert inspect(%User{password: "123456"}) =~ "password: \"123456\"" == false
     end
   end
 end
