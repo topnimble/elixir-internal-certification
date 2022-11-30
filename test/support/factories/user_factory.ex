@@ -8,7 +8,7 @@ defmodule ElixirInternalCertification.UserFactory do
         password = attrs[:password] || generate_strong_password()
 
         user = %User{
-          email: Faker.Internet.email(),
+          email: sequence(:email, &"#{Faker.Internet.user_name()}#{&1}@nimblehq.co"),
           password: password,
           hashed_password: Bcrypt.hash_pwd_salt(password)
         }
