@@ -128,7 +128,7 @@ defmodule ElixirInternalCertificationWeb.UserAuthTest do
   end
 
   describe "redirect_if_user_is_authenticated/2" do
-    test "given an authenticated user, redirects", %{conn: conn, user: user} do
+    test "given an authenticated user, redirects to the root page", %{conn: conn, user: user} do
       conn = conn |> assign(:current_user, user) |> UserAuth.redirect_if_user_is_authenticated([])
       assert conn.halted
       assert redirected_to(conn) == "/"
@@ -142,7 +142,7 @@ defmodule ElixirInternalCertificationWeb.UserAuthTest do
   end
 
   describe "require_authenticated_user/2" do
-    test "given an unauthenticated user, redirects", %{conn: conn} do
+    test "given an unauthenticated user, redirects to the log in page", %{conn: conn} do
       conn = conn |> fetch_flash() |> UserAuth.require_authenticated_user([])
       assert conn.halted
       assert redirected_to(conn) == Routes.user_session_path(conn, :new)

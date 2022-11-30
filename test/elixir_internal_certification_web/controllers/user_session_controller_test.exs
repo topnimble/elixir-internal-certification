@@ -15,7 +15,7 @@ defmodule ElixirInternalCertificationWeb.UserSessionControllerTest do
       assert response =~ "Register</a>"
     end
 
-    test "given an authenticated user, redirects", %{conn: conn, user: user} do
+    test "given an authenticated user, redirects to the root page", %{conn: conn, user: user} do
       conn = conn |> log_in_user(user) |> get(Routes.user_session_path(conn, :new))
       assert redirected_to(conn) == "/"
     end

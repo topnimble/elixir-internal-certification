@@ -12,7 +12,7 @@ defmodule ElixirInternalCertificationWeb.UserRegistrationControllerTest do
       assert response =~ "Register</a>"
     end
 
-    test "given an authenticated user, redirects", %{conn: conn} do
+    test "given an authenticated user, redirects to the root page", %{conn: conn} do
       conn = conn |> log_in_user(insert(:user)) |> get(Routes.user_registration_path(conn, :new))
       assert redirected_to(conn) == "/"
     end
