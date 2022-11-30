@@ -19,7 +19,10 @@ defmodule ElixirInternalCertificationWeb.UserAuthTest do
   end
 
   describe "log_in_user/3" do
-    test "given an unauthenticated user, stores the user token in the session", %{conn: conn, user: user} do
+    test "given an unauthenticated user, stores the user token in the session", %{
+      conn: conn,
+      user: user
+    } do
       conn = UserAuth.log_in_user(conn, user)
       assert token = get_session(conn, :user_token)
       assert get_session(conn, :live_socket_id) == "users_sessions:#{Base.url_encode64(token)}"
@@ -27,17 +30,26 @@ defmodule ElixirInternalCertificationWeb.UserAuthTest do
       assert Accounts.get_user_by_session_token(token)
     end
 
-    test "given an unauthenticated user, clears everything previously stored in the session", %{conn: conn, user: user} do
+    test "given an unauthenticated user, clears everything previously stored in the session", %{
+      conn: conn,
+      user: user
+    } do
       conn = conn |> put_session(:to_be_removed, "value") |> UserAuth.log_in_user(user)
       assert get_session(conn, :to_be_removed) == nil
     end
 
-    test "given an unauthenticated user, redirects to the configured path", %{conn: conn, user: user} do
+    test "given an unauthenticated user, redirects to the configured path", %{
+      conn: conn,
+      user: user
+    } do
       conn = conn |> put_session(:user_return_to, "/hello") |> UserAuth.log_in_user(user)
       assert redirected_to(conn) == "/hello"
     end
 
-    test "given an unauthenticated user, writes a cookie if remember_me is configured", %{conn: conn, user: user} do
+    test "given an unauthenticated user, writes a cookie if remember_me is configured", %{
+      conn: conn,
+      user: user
+    } do
       conn = conn |> fetch_cookies() |> UserAuth.log_in_user(user, %{"remember_me" => "true"})
       assert get_session(conn, :user_token) == conn.cookies[@remember_me_cookie]
 

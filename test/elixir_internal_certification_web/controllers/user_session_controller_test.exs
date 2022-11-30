@@ -66,7 +66,10 @@ defmodule ElixirInternalCertificationWeb.UserSessionControllerTest do
       assert redirected_to(conn) == "/foo/bar"
     end
 
-    test "given INVALID data, emits error message with invalid credentials", %{conn: conn, user: user} do
+    test "given INVALID data, emits error message with invalid credentials", %{
+      conn: conn,
+      user: user
+    } do
       conn =
         post(conn, Routes.user_session_path(conn, :create), %{
           "user" => %{"email" => user.email, "password" => "invalid_password"}
