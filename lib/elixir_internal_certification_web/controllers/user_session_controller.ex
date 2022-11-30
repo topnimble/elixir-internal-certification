@@ -1,7 +1,7 @@
 defmodule ElixirInternalCertificationWeb.UserSessionController do
   use ElixirInternalCertificationWeb, :controller
 
-  alias ElixirInternalCertification.Accounts
+  alias ElixirInternalCertification.Account.Accounts
   alias ElixirInternalCertificationWeb.UserAuth
 
   def new(conn, _params), do: render(conn, "new.html", error_message: nil)

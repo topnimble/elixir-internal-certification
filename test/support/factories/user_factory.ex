@@ -1,5 +1,5 @@
 defmodule ElixirInternalCertification.UserFactory do
-  alias ElixirInternalCertification.Accounts.User
+  alias ElixirInternalCertification.Account.Schemas.User
   alias Faker.Blockchain.Bitcoin, as: FakerBitcoin
 
   defmacro __using__(_opts) do

@@ -2,7 +2,7 @@ defmodule ElixirInternalCertificationWeb.UserAuth do
   import Plug.Conn
   import Phoenix.Controller
 
-  alias ElixirInternalCertification.Accounts
+  alias ElixirInternalCertification.Account.Accounts
   alias ElixirInternalCertificationWeb.Router.Helpers, as: Routes
 
   # Make the remember me cookie valid for 60 days.

@@ -1,4 +1,4 @@
-defmodule ElixirInternalCertification.Accounts.User do
+defmodule ElixirInternalCertification.Account.Schemas.User do
   use Ecto.Schema
   import Ecto.Changeset
 
@@ -42,7 +42,7 @@ defmodule ElixirInternalCertification.Accounts.User do
   `Bcrypt.no_user_verify/0` to avoid timing attacks.
   """
   def valid_password?(
-        %ElixirInternalCertification.Accounts.User{hashed_password: hashed_password},
+        %ElixirInternalCertification.Account.Schemas.User{hashed_password: hashed_password},
         password
       )
       when is_binary(hashed_password) and byte_size(password) > 0,

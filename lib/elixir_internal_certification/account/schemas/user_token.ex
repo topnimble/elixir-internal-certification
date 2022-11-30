@@ -1,7 +1,7 @@
-defmodule ElixirInternalCertification.Accounts.UserToken do
+defmodule ElixirInternalCertification.Account.Schemas.UserToken do
   use Ecto.Schema
   import Ecto.Query
-  alias ElixirInternalCertification.Accounts.UserToken
+  alias ElixirInternalCertification.Account.Schemas.UserToken
 
   @rand_size 32
 
@@ -13,7 +13,7 @@ defmodule ElixirInternalCertification.Accounts.UserToken do
     field :token, :binary
     field :context, :string
     field :sent_to, :string
-    belongs_to :user, ElixirInternalCertification.Accounts.User
+    belongs_to :user, ElixirInternalCertification.Account.Schemas.User
 
     timestamps(updated_at: false)
   end

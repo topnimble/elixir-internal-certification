@@ -1,10 +1,10 @@
-defmodule ElixirInternalCertification.AccountsTest do
+defmodule ElixirInternalCertification.Account.AccountsTest do
   use ElixirInternalCertification.DataCase, async: true
 
   import ElixirInternalCertification.AccountsFixtures
 
-  alias ElixirInternalCertification.Accounts
-  alias ElixirInternalCertification.Accounts.{User, UserToken}
+  alias ElixirInternalCertification.Account.Accounts
+  alias ElixirInternalCertification.Account.Schemas.{User, UserToken}
 
   describe "get_user_by_email_and_password/2" do
     test "given valid email and password, returns the user" do

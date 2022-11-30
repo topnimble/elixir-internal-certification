@@ -1,8 +1,8 @@
 defmodule ElixirInternalCertificationWeb.UserRegistrationController do
   use ElixirInternalCertificationWeb, :controller
 
-  alias ElixirInternalCertification.Accounts
-  alias ElixirInternalCertification.Accounts.User
+  alias ElixirInternalCertification.Account.Accounts
+  alias ElixirInternalCertification.Account.Schemas.User
   alias ElixirInternalCertificationWeb.UserAuth
 
   def new(conn, _params) do

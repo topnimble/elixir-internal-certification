@@ -1,11 +1,11 @@
-defmodule ElixirInternalCertification.Accounts do
+defmodule ElixirInternalCertification.Account.Accounts do
   @moduledoc """
   The Accounts context.
   """
 
   import Ecto.Query, warn: false
 
-  alias ElixirInternalCertification.Accounts.{User, UserToken}
+  alias ElixirInternalCertification.Account.Schemas.{User, UserToken}
   alias ElixirInternalCertification.Repo
 
   ## Database getters

@@ -1,7 +1,7 @@
 defmodule ElixirInternalCertificationWeb.UserAuthTest do
   use ElixirInternalCertificationWeb.ConnCase, async: true
 
-  alias ElixirInternalCertification.Accounts
+  alias ElixirInternalCertification.Account.Accounts
   alias ElixirInternalCertificationWeb.UserAuth
 
   @remember_me_cookie "_elixir_internal_certification_web_user_remember_me"
