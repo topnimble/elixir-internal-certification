@@ -1,17 +1,14 @@
 defmodule ElixirInternalCertification.Account.AccountsTest do
   use ElixirInternalCertification.DataCase, async: true
 
-  import ElixirInternalCertification.AccountsFixtures
-
   alias ElixirInternalCertification.Account.Accounts
   alias ElixirInternalCertification.Account.Schemas.{User, UserToken}
 
   describe "get_user_by_email_and_password/2" do
     test "given valid email and password, returns the user" do
-      password = valid_user_password()
-      %{id: id} = user = insert(:user, password: password)
+      %{id: id} = user = insert(:user)
 
-      assert %User{id: ^id} = Accounts.get_user_by_email_and_password(user.email, password)
+      assert %User{id: ^id} = Accounts.get_user_by_email_and_password(user.email, user.password)
     end
 
     test "given the email does NOT exist, returns nil" do
@@ -32,8 +29,8 @@ defmodule ElixirInternalCertification.Account.AccountsTest do
 
   describe "register_user/1" do
     test "given a VALID email, returns a valid changeset" do
-      email = unique_user_email()
-      {:ok, user} = Accounts.register_user(params_for(:user, email: email))
+      %{email: email} = params = params_for(:user)
+      {:ok, user} = Accounts.register_user(params)
       assert user.email == email
       assert is_binary(user.hashed_password)
       assert is_nil(user.confirmed_at)
@@ -78,13 +75,12 @@ defmodule ElixirInternalCertification.Account.AccountsTest do
 
   describe "change_user_registration/2" do
     test "given valid email and password, returns a valid changeset" do
-      email = unique_user_email()
-      password = valid_user_password()
+      %{email: email, password: password} = params = params_for(:user)
 
       changeset =
         Accounts.change_user_registration(
           %User{},
-          params_for(:user, email: email, password: password)
+          params
         )
 
       assert changeset.valid?

@@ -1,8 +1,6 @@
 defmodule ElixirInternalCertificationWeb.UserRegistrationControllerTest do
   use ElixirInternalCertificationWeb.ConnCase, async: true
 
-  import ElixirInternalCertification.AccountsFixtures
-
   describe "GET /users/register" do
     test "given an unauthenticated user, renders registration page", %{conn: conn} do
       conn = get(conn, Routes.user_registration_path(conn, :new))
@@ -20,11 +18,11 @@ defmodule ElixirInternalCertificationWeb.UserRegistrationControllerTest do
 
   describe "POST /users/register" do
     test "given valid data, creates account and logs the user in", %{conn: conn} do
-      email = unique_user_email()
+      %{email: email} = params = params_for(:user)
 
       conn =
         post(conn, Routes.user_registration_path(conn, :create), %{
-          "user" => params_for(:user, email: email)
+          "user" => params
         })
 
       assert get_session(conn, :user_token)
