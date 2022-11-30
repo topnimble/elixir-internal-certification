@@ -24,7 +24,7 @@ defmodule ElixirInternalCertificationWeb.UserRegistrationControllerTest do
 
       conn =
         post(conn, Routes.user_registration_path(conn, :create), %{
-          "user" => valid_user_attributes(email: email)
+          "user" => params_for(:user, email: email)
         })
 
       assert get_session(conn, :user_token)

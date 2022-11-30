@@ -7,11 +7,15 @@ defmodule ElixirInternalCertification.UserFactory do
       def user_factory(attrs \\ %{}) do
         password = attrs[:password] || generate_strong_password()
 
-        %User{
+        user = %User{
           email: Faker.Internet.email(),
           password: password,
           hashed_password: Bcrypt.hash_pwd_salt(password)
         }
+
+        user
+        |> merge_attributes(attrs)
+        |> evaluate_lazy_attributes()
       end
 
       defp generate_strong_password do
