@@ -1,5 +1,5 @@
 defmodule ElixirInternalCertificationWeb.PageControllerTest do
-  use ElixirInternalCertificationWeb.ConnCase
+  use ElixirInternalCertificationWeb.ConnCase, async: true
 
   test "GET /", %{conn: conn} do
     conn = get(conn, "/")

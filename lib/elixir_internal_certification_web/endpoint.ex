@@ -1,9 +1,8 @@
 defmodule ElixirInternalCertificationWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :elixir_internal_certification
 
-  if Application.compile_env(:elixir_internal_certification, :sql_sandbox) do
-    plug Phoenix.Ecto.SQL.Sandbox
-  end
+  if Application.compile_env(:elixir_internal_certification, :sql_sandbox),
+    do: plug(Phoenix.Ecto.SQL.Sandbox)
 
   # The session will be stored in the cookie and signed,
   # this means its contents can be read but not tampered with.
