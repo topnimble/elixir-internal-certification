@@ -19,6 +19,8 @@ defmodule ElixirInternalCertificationWeb.ConnCase do
 
   import ElixirInternalCertification.Factory
 
+  alias ElixirInternalCertification.Account.Accounts
+
   using do
     quote do
       use ExVCR.Mock, adapter: ExVCR.Adapter.Hackney
@@ -62,7 +64,7 @@ defmodule ElixirInternalCertificationWeb.ConnCase do
   It returns an updated `conn`.
   """
   def log_in_user(conn, user) do
-    token = ElixirInternalCertification.Account.Accounts.generate_user_session_token(user)
+    token = Accounts.generate_user_session_token(user)
 
     conn
     |> Phoenix.ConnTest.init_test_session(%{})
