@@ -19,7 +19,6 @@ defmodule ElixirInternalCertificationWeb.UserRegistrationControllerTest do
   end
 
   describe "POST /users/register" do
-    @tag :capture_log
     test "given valid data, creates account and logs the user in", %{conn: conn} do
       email = unique_user_email()
 
