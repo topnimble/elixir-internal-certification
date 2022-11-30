@@ -1,0 +1,26 @@
+<h1>Show Keyword</h1>
+
+<%= if @live_action in [:edit] do %>
+  <.modal return_to={Routes.keyword_show_path(@socket, :show, @keyword)}>
+    <.live_component
+      module={ElixirInternalCertificationWeb.KeywordLive.FormComponent}
+      id={@keyword.id}
+      title={@page_title}
+      action={@live_action}
+      keyword={@keyword}
+      return_to={Routes.keyword_show_path(@socket, :show, @keyword)}
+    />
+  </.modal>
+<% end %>
+
+<ul>
+
+  <li>
+    <strong>Title:</strong>
+    <%= @keyword.title %>
+  </li>
+
+</ul>
+
+<span><%= live_patch "Edit", to: Routes.keyword_show_path(@socket, :edit, @keyword), class: "button" %></span> |
+<span><%= live_redirect "Back", to: Routes.keyword_index_path(@socket, :index) %></span>
