@@ -1,5 +1,5 @@
 defmodule ElixirInternalCertification.AccountsTest do
-  use ElixirInternalCertification.DataCase
+  use ElixirInternalCertification.DataCase, async: true
 
   import ElixirInternalCertification.AccountsFixtures
 
