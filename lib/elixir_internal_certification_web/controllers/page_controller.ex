@@ -1,7 +1,5 @@
 defmodule ElixirInternalCertificationWeb.PageController do
   use ElixirInternalCertificationWeb, :controller
 
-  def index(conn, _params) do
-    render(conn, "index.html")
-  end
+  def index(conn, _params), do: render(conn, "index.html")
 end

@@ -1,5 +1,5 @@
 defmodule ElixirInternalCertificationWeb.HomePage.ViewHomePageTest do
-  use ElixirInternalCertificationWeb.FeatureCase
+  use ElixirInternalCertificationWeb.FeatureCase, async: false
 
   feature "view home page", %{session: session} do
     visit(session, Routes.page_path(ElixirInternalCertificationWeb.Endpoint, :index))

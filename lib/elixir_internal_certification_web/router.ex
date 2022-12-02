@@ -1,6 +1,8 @@
 defmodule ElixirInternalCertificationWeb.Router do
   use ElixirInternalCertificationWeb, :router
 
+  import ElixirInternalCertificationWeb.UserAuth
+
   alias ElixirInternalCertificationWeb.RouterHelper
 
   pipeline :browser do
@@ -10,6 +12,7 @@ defmodule ElixirInternalCertificationWeb.Router do
     plug :put_root_layout, {ElixirInternalCertificationWeb.LayoutView, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug :fetch_current_user
   end
 
   # coveralls-ignore-start
@@ -61,5 +64,26 @@ defmodule ElixirInternalCertificationWeb.Router do
 
       forward "/mailbox", Plug.Swoosh.MailboxPreview
     end
+  end
+
+  ## Authentication routes
+
+  scope "/", ElixirInternalCertificationWeb do
+    pipe_through [:browser, :redirect_if_user_is_authenticated]
+
+    get "/users/register", UserRegistrationController, :new
+    post "/users/register", UserRegistrationController, :create
+    get "/users/log_in", UserSessionController, :new
+    post "/users/log_in", UserSessionController, :create
+  end
+
+  scope "/", ElixirInternalCertificationWeb do
+    pipe_through [:browser, :require_authenticated_user]
+  end
+
+  scope "/", ElixirInternalCertificationWeb do
+    pipe_through [:browser]
+
+    delete "/users/log_out", UserSessionController, :delete
   end
 end

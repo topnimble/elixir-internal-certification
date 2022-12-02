@@ -162,7 +162,16 @@
              ~w/shortdoc moduledoc behaviour use import alias require module_attribute defstruct callback public_fun private_fun/a,
            ignore: ~w/callback_impl/a
          ]},
-        {Credo.Check.Consistency.MultiAliasImportRequireUse, []},
+        {Credo.Check.Consistency.MultiAliasImportRequireUse,
+         files: %{
+           excluded: [
+             "lib/elixir_internal_certification.ex",
+             "lib/elixir_internal_certification_web.ex",
+             "test/support/conn_case.ex",
+             "test/support/data_case.ex",
+             "test/support/feature_case.ex"
+           ]
+         }},
         {Credo.Check.Consistency.UnusedVariableNames, false},
         {Credo.Check.Design.DuplicatedCode, files: %{excluded: ["**/*_test.exs"]}},
         {Credo.Check.Readability.AliasAs, false},
@@ -179,11 +188,15 @@
         {Credo.Check.Refactor.VariableRebinding, []},
         {Credo.Check.Warning.LeakyEnvironment, []},
         {Credo.Check.Warning.MapGetUnsafePass, []},
-        {Credo.Check.Warning.UnsafeToAtom, []}
+        {Credo.Check.Warning.UnsafeToAtom, []},
 
         #
         # Custom checks can be created using `mix credo.gen.check`.
         #
+        {CompassCredoPlugin.Check.DefdelegateOrder, []},
+        {CompassCredoPlugin.Check.DoSingleExpression, []},
+        {CompassCredoPlugin.Check.RepeatingFragments, []},
+        {CompassCredoPlugin.Check.SingleModuleFile, []}
       ]
     }
   ]
