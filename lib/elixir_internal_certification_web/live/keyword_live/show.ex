@@ -1,7 +1,7 @@
 defmodule ElixirInternalCertificationWeb.KeywordLive.Show do
   use ElixirInternalCertificationWeb, :live_view
 
-  alias ElixirInternalCertification.Keywords
+  alias ElixirInternalCertification.Keyword.Keywords
 
   @impl true
   def mount(_params, _session, socket) do

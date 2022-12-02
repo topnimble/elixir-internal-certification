@@ -1,10 +1,10 @@
-defmodule ElixirInternalCertification.KeywordsTest do
+defmodule ElixirInternalCertification.Keyword.KeywordsTest do
   use ElixirInternalCertification.DataCase
 
-  alias ElixirInternalCertification.Keywords
+  alias ElixirInternalCertification.Keyword.Keywords
 
   describe "keywords" do
-    alias ElixirInternalCertification.Keywords.Keyword
+    alias ElixirInternalCertification.Keyword.Schemas.Keyword
 
     import ElixirInternalCertification.KeywordsFixtures
 

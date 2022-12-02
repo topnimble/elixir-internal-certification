@@ -1,4 +1,4 @@
-defmodule ElixirInternalCertification.Keywords do
+defmodule ElixirInternalCertification.Keyword.Keywords do
   @moduledoc """
   The Keywords context.
   """
@@ -6,7 +6,7 @@ defmodule ElixirInternalCertification.Keywords do
   import Ecto.Query, warn: false
 
   alias ElixirInternalCertification.Account.Schemas.User
-  alias ElixirInternalCertification.Keywords.Keyword
+  alias ElixirInternalCertification.Keyword.Schemas.Keyword
   alias ElixirInternalCertification.Repo
   alias NimbleCSV.RFC4180, as: CSV
 

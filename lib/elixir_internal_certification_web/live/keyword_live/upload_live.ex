@@ -1,7 +1,7 @@
 defmodule ElixirInternalCertificationWeb.UploadLive do
   use ElixirInternalCertificationWeb, :live_view
 
-  alias ElixirInternalCertification.Keywords
+  alias ElixirInternalCertification.Keyword.Keywords
   alias ElixirInternalCertification.Account.Accounts
 
   @impl Phoenix.LiveView

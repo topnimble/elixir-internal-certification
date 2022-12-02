@@ -1,7 +1,7 @@
 defmodule ElixirInternalCertificationWeb.KeywordLive.FormComponent do
   use ElixirInternalCertificationWeb, :live_component
 
-  alias ElixirInternalCertification.Keywords
+  alias ElixirInternalCertification.Keyword.Keywords
 
   @impl true
   def update(%{keyword: keyword} = assigns, socket) do

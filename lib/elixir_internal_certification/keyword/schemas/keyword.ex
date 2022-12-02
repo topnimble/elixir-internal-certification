@@ -1,4 +1,4 @@
-defmodule ElixirInternalCertification.Keywords.Keyword do
+defmodule ElixirInternalCertification.Keyword.Schemas.Keyword do
   use Ecto.Schema
 
   import Ecto.Changeset

@@ -1,7 +1,7 @@
 defmodule ElixirInternalCertification.KeywordsFixtures do
   @moduledoc """
   This module defines test helpers for creating
-  entities via the `ElixirInternalCertification.Keywords` context.
+  entities via the `ElixirInternalCertification.Keyword.Keywords` context.
   """
 
   @doc """
@@ -13,7 +13,7 @@ defmodule ElixirInternalCertification.KeywordsFixtures do
       |> Enum.into(%{
         title: "some title"
       })
-      |> ElixirInternalCertification.Keywords.create_keyword()
+      |> ElixirInternalCertification.Keyword.Keywords.create_keyword()
 
     keyword
   end
