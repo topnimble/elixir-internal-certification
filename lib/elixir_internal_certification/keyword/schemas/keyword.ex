@@ -1,3 +1,4 @@
+# credo:disable-for-next-line CompassCredoPlugin.Check.RepeatingFragments
 defmodule ElixirInternalCertification.Keyword.Schemas.Keyword do
   use Ecto.Schema
 

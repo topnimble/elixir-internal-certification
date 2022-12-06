@@ -19,7 +19,8 @@ defmodule ElixirInternalCertificationWeb.UploadLive do
   def handle_event("validate", _params, socket), do: {:noreply, socket}
 
   @impl Phoenix.LiveView
-  def handle_event("cancel-upload", %{"ref" => ref}, socket), do: {:noreply, cancel_upload(socket, :keyword, ref)}
+  def handle_event("cancel-upload", %{"ref" => ref}, socket),
+    do: {:noreply, cancel_upload(socket, :keyword, ref)}
 
   @impl Phoenix.LiveView
   def handle_event("save", _params, socket) do
