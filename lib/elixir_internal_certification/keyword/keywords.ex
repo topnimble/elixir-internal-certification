@@ -72,5 +72,4 @@ defmodule ElixirInternalCertification.Keyword.Keywords do
     end)
     |> Stream.run()
   end
-
 end

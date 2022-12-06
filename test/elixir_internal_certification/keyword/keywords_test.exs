@@ -69,7 +69,8 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
     test "given a path and a callback" do
       path = Path.join([@fixture_path, "/assets/keywords.csv"])
 
-      logs = capture_log(fn ->
+      logs =
+        capture_log(fn ->
           Keywords.parse_csv!(path, fn line_of_keywords ->
             keyword = List.first(line_of_keywords)
             Logger.info(keyword)

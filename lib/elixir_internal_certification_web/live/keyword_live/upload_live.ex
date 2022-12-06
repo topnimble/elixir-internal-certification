@@ -10,9 +10,9 @@ defmodule ElixirInternalCertificationWeb.UploadLive do
     socket = assign_new(socket, :current_user, fn -> user end)
 
     {:ok,
-    socket
-    |> assign(:uploaded_files, [])
-    |> allow_upload(:keyword, accept: ~w(.csv), max_entries: 1, auto_upload: true)}
+     socket
+     |> assign(:uploaded_files, [])
+     |> allow_upload(:keyword, accept: ~w(.csv), max_entries: 1, auto_upload: true)}
   end
 
   @impl Phoenix.LiveView
