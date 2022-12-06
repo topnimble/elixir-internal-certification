@@ -1,59 +1,114 @@
 defmodule ElixirInternalCertification.Keyword.KeywordsTest do
   use ElixirInternalCertification.DataCase
 
+  import ExUnit.CaptureLog
+
+  alias ElixirInternalCertification.Account.Schemas.User
+  alias ElixirInternalCertification.Keyword.Schemas.Keyword
   alias ElixirInternalCertification.Keyword.Keywords
 
-  describe "keywords" do
-    alias ElixirInternalCertification.Keyword.Schemas.Keyword
+  require Logger
 
-    import ElixirInternalCertification.KeywordsFixtures
+  @fixture_path "test/support/fixtures"
 
+  describe "create_keyword/2" do
+    @valid_attrs %{title: "some title"}
     @invalid_attrs %{title: nil}
 
-    test "list_keywords/0 returns all keywords" do
-      keyword = keyword_fixture()
-      assert Keywords.list_keywords() == [keyword]
-    end
+    test "given valid attributes, returns {:ok, %Keyword{}}" do
+      %User{id: user_id} = user = insert(:user)
 
-    test "get_keyword!/1 returns the keyword with given id" do
-      keyword = keyword_fixture()
-      assert Keywords.get_keyword!(keyword.id) == keyword
-    end
-
-    test "create_keyword/1 with valid data creates a keyword" do
-      valid_attrs = %{title: "some title"}
-
-      assert {:ok, %Keyword{} = keyword} = Keywords.create_keyword(valid_attrs)
+      assert {:ok, %Keyword{} = keyword} = Keywords.create_keyword(user, @valid_attrs)
       assert keyword.title == "some title"
+      assert keyword.user_id == user_id
     end
 
-    test "create_keyword/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Keywords.create_keyword(@invalid_attrs)
+    test "given INVALID attributes, returns {:error, %Ecto.Changeset{}}" do
+      user = insert(:user)
+
+      assert {:error, %Ecto.Changeset{}} = Keywords.create_keyword(user, @invalid_attrs)
     end
 
-    test "update_keyword/2 with valid data updates the keyword" do
-      keyword = keyword_fixture()
-      update_attrs = %{title: "some updated title"}
+    test "given a user is nil, raises FunctionClauseError" do
+      user = nil
 
-      assert {:ok, %Keyword{} = keyword} = Keywords.update_keyword(keyword, update_attrs)
-      assert keyword.title == "some updated title"
+      assert_raise FunctionClauseError, fn ->
+        Keywords.create_keyword(user, @valid_attrs)
+      end
+    end
+  end
+
+  describe "save_keyword_to_database/2" do
+    @valid_attrs "some title"
+    @invalid_attrs nil
+
+    test "given valid attributes, returns {:ok, %Keyword{}}" do
+      %User{id: user_id} = user = insert(:user)
+
+      assert {:ok, %Keyword{} = keyword} = Keywords.save_keyword_to_database(user, @valid_attrs)
+      assert keyword.title == "some title"
+      assert keyword.user_id == user_id
     end
 
-    test "update_keyword/2 with invalid data returns error changeset" do
-      keyword = keyword_fixture()
-      assert {:error, %Ecto.Changeset{}} = Keywords.update_keyword(keyword, @invalid_attrs)
-      assert keyword == Keywords.get_keyword!(keyword.id)
+    test "given INVALID attributes, returns {:error, %Ecto.Changeset{}}" do
+      user = insert(:user)
+
+      assert {:error, %Ecto.Changeset{}} = Keywords.save_keyword_to_database(user, @invalid_attrs)
     end
 
-    test "delete_keyword/1 deletes the keyword" do
-      keyword = keyword_fixture()
-      assert {:ok, %Keyword{}} = Keywords.delete_keyword(keyword)
-      assert_raise Ecto.NoResultsError, fn -> Keywords.get_keyword!(keyword.id) end
+    test "given a user is nil, raises FunctionClauseError" do
+      user = nil
+
+      assert_raise FunctionClauseError, fn ->
+        Keywords.save_keyword_to_database(user, @valid_attrs)
+      end
+    end
+  end
+
+  describe "parse_csv!/2" do
+    test "given a path and a callback" do
+      path = Path.join([@fixture_path, "/assets/keywords.csv"])
+
+      logs = capture_log(fn ->
+          Keywords.parse_csv!(path, fn line_of_keywords ->
+            keyword = List.first(line_of_keywords)
+            Logger.info(keyword)
+          end)
+        end)
+
+      assert logs =~ "first keyword"
+      assert logs =~ "second keyword"
+      assert logs =~ "third keyword"
     end
 
-    test "change_keyword/1 returns a keyword changeset" do
-      keyword = keyword_fixture()
-      assert %Ecto.Changeset{} = Keywords.change_keyword(keyword)
+    test "given a callback is nil, raises FunctionClauseError" do
+      path = Path.join([@fixture_path, "/assets/keywords.csv"])
+
+      assert_raise FunctionClauseError, fn ->
+        Keywords.parse_csv!(path, nil)
+      end
+    end
+
+    test "given a path is nil, raises FunctionClauseError" do
+      path = nil
+
+      assert_raise FunctionClauseError, fn ->
+        Keywords.parse_csv!(path, fn line_of_keywords ->
+          keyword = List.first(line_of_keywords)
+          Logger.info(keyword)
+        end)
+      end
+    end
+
+    test "given a path which file does NOT exist, raises File.Error" do
+      path = Path.join([@fixture_path, "/assets/non_existence_file.csv"])
+
+      assert_raise File.Error, fn ->
+        Keywords.parse_csv!(path, fn line_of_keywords ->
+          keyword = List.first(line_of_keywords)
+          Logger.info(keyword)
+        end)
+      end
     end
   end
 end

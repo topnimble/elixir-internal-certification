@@ -51,60 +51,19 @@ defmodule ElixirInternalCertification.Keyword.Keywords do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_keyword(user, attrs \\ %{}) do
+  def create_keyword(%User{} = user, attrs \\ %{}) do
     user
     |> Keyword.changeset(%Keyword{}, attrs)
     |> Repo.insert()
   end
 
-  @doc """
-  Updates a keyword.
-
-  ## Examples
-
-      iex> update_keyword(keyword, %{field: new_value})
-      {:ok, %Keyword{}}
-
-      iex> update_keyword(keyword, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def update_keyword(%Keyword{} = keyword, attrs) do
-    keyword
-    |> Keyword.changeset(attrs)
-    |> Repo.update()
+  def save_keyword_to_database(%User{} = user, keyword) do
+    create_keyword(user, %{
+      title: keyword
+    })
   end
 
-  @doc """
-  Deletes a keyword.
-
-  ## Examples
-
-      iex> delete_keyword(keyword)
-      {:ok, %Keyword{}}
-
-      iex> delete_keyword(keyword)
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def delete_keyword(%Keyword{} = keyword) do
-    Repo.delete(keyword)
-  end
-
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking keyword changes.
-
-  ## Examples
-
-      iex> change_keyword(keyword)
-      %Ecto.Changeset{data: %Keyword{}}
-
-  """
-  def change_keyword(%Keyword{} = keyword, attrs \\ %{}) do
-    Keyword.changeset(keyword, attrs)
-  end
-
-  def parse_csv!(path, callback) do
+  def parse_csv!(path, callback) when is_binary(path) and is_function(callback) do
     path
     |> File.stream!(read_ahead: 100)
     |> CSV.parse_stream
@@ -114,9 +73,4 @@ defmodule ElixirInternalCertification.Keyword.Keywords do
     |> Stream.run
   end
 
-  def save_keyword_to_database(%User{} = user, keyword) do
-    create_keyword(user, %{
-      title: keyword
-    })
-  end
 end

@@ -1,33 +1,33 @@
 <%# use phx-drop-target with the upload ref to enable file drag and drop %>
 <section phx-drop-target={@uploads.keyword.ref}>
 
-<form id="upload-form" phx-submit="save" phx-change="validate">
-  <%= live_file_input @uploads.keyword %>
-  <button type="submit">Upload</button>
-</form>
+  <form id="upload-form" phx-submit="save" phx-change="validate">
+    <div class="d-inline-flex">
+      <%= live_file_input @uploads.keyword, class: "form-control" %>
+      <button class="btn btn-primary" type="submit">Upload</button>
+    </div>
+  </form>
 
-<%# render each keyword entry %>
-<%= for entry <- @uploads.keyword.entries do %>
-  <article class="upload-entry">
+  <%# render each keyword entry %>
+  <%= for entry <- @uploads.keyword.entries do %>
+    <article class="upload-entry">
 
-    <figure>
-      <%# Phoenix.LiveView.Helpers.live_img_preview/2 renders a client-side preview %>
-      <%= live_img_preview entry %>
-      <figcaption><%= entry.client_name %></figcaption>
-    </figure>
+      <figure>
+        <figcaption><%= entry.client_name %></figcaption>
+      </figure>
 
-    <%# entry.progress will update automatically for in-flight entries %>
-    <progress value={entry.progress} max="100"> <%= entry.progress %>% </progress>
+      <%# entry.progress will update automatically for in-flight entries %>
+      <progress value={entry.progress} max="100"> <%= entry.progress %>% </progress>
 
-    <%# a regular click event whose handler will invoke Phoenix.LiveView.cancel_upload/3 %>
-    <button phx-click="cancel-upload" phx-value-ref={entry.ref} aria-label="cancel">&times;</button>
+      <%# a regular click event whose handler will invoke Phoenix.LiveView.cancel_upload/3 %>
+      <button class="btn btn-primary" phx-click="cancel-upload" phx-value-ref={entry.ref} aria-label="cancel">&times;</button>
 
-    <%# Phoenix.LiveView.Helpers.upload_errors/2 returns a list of error atoms %>
-    <%= for err <- upload_errors(@uploads.keyword, entry) do %>
-      <p class="alert alert-danger"><%= error_to_string(err) %></p>
-    <% end %>
+      <%# Phoenix.LiveView.Helpers.upload_errors/2 returns a list of error atoms %>
+      <%= for err <- upload_errors(@uploads.keyword, entry) do %>
+        <p class="alert alert-danger"><%= error_to_string(err) %></p>
+      <% end %>
 
-  </article>
-<% end %>
+    </article>
+  <% end %>
 
 </section>

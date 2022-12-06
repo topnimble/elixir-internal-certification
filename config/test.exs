@@ -36,7 +36,7 @@ config :elixir_internal_certification, ElixirInternalCertification.Mailer,
   adapter: Swoosh.Adapters.Test
 
 # Print only warnings and errors during test
-config :logger, level: :warn
+config :logger, level: :info
 
 config :elixir_internal_certification, Oban, crontab: false, queues: false, plugins: false
 
