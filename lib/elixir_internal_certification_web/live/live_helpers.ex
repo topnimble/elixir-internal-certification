@@ -10,5 +10,8 @@ defmodule ElixirInternalCertificationWeb.LiveHelpers do
     assign_new(socket, :current_user, fn -> user end)
   end
 
-  def get_current_user_from_socket(%Socket{assigns: %{current_user: %User{} = current_user}} = _socket), do: current_user
+  def get_current_user_from_socket(
+        %Socket{assigns: %{current_user: %User{} = current_user}} = _socket
+      ),
+      do: current_user
 end
