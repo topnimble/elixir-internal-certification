@@ -66,11 +66,11 @@ defmodule ElixirInternalCertification.Keyword.Keywords do
   def parse_csv!(path, callback) when is_binary(path) and is_function(callback) do
     path
     |> File.stream!(read_ahead: 100)
-    |> CSV.parse_stream
+    |> CSV.parse_stream()
     |> Stream.map(fn line_of_keywords ->
       callback.(line_of_keywords)
     end)
-    |> Stream.run
+    |> Stream.run()
   end
 
 end

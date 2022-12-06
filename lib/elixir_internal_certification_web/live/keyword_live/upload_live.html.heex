@@ -2,32 +2,35 @@
 <section phx-drop-target={@uploads.keyword.ref}>
 
   <form id="upload-form" phx-submit="save" phx-change="validate">
-    <div class="d-inline-flex">
+    <div class="d-flex flex-column">
       <%= live_file_input @uploads.keyword, class: "form-control" %>
-      <button class="btn btn-primary" type="submit">Upload</button>
-    </div>
-  </form>
 
-  <%# render each keyword entry %>
-  <%= for entry <- @uploads.keyword.entries do %>
-    <article class="upload-entry">
+      <%# render each keyword entry %>
+      <%= for entry <- @uploads.keyword.entries do %>
+        <article class="upload-entry mt-3">
 
-      <figure>
-        <figcaption><%= entry.client_name %></figcaption>
-      </figure>
+          <div>
+            <div><%= entry.client_name %></div>
+          </div>
 
-      <%# entry.progress will update automatically for in-flight entries %>
-      <progress value={entry.progress} max="100"> <%= entry.progress %>% </progress>
+          <%# entry.progress will update automatically for in-flight entries %>
+          <progress value={entry.progress} max="100"> <%= entry.progress %>% </progress>
 
-      <%# a regular click event whose handler will invoke Phoenix.LiveView.cancel_upload/3 %>
-      <button class="btn btn-primary" phx-click="cancel-upload" phx-value-ref={entry.ref} aria-label="cancel">&times;</button>
+          <%# a regular click event whose handler will invoke Phoenix.LiveView.cancel_upload/3 %>
+          <button class="btn btn-primary" phx-click="cancel-upload" phx-value-ref={entry.ref} aria-label="cancel">&times;</button>
 
-      <%# Phoenix.LiveView.Helpers.upload_errors/2 returns a list of error atoms %>
-      <%= for err <- upload_errors(@uploads.keyword, entry) do %>
-        <p class="alert alert-danger"><%= error_to_string(err) %></p>
+          <%# Phoenix.LiveView.Helpers.upload_errors/2 returns a list of error atoms %>
+          <%= for err <- upload_errors(@uploads.keyword, entry) do %>
+            <p class="alert alert-danger"><%= error_to_string(err) %></p>
+          <% end %>
+
+        </article>
       <% end %>
 
-    </article>
-  <% end %>
+      <%= if length(@uploads.keyword.entries) > 0 do %>
+        <button class="btn btn-primary mt-3" type="submit">Upload</button>
+      <% end %>
+    </div>
+  </form>
 
 </section>
