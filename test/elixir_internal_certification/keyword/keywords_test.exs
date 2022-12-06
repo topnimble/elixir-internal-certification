@@ -4,8 +4,8 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
   import ExUnit.CaptureLog
 
   alias ElixirInternalCertification.Account.Schemas.User
-  alias ElixirInternalCertification.Keyword.Schemas.Keyword
   alias ElixirInternalCertification.Keyword.Keywords
+  alias ElixirInternalCertification.Keyword.Schemas.Keyword
 
   require Logger
 

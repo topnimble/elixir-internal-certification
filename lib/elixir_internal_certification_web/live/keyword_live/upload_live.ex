@@ -1,8 +1,8 @@
 defmodule ElixirInternalCertificationWeb.UploadLive do
   use ElixirInternalCertificationWeb, :live_view
 
-  alias ElixirInternalCertification.Keyword.Keywords
   alias ElixirInternalCertification.Account.Accounts
+  alias ElixirInternalCertification.Keyword.Keywords
 
   @impl Phoenix.LiveView
   def mount(_params, session, socket) do
@@ -16,14 +16,10 @@ defmodule ElixirInternalCertificationWeb.UploadLive do
   end
 
   @impl Phoenix.LiveView
-  def handle_event("validate", _params, socket) do
-    {:noreply, socket}
-  end
+  def handle_event("validate", _params, socket), do: {:noreply, socket}
 
   @impl Phoenix.LiveView
-  def handle_event("cancel-upload", %{"ref" => ref}, socket) do
-    {:noreply, cancel_upload(socket, :keyword, ref)}
-  end
+  def handle_event("cancel-upload", %{"ref" => ref}, socket), do: {:noreply, cancel_upload(socket, :keyword, ref)}
 
   @impl Phoenix.LiveView
   def handle_event("save", _params, socket) do
