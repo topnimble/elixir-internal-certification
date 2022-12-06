@@ -1,13 +1,12 @@
 defmodule ElixirInternalCertificationWeb.UploadLive do
   use ElixirInternalCertificationWeb, :live_view
 
-  alias ElixirInternalCertification.Account.Accounts
   alias ElixirInternalCertification.Keyword.Keywords
+  alias ElixirInternalCertificationWeb.LiveHelpers
 
   @impl Phoenix.LiveView
   def mount(_params, session, socket) do
-    user = Accounts.get_user_by_session_token(session["user_token"])
-    socket = assign_new(socket, :current_user, fn -> user end)
+    socket = LiveHelpers.set_current_user_to_socket(socket, session)
 
     {:ok,
      socket
@@ -27,8 +26,9 @@ defmodule ElixirInternalCertificationWeb.UploadLive do
     uploaded_files =
       consume_uploaded_entries(socket, :keyword, fn %{path: path}, _entry ->
         Keywords.parse_csv!(path, fn line_of_keywords ->
+          current_user = LiveHelpers.get_current_user_from_socket(socket)
           keyword = List.first(line_of_keywords)
-          Keywords.save_keyword_to_database(socket.assigns.current_user, keyword)
+          Keywords.save_keyword_to_database(current_user, keyword)
         end)
 
         {:ok, path}
