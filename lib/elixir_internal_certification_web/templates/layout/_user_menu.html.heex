@@ -1,4 +1,4 @@
-<div>
+<div class="user-menu">
   <%= if @current_user do %>
     <div class="dropdown text-end">
       <a
@@ -15,7 +15,7 @@
           <%= link("Log out",
             to: Routes.user_session_path(@conn, :delete),
             method: :delete,
-            class: "dropdown-item"
+            class: "dropdown-item log-out-button"
           ) %>
         </li>
       </ul>
