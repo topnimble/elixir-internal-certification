@@ -6,9 +6,21 @@ defmodule ElixirInternalCertification.Keyword.Keywords do
   import Ecto.Query, warn: false
 
   alias ElixirInternalCertification.Account.Schemas.User
+  alias ElixirInternalCertification.Keyword.Queries.KeywordQuery
   alias ElixirInternalCertification.Keyword.Schemas.Keyword
   alias ElixirInternalCertification.Repo
   alias NimbleCSV.RFC4180, as: CSV
+
+  # @doc """
+  # Returns the list of keywords.
+
+  # ## Examples
+
+  #     iex> list_keywords(%User{})
+  #     [%Keyword{}, ...]
+
+  # """
+  def list_keywords(%User{} = user), do: Repo.all(KeywordQuery.list_keywords(user))
 
   @doc """
   Creates a keyword.
