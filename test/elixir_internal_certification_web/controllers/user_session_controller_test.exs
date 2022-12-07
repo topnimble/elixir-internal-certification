@@ -34,6 +34,7 @@ defmodule ElixirInternalCertificationWeb.UserSessionControllerTest do
       response = html_response(conn_2, 200)
       assert response =~ user.email
       assert response =~ "Log out</a>"
+      assert get_flash(conn_2, :info) =~ "Logged in successfully"
     end
 
     test "given valid data with remember me, logs the user in", %{conn: conn, user: user} do
@@ -48,6 +49,7 @@ defmodule ElixirInternalCertificationWeb.UserSessionControllerTest do
 
       assert conn.resp_cookies["_elixir_internal_certification_web_user_remember_me"]
       assert redirected_to(conn) == "/"
+      assert get_flash(conn, :info) =~ "Logged in successfully"
     end
 
     test "given valid data with return to, logs the user in", %{conn: conn, user: user} do
@@ -62,6 +64,7 @@ defmodule ElixirInternalCertificationWeb.UserSessionControllerTest do
         })
 
       assert redirected_to(conn) == "/foo/bar"
+      assert get_flash(conn, :info) =~ "Logged in successfully"
     end
 
     test "given INVALID data, emits error message with invalid credentials", %{
