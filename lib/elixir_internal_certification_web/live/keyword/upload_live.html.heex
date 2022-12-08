@@ -3,32 +3,32 @@
     <div class="d-flex flex-column">
       <%= live_file_input(@uploads.keyword, class: "form-control") %>
 
-      <%= for entry <- @uploads.keyword.entries do %>
-        <article class="upload-entry mt-3">
-          <div>
-            <div><%= entry.client_name %></div>
-          </div>
-
-          <progress value={entry.progress} max="100"><%= entry.progress %>%</progress>
-
-          <button
-            class="btn btn-primary remove-file-button"
-            phx-click="cancel-upload"
-            phx-value-ref={entry.ref}
-            aria-label="cancel"
-          >
-            &times;
-          </button>
-
-          <%= for err <- upload_errors(@uploads.keyword, entry) do %>
-            <p class="alert alert-danger"><%= error_to_string(err) %></p>
-          <% end %>
-        </article>
-      <% end %>
-
       <%= if length(@uploads.keyword.entries) > 0 do %>
         <button class="btn btn-primary mt-3 upload-button" type="submit">Upload</button>
       <% end %>
     </div>
   </form>
 </section>
+
+<%= for entry <- @uploads.keyword.entries do %>
+  <article class="upload-entry mt-3">
+    <div>
+      <div><%= entry.client_name %></div>
+    </div>
+
+    <progress value={entry.progress} max="100"><%= entry.progress %>%</progress>
+
+    <button
+      class="btn btn-primary remove-file-button"
+      phx-click="cancel-upload"
+      phx-value-ref={entry.ref}
+      aria-label="cancel"
+    >
+      &times;
+    </button>
+
+    <%= for err <- upload_errors(@uploads.keyword, entry) do %>
+      <p class="alert alert-danger"><%= error_to_string(err) %></p>
+    <% end %>
+  </article>
+<% end %>
