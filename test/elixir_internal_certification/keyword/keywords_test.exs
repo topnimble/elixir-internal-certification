@@ -18,15 +18,16 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
 
       insert(:keyword, user: user, title: "first keyword")
       insert(:keyword, user: user, title: "second keyword")
+      insert(:keyword, user: user, title: "third keyword")
       insert(:keyword, user: another_user, title: "another keyword")
 
       keywords = Keywords.list_keywords(user)
 
-      assert length(keywords) == 2
+      assert length(keywords) == 3
 
       assert MapSet.equal?(
                MapSet.new(Enum.map(keywords, fn keyword -> keyword.title end)),
-               MapSet.new(["first keyword", "second keyword"])
+               MapSet.new(["first keyword", "second keyword", "third keyword"])
              ) == true
     end
 
