@@ -9,10 +9,11 @@ defmodule ElixirInternalCertificationWeb.Features.UploadTest do
   @fixture_path "test/support/fixtures"
 
   @selectors %{
-    upload_button: ".upload-button"
+    upload_button: ".upload-button",
+    remove_file_button: ".remove-file-button"
   }
 
-  feature "uploads the CSV file", %{session: session} do
+  feature "chooses the CSV file and uploads", %{session: session} do
     user = insert(:user)
 
     session
@@ -30,5 +31,20 @@ defmodule ElixirInternalCertificationWeb.Features.UploadTest do
              MapSet.new(Enum.map(keywords, fn keyword -> keyword.title end)),
              MapSet.new(["first keyword", "second keyword", "third keyword"])
            ) == true
+  end
+
+  feature "chooses the CSV file and cancels", %{session: session} do
+    user = insert(:user)
+
+    session
+    |> FeatureHelper.authenticated_user(user)
+    |> visit(Routes.upload_path(ElixirInternalCertificationWeb.Endpoint, :index))
+    |> attach_file(Query.file_field("keyword"), path: @fixture_path <> "/assets/keywords.csv")
+    |> click(css(@selectors[:remove_file_button]))
+
+    keywords = Keywords.list_keywords(user)
+
+    assert length(keywords) == 0
+    assert keywords == []
   end
 end
