@@ -2,9 +2,9 @@ defmodule ElixirInternalCertificationWeb.LiveHelpersTest do
   use ElixirInternalCertificationWeb.ConnCase, async: true
   use Phoenix.Component
 
+  alias ElixirInternalCertification.Account.Schemas.User
   alias ElixirInternalCertificationWeb.LiveHelpers
   alias Phoenix.LiveView.Socket
-  alias ElixirInternalCertification.Account.Schemas.User
 
   setup %{conn: conn} do
     %{conn: conn, socket: %Socket{}}
