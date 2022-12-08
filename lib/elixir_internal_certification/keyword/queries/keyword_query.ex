@@ -1,8 +1,8 @@
 defmodule ElixirInternalCertification.Keyword.Queries.KeywordQuery do
   import Ecto.Query, warn: false
 
-  alias ElixirInternalCertification.Keyword.Schemas.Keyword
   alias ElixirInternalCertification.Account.Schemas.User
+  alias ElixirInternalCertification.Keyword.Schemas.Keyword
 
   def list_keywords(%User{id: user_id} = _user) do
     Keyword

@@ -38,7 +38,6 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
 
       keywords = Keywords.list_keywords(user)
 
-      assert length(keywords) == 0
       assert keywords == []
     end
 
