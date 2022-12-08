@@ -1,4 +1,4 @@
-defmodule ElixirInternalCertificationWeb.UploadLiveTest do
+defmodule ElixirInternalCertificationWeb.KeywordLiveTest do
   use ElixirInternalCertificationWeb.ConnCase, async: true
 
   import Phoenix.LiveViewTest
