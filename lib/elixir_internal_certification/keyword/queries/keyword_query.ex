@@ -4,5 +4,9 @@ defmodule ElixirInternalCertification.Keyword.Queries.KeywordQuery do
   alias ElixirInternalCertification.Keyword.Schemas.Keyword
   alias ElixirInternalCertification.Account.Schemas.User
 
-  def list_keywords(%User{id: user_id} = _user), do: where(Keyword, [k], k.user_id == ^user_id)
+  def list_keywords(%User{id: user_id} = _user) do
+    Keyword
+    |> where([k], k.user_id == ^user_id)
+    |> order_by([k], desc: k.inserted_at)
+  end
 end
