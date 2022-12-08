@@ -6,7 +6,7 @@ defmodule ElixirInternalCertificationWeb.UploadLiveTest do
   setup [:register_and_log_in_user]
 
   describe "LIVE /" do
-    test "uploads valid CSV file", %{conn: conn} do
+    test "uploads valid CSV file and submits", %{conn: conn} do
       {:ok, view, _html} =
         live(conn, Routes.upload_path(ElixirInternalCertificationWeb.Endpoint, :index))
 
@@ -27,6 +27,46 @@ defmodule ElixirInternalCertificationWeb.UploadLiveTest do
         |> render_change()
 
       assert result =~ "100%"
+
+      view
+      |> element("#upload-form")
+      |> render_submit()
+
+      result_2 =
+        view
+        |> element("#upload-form")
+        |> render_change()
+
+      refute result_2 =~ "keywords.csv"
+    end
+
+    test "uploads valid CSV file and cancels", %{conn: conn} do
+      {:ok, view, _html} =
+        live(conn, Routes.upload_path(ElixirInternalCertificationWeb.Endpoint, :index))
+
+      keyword =
+        file_input(view, "#upload-form", :keyword, [
+          %{
+            name: "keywords.csv",
+            content: "keyword\nfirst keyword\nsecond keyword\nthird keyword",
+            type: "text/csv"
+          }
+        ])
+
+      %{"ref" => ref} = List.first(keyword.entries)
+
+      render_upload(keyword, "keywords.csv")
+
+      view
+      |> element(".remove-file-button")
+      |> render_click(%{"ref" => ref})
+
+      result =
+        view
+        |> element("#upload-form")
+        |> render_change()
+
+      refute result =~ "keywords.csv"
     end
 
     test "uploads INVALID file extension", %{conn: conn} do
