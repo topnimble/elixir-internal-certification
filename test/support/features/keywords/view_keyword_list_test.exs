@@ -1,4 +1,4 @@
-defmodule ElixirInternalCertificationWeb.Features.KeywordTest do
+defmodule ElixirInternalCertificationWeb.Features.Keywords.ViewKeywordListTest do
   use ElixirInternalCertificationWeb.FeatureCase, async: false
 
   import Wallaby.Browser

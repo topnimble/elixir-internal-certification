@@ -1,4 +1,4 @@
-defmodule ElixirInternalCertificationWeb.Features.AuthenticationTest do
+defmodule ElixirInternalCertificationWeb.Features.Accounts.AuthenticationTest do
   use ElixirInternalCertificationWeb.FeatureCase, async: false
 
   import Wallaby.{Browser, Query}

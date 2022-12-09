@@ -8,6 +8,7 @@ defmodule ElixirInternalCertification.Keyword.Schemas.Keyword do
 
   schema "keywords" do
     field :title, :string
+
     belongs_to :user, User
 
     timestamps()
