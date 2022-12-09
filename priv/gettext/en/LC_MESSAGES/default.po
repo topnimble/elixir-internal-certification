@@ -10,8 +10,3 @@ msgid ""
 msgstr ""
 "Language: en\n"
 "Plural-Forms: nplurals=2\n"
-
-#: lib/elixir_internal_certification_web/templates/page/index.html.heex:2
-#, elixir-autogen, elixir-format
-msgid "Welcome to %{name}!"
-msgstr ""
