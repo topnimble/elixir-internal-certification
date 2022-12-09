@@ -32,12 +32,7 @@ defmodule ElixirInternalCertificationWeb.UploadLiveTest do
       |> element("#upload-form")
       |> render_submit()
 
-      result_2 =
-        view
-        |> element("#upload-form")
-        |> render_change()
-
-      refute result_2 =~ "keywords.csv"
+      assert_redirected(view, Routes.keyword_path(ElixirInternalCertificationWeb.Endpoint, :index))
     end
 
     test "uploads valid CSV file and cancels", %{conn: conn} do

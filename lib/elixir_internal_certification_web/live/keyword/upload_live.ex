@@ -34,7 +34,11 @@ defmodule ElixirInternalCertificationWeb.UploadLive do
         {:ok, path}
       end)
 
-    {:noreply, update(socket, :uploaded_files, &(&1 ++ uploaded_files))}
+    {:noreply,
+      socket
+      |> update(:uploaded_files, &(&1 ++ uploaded_files))
+      |> redirect(to: Routes.keyword_path(ElixirInternalCertificationWeb.Endpoint, :index))
+    }
   end
 
   defp error_to_string(:too_large), do: "Too large"
