@@ -11,6 +11,9 @@ defmodule ElixirInternalCertification.Keyword.Keywords do
   alias ElixirInternalCertification.Repo
   alias NimbleCSV.RFC4180, as: CSV
 
+  @number_of_header_lines 1
+  @number_of_max_keyword_lines 1000
+
   # @doc """
   # Returns the list of keywords.
 
@@ -48,7 +51,8 @@ defmodule ElixirInternalCertification.Keyword.Keywords do
 
   def parse_csv!(path, callback) when is_binary(path) and is_function(callback) do
     path
-    |> File.stream!(read_ahead: 100)
+    |> File.stream!()
+    |> Stream.take(@number_of_header_lines + @number_of_max_keyword_lines)
     |> CSV.parse_stream()
     |> Stream.map(fn line_of_keywords ->
       callback.(line_of_keywords)
