@@ -25,9 +25,9 @@ defmodule ElixirInternalCertificationWeb.Router do
   forward RouterHelper.health_path(), ElixirInternalCertificationWeb.HealthPlug
 
   scope "/", ElixirInternalCertificationWeb do
-    pipe_through :browser
+    pipe_through [:browser, :require_authenticated_user]
 
-    get "/", PageController, :index
+    live "/", KeywordLive, :index
   end
 
   # Other scopes may use custom stacks.

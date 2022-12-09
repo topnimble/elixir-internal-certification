@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="csrf-token" content={csrf_token_value()} />
+    <%= csrf_meta_tag() %>
     <%= live_title_tag(assigns[:page_title] || "ElixirInternalCertification",
       suffix: " · Phoenix Framework"
     ) %>
@@ -26,8 +27,12 @@
           </a>
 
           <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-            <li><a href="#" class="nav-link px-2 link-secondary">Home</a></li>
-            <li><a href="#" class="nav-link px-2 link-dark">Keywords</a></li>
+            <li>
+              <%= link("Home",
+                to: Routes.keyword_path(@conn, :index),
+                class: "nav-link px-2 link-secondary"
+              ) %>
+            </li>
           </ul>
 
           <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
