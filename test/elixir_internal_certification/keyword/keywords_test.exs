@@ -5,7 +5,7 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
   alias ElixirInternalCertification.Keyword.Schemas.Keyword
 
   describe "list_keywords/1" do
-    test "given a user, returns a list of keywords belongs to the user in descending order" do
+    test "given a user, returns a list of keywords belongs to the user sorted by ID in descending order" do
       user = insert(:user)
       another_user = insert(:user)
 
