@@ -5,11 +5,7 @@ defmodule ElixirInternalCertificationWeb.UploadLiveTest do
 
   alias ElixirInternalCertification.Keyword.Keywords
 
-  setup %{conn: conn} do
-    user = insert(:user)
-    conn = log_in_user(conn, user)
-    %{conn: conn, user: user}
-  end
+  setup [:register_and_log_in_user]
 
   describe "LIVE /" do
     test "uploads valid CSV file and submits", %{conn: conn, user: user} do
