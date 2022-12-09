@@ -43,11 +43,7 @@ defmodule ElixirInternalCertification.Keyword.Keywords do
     |> Repo.insert()
   end
 
-  def save_keyword_to_database(%User{} = user, keyword) do
-    create_keyword(user, %{
-      title: keyword
-    })
-  end
+  def save_keyword_to_database(%User{} = user, keyword), do: create_keyword(user, %{title: keyword})
 
   def parse_csv!(path, callback) when is_binary(path) and is_function(callback) do
     path
