@@ -18,5 +18,5 @@ defmodule ElixirInternalCertification.Keyword.Keywords do
   #     [%Keyword{}, ...]
 
   # """
-  def list_keywords(%User{} = user), do: Repo.all(KeywordQuery.list_keywords(user))
+  def list_keywords(%User{} = user), do: Repo.all(KeywordQuery.list_keywords_by_user(user))
 end
