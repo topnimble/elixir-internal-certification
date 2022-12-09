@@ -1,4 +1,4 @@
-defmodule ElixirInternalCertificationWeb.Features.Keywords.UploadCsvFileTest do
+defmodule ElixirInternalCertificationWeb.Features.Keywords.UploadCSVFileTest do
   use ElixirInternalCertificationWeb.FeatureCase, async: false
 
   import Wallaby.{Browser, Query}
