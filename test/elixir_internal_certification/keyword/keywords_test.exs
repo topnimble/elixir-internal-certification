@@ -1,8 +1,8 @@
 defmodule ElixirInternalCertification.Keyword.KeywordsTest do
   use ElixirInternalCertification.DataCase
 
-  alias ElixirInternalCertification.Keyword.Schemas.Keyword
   alias ElixirInternalCertification.Keyword.Keywords
+  alias ElixirInternalCertification.Keyword.Schemas.Keyword
 
   describe "list_keywords/1" do
     test "given a user, returns a list of keywords belongs to the user in descending order" do
