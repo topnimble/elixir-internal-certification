@@ -4,16 +4,13 @@
   <thead>
     <tr>
       <th>Title</th>
-
       <th></th>
     </tr>
   </thead>
   <tbody id="keywords">
     <%= for keyword <- @keywords do %>
       <tr id={"keyword-#{keyword.id}"}>
-        <td><%= keyword.title %></td>
-
-        <td></td>
+        <td colspan="2"><%= keyword.title %></td>
       </tr>
     <% end %>
   </tbody>
