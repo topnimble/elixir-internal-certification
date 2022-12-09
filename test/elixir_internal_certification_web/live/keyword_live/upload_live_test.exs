@@ -3,10 +3,16 @@ defmodule ElixirInternalCertificationWeb.UploadLiveTest do
 
   import Phoenix.LiveViewTest
 
-  setup [:register_and_log_in_user]
+  alias ElixirInternalCertification.Keyword.Keywords
+
+  setup %{conn: conn} do
+    user = insert(:user)
+    conn = log_in_user(conn, user)
+    %{conn: conn, user: user}
+  end
 
   describe "LIVE /" do
-    test "uploads valid CSV file and submits", %{conn: conn} do
+    test "uploads valid CSV file and submits", %{conn: conn, user: user} do
       {:ok, view, _html} =
         live(conn, Routes.upload_path(ElixirInternalCertificationWeb.Endpoint, :index))
 
@@ -33,9 +39,18 @@ defmodule ElixirInternalCertificationWeb.UploadLiveTest do
       |> render_submit()
 
       assert_redirected(view, Routes.keyword_path(ElixirInternalCertificationWeb.Endpoint, :index))
+
+      keywords = Keywords.list_keywords(user)
+
+      assert length(keywords) == 3
+
+      assert MapSet.equal?(
+               MapSet.new(Enum.map(keywords, fn keyword -> keyword.title end)),
+               MapSet.new(["first keyword", "second keyword", "third keyword"])
+             ) == true
     end
 
-    test "uploads valid CSV file and cancels", %{conn: conn} do
+    test "uploads valid CSV file and cancels", %{conn: conn, user: user} do
       {:ok, view, _html} =
         live(conn, Routes.upload_path(ElixirInternalCertificationWeb.Endpoint, :index))
 
@@ -62,6 +77,10 @@ defmodule ElixirInternalCertificationWeb.UploadLiveTest do
         |> render_change()
 
       refute result =~ "keywords.csv"
+
+      keywords = Keywords.list_keywords(user)
+
+      assert keywords == []
     end
 
     test "uploads INVALID file extension", %{conn: conn} do
