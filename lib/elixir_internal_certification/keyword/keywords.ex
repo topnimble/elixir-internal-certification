@@ -12,7 +12,7 @@ defmodule ElixirInternalCertification.Keyword.Keywords do
   alias NimbleCSV.RFC4180, as: CSV
 
   @number_of_header_lines 1
-  @number_of_max_keyword_lines 1000
+  @number_of_max_keyword_lines 1_000
 
   # @doc """
   # Returns the list of keywords.
