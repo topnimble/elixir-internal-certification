@@ -1,26 +1,28 @@
 defmodule ElixirInternalCertification.Keyword.KeywordsTest do
   use ElixirInternalCertification.DataCase
 
+  alias ElixirInternalCertification.Keyword.Schemas.Keyword
   alias ElixirInternalCertification.Keyword.Keywords
 
   describe "list_keywords/1" do
-    test "given a user, returns a list of keywords belongs to the user" do
+    test "given a user, returns a list of keywords belongs to the user in descending order" do
       user = insert(:user)
       another_user = insert(:user)
 
-      insert(:keyword, user: user, title: "first keyword")
-      insert(:keyword, user: user, title: "second keyword")
-      insert(:keyword, user: user, title: "third keyword")
+      %Keyword{id: first_keyword_id} = insert(:keyword, user: user, title: "first keyword")
+      %Keyword{id: second_keyword_id} = insert(:keyword, user: user, title: "second keyword")
+      %Keyword{id: third_keyword_id} = insert(:keyword, user: user, title: "third keyword")
       insert(:keyword, user: another_user, title: "another keyword")
 
       keywords = Keywords.list_keywords(user)
 
       assert length(keywords) == 3
 
-      assert MapSet.equal?(
-               MapSet.new(Enum.map(keywords, fn keyword -> keyword.title end)),
-               MapSet.new(["first keyword", "second keyword", "third keyword"])
-             ) == true
+      assert Enum.map(keywords, fn keyword -> keyword.id end) == [
+               third_keyword_id,
+               second_keyword_id,
+               first_keyword_id
+             ]
     end
 
     test "given a user with NO keywords, returns an empty list" do
