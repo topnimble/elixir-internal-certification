@@ -1,3 +1,34 @@
+<%= for err <- upload_errors(@uploads.keyword) do %>
+  <p class="alert alert-danger"><%= error_to_string(err) %></p>
+<% end %>
+
+<%= for entry <- @uploads.keyword.entries do %>
+  <%= for err <- upload_errors(@uploads.keyword, entry) do %>
+    <p class="alert alert-danger"><%= error_to_string(err) %></p>
+  <% end %>
+
+  <div class="card card-body mb-3">
+    <div class="upload-entry">
+      <div>
+        <div><%= entry.client_name %></div>
+      </div>
+
+      <div class="d-flex">
+        <progress class="flex-fill" value={entry.progress} max="100"><%= entry.progress %>%</progress>
+
+        <button
+          class="btn btn-light remove-file-button"
+          phx-click="cancel-upload"
+          phx-value-ref={entry.ref}
+          aria-label="cancel"
+        >
+          &times;
+        </button>
+      </div>
+    </div>
+  </div>
+<% end %>
+
 <section phx-drop-target={@uploads.keyword.ref}>
   <form id="upload-form" phx-submit="save" phx-change="validate">
     <div class="d-flex flex-column">
@@ -9,30 +40,3 @@
     </div>
   </form>
 </section>
-
-<%= for entry <- @uploads.keyword.entries do %>
-  <article class="upload-entry mt-3">
-    <div>
-      <div><%= entry.client_name %></div>
-    </div>
-
-    <progress value={entry.progress} max="100"><%= entry.progress %>%</progress>
-
-    <button
-      class="btn btn-primary remove-file-button"
-      phx-click="cancel-upload"
-      phx-value-ref={entry.ref}
-      aria-label="cancel"
-    >
-      &times;
-    </button>
-
-    <%= for err <- upload_errors(@uploads.keyword, entry) do %>
-      <p class="alert alert-danger"><%= error_to_string(err) %></p>
-    <% end %>
-  </article>
-<% end %>
-
-<%= for err <- upload_errors(@uploads.keyword) do %>
-  <p class="alert alert-danger"><%= error_to_string(err) %></p>
-<% end %>
