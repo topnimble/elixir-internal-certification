@@ -11,8 +11,7 @@ defmodule ElixirInternalCertification.Keyword.Keywords do
   alias ElixirInternalCertification.Repo
   alias NimbleCSV.RFC4180, as: CSV
 
-  @number_of_header_lines 1
-  @number_of_max_keyword_lines 1_000
+  @number_of_max_keywords 1_000
 
   # @doc """
   # Returns the list of keywords.
@@ -45,14 +44,18 @@ defmodule ElixirInternalCertification.Keyword.Keywords do
 
   def save_keyword_to_database(%User{} = user, keyword), do: create_keyword(user, %{title: keyword})
 
-  def parse_csv!(path, callback) when is_binary(path) and is_function(callback) do
-    path
-    |> File.stream!()
-    |> Stream.take(@number_of_header_lines + @number_of_max_keyword_lines)
-    |> CSV.parse_stream()
-    |> Stream.map(fn line_of_keywords ->
-      callback.(line_of_keywords)
-    end)
-    |> Stream.run()
+  def parse_csv!(path) when is_binary(path) do
+    keywords =
+      path
+      |> File.stream!()
+      |> CSV.parse_stream()
+      |> Enum.to_list()
+      |> List.flatten()
+
+    if length(keywords) <= @number_of_max_keywords do
+      {:ok, keywords}
+    else
+      {:error, :too_many_keywords}
+    end
   end
 end

@@ -25,22 +25,42 @@ defmodule ElixirInternalCertificationWeb.UploadLive do
   def handle_event("save", _params, socket) do
     uploaded_files =
       consume_uploaded_entries(socket, :keyword, fn %{path: path}, _entry ->
-        Keywords.parse_csv!(path, fn line_of_keywords ->
-          current_user = LiveHelpers.get_current_user_from_socket(socket)
-          keyword = List.first(line_of_keywords)
-          Keywords.save_keyword_to_database(current_user, keyword)
-        end)
+        case Keywords.parse_csv!(path) do
+          {:ok, keywords} ->
+            current_user = LiveHelpers.get_current_user_from_socket(socket)
 
-        {:ok, path}
+            Enum.map(keywords, fn keyword ->
+              Keywords.save_keyword_to_database(current_user, keyword)
+            end)
+
+            {:ok, path}
+
+          {:error, reason} ->
+            {:postpone, {:error, reason}}
+        end
       end)
 
-    {:noreply,
-     socket
-     |> update(:uploaded_files, &(&1 ++ uploaded_files))
-     |> redirect(to: Routes.keyword_path(ElixirInternalCertificationWeb.Endpoint, :index))}
+    errors =
+      uploaded_files
+      |> Enum.filter(&has_error?/1)
+      |> Enum.map(fn {:error, reason} -> error_to_string(reason) end)
+
+    if length(errors) == 0 do
+      {:noreply,
+       socket
+       |> update(:uploaded_files, &(&1 ++ uploaded_files))
+       |> redirect(to: Routes.keyword_path(ElixirInternalCertificationWeb.Endpoint, :index))}
+    else
+      socket = put_flash(socket, :error, Enum.join(errors, ", "))
+      {:noreply, socket}
+    end
   end
+
+  defp has_error?({:error, _}), do: true
+  defp has_error?(_), do: false
 
   defp error_to_string(:too_large), do: "Too large"
   defp error_to_string(:too_many_files), do: "You have selected too many files"
   defp error_to_string(:not_accepted), do: "You have selected an unacceptable file type"
+  defp error_to_string(:too_many_keywords), do: "Your file contained too many keywords"
 end
