@@ -59,5 +59,5 @@ defmodule ElixirInternalCertificationWeb.UploadLive do
   defp error_to_string(:too_large), do: "Too large"
   defp error_to_string(:too_many_files), do: "You have selected too many files"
   defp error_to_string(:not_accepted), do: "You have selected an unacceptable file type"
-  defp error_to_string(:too_many_keywords), do: "Your file contained too many keywords"
+  defp error_to_string(:too_many_keywords), do: "You have selected file with too many keywords"
 end

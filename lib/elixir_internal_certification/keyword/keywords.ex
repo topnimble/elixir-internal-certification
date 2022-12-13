@@ -11,7 +11,10 @@ defmodule ElixirInternalCertification.Keyword.Keywords do
   alias ElixirInternalCertification.Repo
   alias NimbleCSV.RFC4180, as: CSV
 
-  @number_of_max_keywords 1_000
+  @max_number_of_keywords_per_csv_file Application.compile_env!(
+                                         :elixir_internal_certification,
+                                         :max_number_of_keywords_per_csv_file
+                                       )
 
   # @doc """
   # Returns the list of keywords.
@@ -61,7 +64,7 @@ defmodule ElixirInternalCertification.Keyword.Keywords do
       |> Enum.to_list()
       |> List.flatten()
 
-    if length(keywords) <= @number_of_max_keywords do
+    if length(keywords) <= @max_number_of_keywords_per_csv_file do
       {:ok, keywords}
     else
       {:error, :too_many_keywords}

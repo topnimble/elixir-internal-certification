@@ -8,7 +8,8 @@
 import Config
 
 config :elixir_internal_certification,
-  ecto_repos: [ElixirInternalCertification.Repo]
+  ecto_repos: [ElixirInternalCertification.Repo],
+  max_number_of_keywords_per_csv_file: 1_000
 
 # Configures the endpoint
 config :elixir_internal_certification, ElixirInternalCertificationWeb.Endpoint,

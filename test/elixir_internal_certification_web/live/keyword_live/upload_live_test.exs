@@ -7,6 +7,11 @@ defmodule ElixirInternalCertificationWeb.UploadLiveTest do
 
   setup [:register_and_log_in_user]
 
+  @max_number_of_keywords_per_csv_file Application.compile_env!(
+                                         :elixir_internal_certification,
+                                         :max_number_of_keywords_per_csv_file
+                                       )
+
   describe "LIVE /" do
     test "uploads valid CSV file and submits", %{conn: conn, user: user} do
       {:ok, view, _html} =
@@ -153,6 +158,36 @@ defmodule ElixirInternalCertificationWeb.UploadLiveTest do
         |> render_change()
 
       assert result =~ "You have selected too many files"
+    end
+
+    test "uploads more than 1,000 keywords", %{conn: conn} do
+      {:ok, view, _html} =
+        live(conn, Routes.upload_path(ElixirInternalCertificationWeb.Endpoint, :index))
+
+      generated_content =
+        1..(@max_number_of_keywords_per_csv_file + 1)
+        |> Enum.map(fn _i ->
+          Faker.Lorem.word()
+        end)
+        |> Enum.join("\n")
+
+      keyword =
+        file_input(view, "#upload-form", :keyword, [
+          %{
+            name: "keywords.csv",
+            content: generated_content,
+            type: "text/csv"
+          }
+        ])
+
+      render_upload(keyword, "keywords.csv")
+
+      result =
+        view
+        |> element("#upload-form")
+        |> render_submit()
+
+      assert result =~ "You have selected file with too many keywords"
     end
   end
 end
