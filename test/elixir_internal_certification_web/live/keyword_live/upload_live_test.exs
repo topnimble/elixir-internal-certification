@@ -165,11 +165,9 @@ defmodule ElixirInternalCertificationWeb.UploadLiveTest do
         live(conn, Routes.upload_path(ElixirInternalCertificationWeb.Endpoint, :index))
 
       generated_content =
-        1..(@max_number_of_keywords_per_csv_file + 1)
-        |> Enum.map(fn _i ->
+        Enum.map_join(1..(@max_number_of_keywords_per_csv_file + 1), "\n", fn _i ->
           Faker.Lorem.word()
         end)
-        |> Enum.join("\n")
 
       keyword =
         file_input(view, "#upload-form", :keyword, [
