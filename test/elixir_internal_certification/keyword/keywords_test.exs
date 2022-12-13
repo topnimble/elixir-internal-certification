@@ -1,13 +1,9 @@
 defmodule ElixirInternalCertification.Keyword.KeywordsTest do
   use ElixirInternalCertification.DataCase
 
-  import ExUnit.CaptureLog
-
   alias ElixirInternalCertification.Account.Schemas.User
   alias ElixirInternalCertification.Keyword.Keywords
   alias ElixirInternalCertification.Keyword.Schemas.Keyword
-
-  require Logger
 
   @fixture_path "test/support/fixtures"
 
@@ -125,39 +121,23 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
     end
   end
 
-  describe "parse_csv!/2" do
-    test "given a path and a callback" do
+  describe "parse_csv!/1" do
+    test "given a path, returns {:ok, []}" do
       path = Path.join([@fixture_path, "/assets/keywords.csv"])
 
-      logs =
-        capture_log(fn ->
-          Keywords.parse_csv!(path, fn line_of_keywords ->
-            keyword = List.first(line_of_keywords)
-            Logger.info(keyword)
-          end)
-        end)
+      assert {:ok, keywords} = Keywords.parse_csv!(path)
 
-      assert logs =~ "first keyword"
-      assert logs =~ "second keyword"
-      assert logs =~ "third keyword"
-    end
-
-    test "given a callback is nil, raises FunctionClauseError" do
-      path = Path.join([@fixture_path, "/assets/keywords.csv"])
-
-      assert_raise FunctionClauseError, fn ->
-        Keywords.parse_csv!(path, nil)
-      end
+      assert MapSet.equal?(
+               MapSet.new(keywords),
+               MapSet.new(["first keyword", "second keyword", "third keyword"])
+             ) == true
     end
 
     test "given a path is nil, raises FunctionClauseError" do
       path = nil
 
       assert_raise FunctionClauseError, fn ->
-        Keywords.parse_csv!(path, fn line_of_keywords ->
-          keyword = List.first(line_of_keywords)
-          Logger.info(keyword)
-        end)
+        Keywords.parse_csv!(path)
       end
     end
 
@@ -165,10 +145,7 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
       path = Path.join([@fixture_path, "/assets/non_existence_file.csv"])
 
       assert_raise File.Error, fn ->
-        Keywords.parse_csv!(path, fn line_of_keywords ->
-          keyword = List.first(line_of_keywords)
-          Logger.info(keyword)
-        end)
+        Keywords.parse_csv!(path)
       end
     end
   end
