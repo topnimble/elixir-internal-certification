@@ -185,7 +185,7 @@ defmodule ElixirInternalCertificationWeb.UploadLiveTest do
         |> element("#upload-form")
         |> render_submit()
 
-      assert result =~ "You have selected file with too many keywords"
+      assert result =~ "You have selected file with more than 1000 keywords"
     end
   end
 end
