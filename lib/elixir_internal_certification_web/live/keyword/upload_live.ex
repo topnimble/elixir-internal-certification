@@ -27,9 +27,14 @@ defmodule ElixirInternalCertificationWeb.UploadLive do
     do: {:noreply, cancel_upload(socket, :keyword, ref)}
 
   @impl Phoenix.LiveView
-  # credo:disable-for-next-line Credo.Check.Refactor.ABCSize
   def handle_event("save", _params, socket) do
-    uploaded_files =
+    uploaded_files = handle_file_uploading(socket)
+    errors = extract_errors(uploaded_files)
+    file_uploading_response(socket, uploaded_files, errors)
+  end
+
+  defp handle_file_uploading(socket),
+    do:
       consume_uploaded_entries(socket, :keyword, fn %{path: path}, _entry ->
         case Keywords.parse_csv!(path) do
           {:ok, keywords} ->
@@ -42,19 +47,20 @@ defmodule ElixirInternalCertificationWeb.UploadLive do
         end
       end)
 
-    errors =
-      uploaded_files
-      |> Enum.filter(&has_error?/1)
-      |> Enum.map(fn {:error, reason} -> error_to_string(reason) end)
+  defp extract_errors(uploaded_files) do
+    uploaded_files
+    |> Enum.filter(&has_error?/1)
+    |> Enum.map(fn {:error, reason} -> error_to_string(reason) end)
+  end
 
+  defp file_uploading_response(socket, uploaded_files, errors) do
     if errors == [] do
       {:noreply,
        socket
        |> update(:uploaded_files, &(&1 ++ uploaded_files))
        |> redirect(to: Routes.keyword_path(ElixirInternalCertificationWeb.Endpoint, :index))}
     else
-      socket = put_flash(socket, :error, Enum.join(errors, ", "))
-      {:noreply, socket}
+      {:noreply, put_flash(socket, :error, Enum.join(errors, ", "))}
     end
   end
 
