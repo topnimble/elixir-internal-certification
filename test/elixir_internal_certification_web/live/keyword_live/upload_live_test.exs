@@ -1,6 +1,7 @@
 defmodule ElixirInternalCertificationWeb.UploadLiveTest do
   use ElixirInternalCertificationWeb.ConnCase, async: true
 
+  import ElixirInternalCertificationWeb.Gettext
   import Phoenix.LiveViewTest
 
   alias ElixirInternalCertification.Keyword.Keywords
