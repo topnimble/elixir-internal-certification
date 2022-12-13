@@ -104,7 +104,7 @@ defmodule ElixirInternalCertificationWeb.UploadLiveTest do
         |> element("#upload-form")
         |> render_change()
 
-      assert result =~ "You have selected an unacceptable file type"
+      assert result =~ dgettext("errors", "You have selected an unacceptable file type")
     end
 
     test "uploads too large file", %{conn: conn} do
@@ -128,7 +128,7 @@ defmodule ElixirInternalCertificationWeb.UploadLiveTest do
         |> element("#upload-form")
         |> render_change()
 
-      assert result =~ "Too large"
+      assert result =~ dgettext("errors", "Too large")
     end
 
     test "uploads more than 1 file", %{conn: conn} do
@@ -157,7 +157,7 @@ defmodule ElixirInternalCertificationWeb.UploadLiveTest do
         |> element("#upload-form")
         |> render_change()
 
-      assert result =~ "You have selected too many files"
+      assert result =~ dgettext("errors", "You have selected too many files")
     end
 
     test "uploads more than 1,000 keywords", %{conn: conn} do
@@ -185,7 +185,7 @@ defmodule ElixirInternalCertificationWeb.UploadLiveTest do
         |> element("#upload-form")
         |> render_submit()
 
-      assert result =~ "You have selected file with more than 1000 keywords"
+      assert result =~ dgettext("errors", "You have selected file with more than 1000 keywords")
     end
   end
 end

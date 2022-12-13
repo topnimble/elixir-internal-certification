@@ -63,10 +63,17 @@ defmodule ElixirInternalCertificationWeb.UploadLive do
   defp has_error?({:error, _}), do: true
   defp has_error?(_), do: false
 
-  defp error_to_string(:too_large), do: "Too large"
-  defp error_to_string(:too_many_files), do: "You have selected too many files"
-  defp error_to_string(:not_accepted), do: "You have selected an unacceptable file type"
+  defp error_to_string(:too_large), do: dgettext("errors", "Too large")
+  defp error_to_string(:too_many_files), do: dgettext("errors", "You have selected too many files")
+
+  defp error_to_string(:not_accepted),
+    do: dgettext("errors", "You have selected an unacceptable file type")
 
   defp error_to_string(:too_many_keywords),
-    do: "You have selected file with more than #{@max_number_of_keywords_per_csv_file} keywords"
+    do:
+      dgettext(
+        "errors",
+        "You have selected file with more than %{max_number_of_keywords_per_csv_file} keywords",
+        max_number_of_keywords_per_csv_file: @max_number_of_keywords_per_csv_file
+      )
 end
