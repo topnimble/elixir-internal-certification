@@ -57,7 +57,7 @@ defmodule ElixirInternalCertification.Keyword.Keywords do
     keywords =
       path
       |> File.stream!()
-      |> CSV.parse_stream()
+      |> CSV.parse_stream(skip_headers: false)
       |> Enum.to_list()
       |> List.flatten()
 

@@ -16,7 +16,7 @@ defmodule ElixirInternalCertificationWeb.UploadLiveTest do
         file_input(view, "#upload-form", :keyword, [
           %{
             name: "keywords.csv",
-            content: "keyword\nfirst keyword\nsecond keyword\nthird keyword",
+            content: "first keyword\nsecond keyword\nthird keyword",
             type: "text/csv"
           }
         ])
@@ -54,7 +54,7 @@ defmodule ElixirInternalCertificationWeb.UploadLiveTest do
         file_input(view, "#upload-form", :keyword, [
           %{
             name: "keywords.csv",
-            content: "keyword\nfirst keyword\nsecond keyword\nthird keyword",
+            content: "first keyword\nsecond keyword\nthird keyword",
             type: "text/csv"
           }
         ])
@@ -87,7 +87,7 @@ defmodule ElixirInternalCertificationWeb.UploadLiveTest do
         file_input(view, "#upload-form", :keyword, [
           %{
             name: "invalid_file_extension.txt",
-            content: "keyword\nfirst keyword\nsecond keyword\nthird keyword",
+            content: "first keyword\nsecond keyword\nthird keyword",
             type: "text/plain"
           }
         ])
@@ -110,7 +110,7 @@ defmodule ElixirInternalCertificationWeb.UploadLiveTest do
         file_input(view, "#upload-form", :keyword, [
           %{
             name: "keywords.csv",
-            content: "keyword\nfirst keyword\nsecond keyword\nthird keyword",
+            content: "first keyword\nsecond keyword\nthird keyword",
             size: 999_999_999_999_999,
             type: "text/csv"
           }
@@ -134,12 +134,12 @@ defmodule ElixirInternalCertificationWeb.UploadLiveTest do
         file_input(view, "#upload-form", :keyword, [
           %{
             name: "keywords.csv",
-            content: "keyword\nfirst keyword\nsecond keyword\nthird keyword",
+            content: "first keyword\nsecond keyword\nthird keyword",
             type: "text/csv"
           },
           %{
             name: "keywords_2.csv",
-            content: "keyword\nfirst keyword\nsecond keyword\nthird keyword",
+            content: "first keyword\nsecond keyword\nthird keyword",
             type: "text/csv"
           }
         ])
