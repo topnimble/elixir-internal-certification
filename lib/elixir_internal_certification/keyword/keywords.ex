@@ -27,24 +27,6 @@ defmodule ElixirInternalCertification.Keyword.Keywords do
   # """
   def list_keywords(%User{} = user), do: Repo.all(KeywordQuery.list_keywords_by_user(user))
 
-  @doc """
-  Creates a keyword.
-
-  ## Examples
-
-      iex> create_keyword(%User{}, %{field: value})
-      {:ok, %Keyword{}}
-
-      iex> create_keyword(%User{}, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def create_keyword(%User{} = user, attrs \\ %{}) do
-    user
-    |> Keyword.changeset(%Keyword{}, attrs)
-    |> Repo.insert()
-  end
-
   def create_keywords(%User{id: user_id} = _user, keywords) when is_list(keywords) do
     now = NaiveDateTime.truncate(NaiveDateTime.utc_now(), :second)
 
