@@ -36,7 +36,9 @@
     <div class="d-flex flex-column">
       <%= live_file_input(@uploads.keyword, class: "form-control") %>
 
-      <small>Note: The CSV file cannot contain more than <%= max_number_of_keywords_per_csv_file() %> keywords</small>
+      <small>
+        Note: The CSV file cannot contain more than <%= max_number_of_keywords_per_csv_file() %> keywords
+      </small>
 
       <%= if length(@uploads.keyword.entries) > 0 do %>
         <button class="btn btn-primary mt-3 upload-button" type="submit">Upload</button>

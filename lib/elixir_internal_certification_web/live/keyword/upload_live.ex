@@ -5,9 +5,9 @@ defmodule ElixirInternalCertificationWeb.UploadLive do
   alias ElixirInternalCertificationWeb.LiveHelpers
 
   @max_number_of_keywords_per_csv_file Application.compile_env!(
-    :elixir_internal_certification,
-    :max_number_of_keywords_per_csv_file
-  )
+                                         :elixir_internal_certification,
+                                         :max_number_of_keywords_per_csv_file
+                                       )
 
   @impl Phoenix.LiveView
   def mount(_params, session, socket) do
@@ -58,7 +58,7 @@ defmodule ElixirInternalCertificationWeb.UploadLive do
     end
   end
 
-  defp max_number_of_keywords_per_csv_file(), do: @max_number_of_keywords_per_csv_file
+  defp max_number_of_keywords_per_csv_file, do: @max_number_of_keywords_per_csv_file
 
   defp has_error?({:error, _}), do: true
   defp has_error?(_), do: false
@@ -66,5 +66,7 @@ defmodule ElixirInternalCertificationWeb.UploadLive do
   defp error_to_string(:too_large), do: "Too large"
   defp error_to_string(:too_many_files), do: "You have selected too many files"
   defp error_to_string(:not_accepted), do: "You have selected an unacceptable file type"
-  defp error_to_string(:too_many_keywords), do: "You have selected file with more than #{@max_number_of_keywords_per_csv_file} keywords"
+
+  defp error_to_string(:too_many_keywords),
+    do: "You have selected file with more than #{@max_number_of_keywords_per_csv_file} keywords"
 end
