@@ -22,6 +22,7 @@ defmodule ElixirInternalCertificationWeb.UploadLive do
     do: {:noreply, cancel_upload(socket, :keyword, ref)}
 
   @impl Phoenix.LiveView
+  # credo:disable-for-next-line Credo.Check.Refactor.ABCSize
   def handle_event("save", _params, socket) do
     uploaded_files =
       consume_uploaded_entries(socket, :keyword, fn %{path: path}, _entry ->
@@ -41,7 +42,7 @@ defmodule ElixirInternalCertificationWeb.UploadLive do
       |> Enum.filter(&has_error?/1)
       |> Enum.map(fn {:error, reason} -> error_to_string(reason) end)
 
-    if length(errors) == 0 do
+    if errors == [] do
       {:noreply,
        socket
        |> update(:uploaded_files, &(&1 ++ uploaded_files))
