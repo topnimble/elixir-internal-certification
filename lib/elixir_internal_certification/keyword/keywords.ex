@@ -42,7 +42,16 @@ defmodule ElixirInternalCertification.Keyword.Keywords do
     |> Repo.insert()
   end
 
-  def save_keyword_to_database(%User{} = user, keyword), do: create_keyword(user, %{title: keyword})
+  def create_keywords(%User{id: user_id} = _user, keywords) when is_list(keywords) do
+    now = NaiveDateTime.truncate(NaiveDateTime.utc_now(), :second)
+
+    entries =
+      Enum.map(keywords, fn keyword ->
+        %{title: keyword, user_id: user_id, inserted_at: now, updated_at: now}
+      end)
+
+    Repo.insert_all(Keyword, entries, returning: true)
+  end
 
   def parse_csv!(path) when is_binary(path) do
     keywords =

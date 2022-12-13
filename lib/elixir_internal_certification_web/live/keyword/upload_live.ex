@@ -28,11 +28,7 @@ defmodule ElixirInternalCertificationWeb.UploadLive do
         case Keywords.parse_csv!(path) do
           {:ok, keywords} ->
             current_user = LiveHelpers.get_current_user_from_socket(socket)
-
-            Enum.map(keywords, fn keyword ->
-              Keywords.save_keyword_to_database(current_user, keyword)
-            end)
-
+            Keywords.create_keywords(current_user, keywords)
             {:ok, path}
 
           {:error, reason} ->

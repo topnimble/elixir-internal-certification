@@ -79,29 +79,48 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
     end
   end
 
-  describe "save_keyword_to_database/2" do
-    @valid_attrs "some title"
-    @invalid_attrs nil
+  describe "create_keywords/2" do
+    @valid_attrs ["first keyword", "second keyword", "third keyword"]
+    @invalid_attrs [
+      %{title: "first invalid keyword"},
+      %{title: "second invalid keyword"},
+      %{title: "third invalid keyword"}
+    ]
 
-    test "given valid attributes, returns {:ok, %Keyword{}}" do
+    test "given valid attributes, returns {number_of_keywords, [%Keyword{}]}" do
       %User{id: user_id} = user = insert(:user)
 
-      assert {:ok, %Keyword{} = keyword} = Keywords.save_keyword_to_database(user, @valid_attrs)
-      assert keyword.title == "some title"
-      assert keyword.user_id == user_id
+      {number_of_keywords, keywords} = Keywords.create_keywords(user, @valid_attrs)
+
+      assert number_of_keywords == 3
+
+      assert MapSet.equal?(
+               MapSet.new(Enum.map(keywords, fn keyword -> keyword.title end)),
+               MapSet.new(["first keyword", "second keyword", "third keyword"])
+             ) == true
+
+      assert Enum.map(keywords, fn keyword -> assert keyword.user_id == user_id end)
     end
 
-    test "given INVALID attributes, returns {:error, %Ecto.Changeset{}}" do
+    test "given INVALID attributes, raises Ecto.ChangeError" do
       user = insert(:user)
 
-      assert {:error, %Ecto.Changeset{}} = Keywords.save_keyword_to_database(user, @invalid_attrs)
+      assert_raise Ecto.ChangeError, fn -> Keywords.create_keywords(user, @invalid_attrs) end
+    end
+
+    test "given INVALID attribute type, raises FunctionClauseError" do
+      user = insert(:user)
+
+      assert_raise FunctionClauseError, fn ->
+        Keywords.create_keywords(user, "invalid attribute type")
+      end
     end
 
     test "given a user is nil, raises FunctionClauseError" do
       user = nil
 
       assert_raise FunctionClauseError, fn ->
-        Keywords.save_keyword_to_database(user, @valid_attrs)
+        Keywords.create_keywords(user, @valid_attrs)
       end
     end
   end
