@@ -39,8 +39,11 @@ defmodule ElixirInternalCertificationWeb.UploadLive do
         case Keywords.parse_csv!(path) do
           {:ok, keywords} ->
             current_user = LiveHelpers.get_current_user_from_socket(socket)
-            Keywords.create_keywords(current_user, keywords)
-            {:ok, path}
+
+            case Keywords.create_keywords(current_user, keywords) do
+              :error -> {:postpone, {:error, :invalid_data}}
+              _ -> {:ok, path}
+            end
 
           {:error, reason} ->
             {:postpone, {:error, reason}}
@@ -82,4 +85,7 @@ defmodule ElixirInternalCertificationWeb.UploadLive do
         "You have selected file with more than %{max_keywords_per_upload} keywords",
         max_keywords_per_upload: @max_keywords_per_upload
       )
+
+  defp error_to_string(:invalid_data),
+    do: dgettext("errors", "You have selected file with invalid data")
 end

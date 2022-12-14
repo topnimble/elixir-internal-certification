@@ -45,11 +45,36 @@ defmodule ElixirInternalCertification.Keyword.Keywords do
     |> Repo.insert()
   end
 
-  def create_keywords(%User{} = user, keywords) when is_list(keywords) do
-    # TODO: implement insert_all
-    Enum.map(keywords, fn keyword ->
-      create_keyword(user, %{title: keyword})
-    end)
+  def create_keywords(%User{id: _user_id} = user, keywords) when is_list(keywords) do
+    {valid_changesets, invalid_changesets} =
+      keywords
+      |> Enum.map(fn keyword ->
+        Keyword.changeset(user, %Keyword{}, %{title: keyword})
+      end)
+      |> Enum.split_with(fn changeset -> changeset.valid? end)
+
+    if invalid_changesets == [] do
+      entries =
+        Enum.map(valid_changesets, fn changeset ->
+          Ecto.Changeset.apply_changes(changeset)
+        end)
+
+      fields = Keyword.__schema__(:fields)
+      now = NaiveDateTime.truncate(NaiveDateTime.utc_now(), :second)
+
+      params =
+        Enum.map(entries, fn entry ->
+          entry
+          |> Map.take(fields)
+          |> Map.delete(:id)
+          |> Map.put(:inserted_at, now)
+          |> Map.put(:updated_at, now)
+        end)
+
+      Repo.insert_all(Keyword, params, returning: true)
+    else
+      :error
+    end
   end
 
   def parse_csv!(path) when is_binary(path) do

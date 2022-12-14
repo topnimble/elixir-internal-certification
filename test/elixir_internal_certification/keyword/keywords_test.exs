@@ -77,18 +77,28 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
 
   describe "create_keywords/2" do
     @valid_attrs ["first keyword", "second keyword", "third keyword"]
+    @valid_and_empty_attrs ["first keyword", ""]
     @invalid_attrs [
       %{title: "first invalid keyword"},
       %{title: "second invalid keyword"},
       %{title: "third invalid keyword"}
     ]
 
-    test "given valid attributes, returns {number_of_keywords, [%Keyword{}]}" do
+    test "given valid attributes, returns a number of keywords and a list of results" do
       %User{id: user_id} = user = insert(:user)
 
-      {number_of_keywords, keywords} = Keywords.create_keywords(user, @valid_attrs)
+      {number_of_keywords, records} = Keywords.create_keywords(user, @valid_attrs)
 
       assert number_of_keywords == 3
+
+      assert MapSet.equal?(
+               MapSet.new(Enum.map(records, fn record -> record.title end)),
+               MapSet.new(["first keyword", "second keyword", "third keyword"])
+             ) == true
+
+      keywords = Keywords.list_keywords(user)
+
+      assert length(keywords) == 3
 
       assert MapSet.equal?(
                MapSet.new(Enum.map(keywords, fn keyword -> keyword.title end)),
@@ -98,10 +108,24 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
       assert Enum.map(keywords, fn keyword -> assert keyword.user_id == user_id end)
     end
 
-    test "given INVALID attributes, raises Ecto.ChangeError" do
+    test "given valid and empty attributes, returns :error" do
       user = insert(:user)
 
-      assert_raise Ecto.ChangeError, fn -> Keywords.create_keywords(user, @invalid_attrs) end
+      assert :error = Keywords.create_keywords(user, @valid_and_empty_attrs)
+
+      keywords = Keywords.list_keywords(user)
+
+      assert keywords == []
+    end
+
+    test "given INVALID attributes, returns :error" do
+      user = insert(:user)
+
+      assert :error = Keywords.create_keywords(user, @invalid_attrs)
+
+      keywords = Keywords.list_keywords(user)
+
+      assert keywords == []
     end
 
     test "given INVALID attribute type, raises FunctionClauseError" do
@@ -110,6 +134,10 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
       assert_raise FunctionClauseError, fn ->
         Keywords.create_keywords(user, "invalid attribute type")
       end
+
+      keywords = Keywords.list_keywords(user)
+
+      assert keywords == []
     end
 
     test "given a user is nil, raises FunctionClauseError" do
