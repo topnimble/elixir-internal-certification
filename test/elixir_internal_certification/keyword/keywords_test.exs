@@ -106,7 +106,7 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
              ) == true
     end
 
-    test "given a path is nil, raises FunctionClauseError" do
+    test "given the path is nil, raises FunctionClauseError" do
       path = nil
 
       assert_raise FunctionClauseError, fn ->
