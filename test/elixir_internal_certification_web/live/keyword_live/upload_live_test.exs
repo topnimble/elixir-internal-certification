@@ -210,5 +210,32 @@ defmodule ElixirInternalCertificationWeb.UploadLiveTest do
 
       assert keywords == []
     end
+
+    test "given a file with INVALID data, displays the error", %{conn: conn, user: user} do
+      {:ok, view, _html} =
+        live(conn, Routes.upload_path(ElixirInternalCertificationWeb.Endpoint, :index))
+
+      keyword =
+        file_input(view, "#upload-form", :keyword, [
+          %{
+            name: "keywords.csv",
+            content: " \n \n ",
+            type: "text/csv"
+          }
+        ])
+
+      render_upload(keyword, "keywords.csv")
+
+      result =
+        view
+        |> element("#upload-form")
+        |> render_submit()
+
+      assert result =~ dgettext("errors", "You have selected file with invalid data")
+
+      keywords = Keywords.list_keywords(user)
+
+      assert keywords == []
+    end
   end
 end
