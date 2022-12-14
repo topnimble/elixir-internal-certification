@@ -96,22 +96,27 @@ msgstr ""
 msgid "must be equal to %{number}"
 msgstr ""
 
-#: lib/elixir_internal_certification_web/live/keyword/upload_live.ex:72
+#: lib/elixir_internal_certification_web/live/keyword/upload_live.ex:79
 #, elixir-autogen, elixir-format
 msgid "Too large"
 msgstr ""
 
-#: lib/elixir_internal_certification_web/live/keyword/upload_live.ex:76
+#: lib/elixir_internal_certification_web/live/keyword/upload_live.ex:83
 #, elixir-autogen, elixir-format
 msgid "You have selected an unacceptable file type"
 msgstr ""
 
-#: lib/elixir_internal_certification_web/live/keyword/upload_live.ex:73
+#: lib/elixir_internal_certification_web/live/keyword/upload_live.ex:80
 #, elixir-autogen, elixir-format
 msgid "You have selected too many files"
 msgstr ""
 
-#: lib/elixir_internal_certification_web/live/keyword/upload_live.ex:80
+#: lib/elixir_internal_certification_web/live/keyword/upload_live.ex:87
 #, elixir-autogen, elixir-format
 msgid "You have selected file with more than %{max_keywords_per_upload} keywords"
+msgstr ""
+
+#: lib/elixir_internal_certification_web/live/keyword/upload_live.ex:94
+#, elixir-autogen, elixir-format
+msgid "You have selected file with invalid data"
 msgstr ""
