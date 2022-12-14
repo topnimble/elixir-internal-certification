@@ -14,7 +14,7 @@ defmodule ElixirInternalCertificationWeb.UploadLiveTest do
                            )
 
   describe "LIVE /" do
-    test "uploads valid CSV file and submits", %{conn: conn, user: user} do
+    test "given a valid CSV file containing keywords, uploads the keywords", %{conn: conn, user: user} do
       {:ok, view, _html} =
         live(conn, Routes.upload_path(ElixirInternalCertificationWeb.Endpoint, :index))
 
