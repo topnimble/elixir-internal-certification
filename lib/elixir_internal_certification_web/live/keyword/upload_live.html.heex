@@ -37,7 +37,7 @@
       <%= live_file_input(@uploads.keyword, class: "form-control") %>
 
       <small>
-        Note: The CSV file cannot contain more than <%= max_number_of_keywords_per_csv_file() %> keywords
+        Note: The CSV file cannot contain more than <%= max_keywords_per_upload() %> keywords
       </small>
 
       <%= if length(@uploads.keyword.entries) > 0 do %>

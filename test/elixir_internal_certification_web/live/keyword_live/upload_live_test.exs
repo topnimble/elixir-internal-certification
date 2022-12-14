@@ -8,10 +8,10 @@ defmodule ElixirInternalCertificationWeb.UploadLiveTest do
 
   setup [:register_and_log_in_user]
 
-  @max_number_of_keywords_per_csv_file Application.compile_env!(
-                                         :elixir_internal_certification,
-                                         :max_number_of_keywords_per_csv_file
-                                       )
+  @max_keywords_per_upload Application.compile_env!(
+                             :elixir_internal_certification,
+                             :max_keywords_per_upload
+                           )
 
   describe "LIVE /" do
     test "uploads valid CSV file and submits", %{conn: conn, user: user} do
@@ -166,7 +166,7 @@ defmodule ElixirInternalCertificationWeb.UploadLiveTest do
         live(conn, Routes.upload_path(ElixirInternalCertificationWeb.Endpoint, :index))
 
       generated_content =
-        Enum.map_join(1..(@max_number_of_keywords_per_csv_file + 1), "\n", fn _i ->
+        Enum.map_join(1..(@max_keywords_per_upload + 1), "\n", fn _i ->
           Faker.Lorem.word()
         end)
 

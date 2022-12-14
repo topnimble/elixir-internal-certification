@@ -4,10 +4,10 @@ defmodule ElixirInternalCertificationWeb.UploadLive do
   alias ElixirInternalCertification.Keyword.Keywords
   alias ElixirInternalCertificationWeb.LiveHelpers
 
-  @max_number_of_keywords_per_csv_file Application.compile_env!(
-                                         :elixir_internal_certification,
-                                         :max_number_of_keywords_per_csv_file
-                                       )
+  @max_keywords_per_upload Application.compile_env!(
+                             :elixir_internal_certification,
+                             :max_keywords_per_upload
+                           )
 
   @impl Phoenix.LiveView
   def mount(_params, session, socket) do
@@ -64,7 +64,7 @@ defmodule ElixirInternalCertificationWeb.UploadLive do
     end
   end
 
-  defp max_number_of_keywords_per_csv_file, do: @max_number_of_keywords_per_csv_file
+  defp max_keywords_per_upload, do: @max_keywords_per_upload
 
   defp has_error?({:error, _}), do: true
   defp has_error?(_), do: false
@@ -79,7 +79,7 @@ defmodule ElixirInternalCertificationWeb.UploadLive do
     do:
       dgettext(
         "errors",
-        "You have selected file with more than %{max_number_of_keywords_per_csv_file} keywords",
-        max_number_of_keywords_per_csv_file: @max_number_of_keywords_per_csv_file
+        "You have selected file with more than %{max_keywords_per_upload} keywords",
+        max_keywords_per_upload: @max_keywords_per_upload
       )
 end

@@ -106,12 +106,12 @@ msgstr ""
 msgid "You have selected an unacceptable file type"
 msgstr ""
 
-#: lib/elixir_internal_certification_web/live/keyword/upload_live.ex:80
-#, elixir-autogen, elixir-format
-msgid "You have selected file with more than %{max_number_of_keywords_per_csv_file} keywords"
-msgstr ""
-
 #: lib/elixir_internal_certification_web/live/keyword/upload_live.ex:73
 #, elixir-autogen, elixir-format
 msgid "You have selected too many files"
+msgstr ""
+
+#: lib/elixir_internal_certification_web/live/keyword/upload_live.ex:80
+#, elixir-autogen, elixir-format
+msgid "You have selected file with more than %{max_keywords_per_upload} keywords"
 msgstr ""
