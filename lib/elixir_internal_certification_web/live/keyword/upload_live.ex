@@ -36,18 +36,7 @@ defmodule ElixirInternalCertificationWeb.UploadLive do
   defp handle_file_uploading(socket),
     do:
       consume_uploaded_entries(socket, :keyword, fn %{path: path}, _entry ->
-        case Keywords.parse_csv!(path) do
-          {:ok, keywords} ->
-            current_user = LiveHelpers.get_current_user_from_socket(socket)
-
-            case Keywords.create_keywords(current_user, keywords) do
-              :error -> {:postpone, {:error, :invalid_data}}
-              _ -> {:ok, path}
-            end
-
-          {:error, reason} ->
-            {:postpone, {:error, reason}}
-        end
+        process_data(socket, path)
       end)
 
   defp extract_errors(uploaded_files) do
@@ -64,6 +53,21 @@ defmodule ElixirInternalCertificationWeb.UploadLive do
        |> redirect(to: Routes.keyword_path(ElixirInternalCertificationWeb.Endpoint, :index))}
     else
       {:noreply, put_flash(socket, :error, Enum.join(errors, ", "))}
+    end
+  end
+
+  defp process_data(socket, path) do
+    case Keywords.parse_csv!(path) do
+      {:ok, keywords} ->
+        current_user = LiveHelpers.get_current_user_from_socket(socket)
+
+        case Keywords.create_keywords(current_user, keywords) do
+          :error -> {:postpone, {:error, :invalid_data}}
+          _ -> {:ok, path}
+        end
+
+      {:error, reason} ->
+        {:postpone, {:error, reason}}
     end
   end
 
