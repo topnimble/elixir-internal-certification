@@ -91,7 +91,7 @@ defmodule ElixirInternalCertificationWeb.UploadLiveTest do
       assert keywords == []
     end
 
-    test "given INVALID file extension, displays the error", %{conn: conn} do
+    test "given INVALID file extension, displays the error", %{conn: conn, user: user} do
       {:ok, view, _html} =
         live(conn, Routes.upload_path(ElixirInternalCertificationWeb.Endpoint, :index))
 
@@ -112,9 +112,13 @@ defmodule ElixirInternalCertificationWeb.UploadLiveTest do
         |> render_change()
 
       assert result =~ dgettext("errors", "You have selected an unacceptable file type")
+
+      keywords = Keywords.list_keywords(user)
+
+      assert keywords == []
     end
 
-    test "given too large file, displays the error", %{conn: conn} do
+    test "given too large file, displays the error", %{conn: conn, user: user} do
       {:ok, view, _html} =
         live(conn, Routes.upload_path(ElixirInternalCertificationWeb.Endpoint, :index))
 
@@ -136,9 +140,13 @@ defmodule ElixirInternalCertificationWeb.UploadLiveTest do
         |> render_change()
 
       assert result =~ dgettext("errors", "Too large")
+
+      keywords = Keywords.list_keywords(user)
+
+      assert keywords == []
     end
 
-    test "given more than 1 file, displays the error", %{conn: conn} do
+    test "given more than 1 file, displays the error", %{conn: conn, user: user} do
       {:ok, view, _html} =
         live(conn, Routes.upload_path(ElixirInternalCertificationWeb.Endpoint, :index))
 
@@ -165,9 +173,13 @@ defmodule ElixirInternalCertificationWeb.UploadLiveTest do
         |> render_change()
 
       assert result =~ dgettext("errors", "You have selected too many files")
+
+      keywords = Keywords.list_keywords(user)
+
+      assert keywords == []
     end
 
-    test "given a file with more than 1,000 keywords, displays the error", %{conn: conn} do
+    test "given a file with more than 1,000 keywords, displays the error", %{conn: conn, user: user} do
       {:ok, view, _html} =
         live(conn, Routes.upload_path(ElixirInternalCertificationWeb.Endpoint, :index))
 
@@ -193,6 +205,10 @@ defmodule ElixirInternalCertificationWeb.UploadLiveTest do
         |> render_submit()
 
       assert result =~ dgettext("errors", "You have selected file with more than 1000 keywords")
+
+      keywords = Keywords.list_keywords(user)
+
+      assert keywords == []
     end
   end
 end
