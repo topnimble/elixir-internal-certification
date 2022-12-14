@@ -133,6 +133,18 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
              ) == true
     end
 
+    test "given a path with NO keywords, returns :ok with an empty list of keywords" do
+      path = Path.join([@fixture_path, "/assets/empty.csv"])
+
+      assert {:ok, []} = Keywords.parse_csv!(path)
+    end
+
+    test "given a path with more than 1,000 keywords, returns {:error, :too_many_keywords}" do
+      path = Path.join([@fixture_path, "/assets/too_many_keywords.csv"])
+
+      assert {:error, :too_many_keywords} = Keywords.parse_csv!(path)
+    end
+
     test "given the path is nil, raises FunctionClauseError" do
       path = nil
 
