@@ -27,15 +27,29 @@ defmodule ElixirInternalCertification.Keyword.Keywords do
   # """
   def list_keywords(%User{} = user), do: Repo.all(KeywordQuery.list_keywords_by_user(user))
 
-  def create_keywords(%User{id: user_id} = _user, keywords) when is_list(keywords) do
-    now = NaiveDateTime.truncate(NaiveDateTime.utc_now(), :second)
+  @doc """
+  Creates a keyword.
 
-    entries =
-      Enum.map(keywords, fn keyword ->
-        %{title: keyword, user_id: user_id, inserted_at: now, updated_at: now}
-      end)
+  ## Examples
 
-    Repo.insert_all(Keyword, entries, returning: true)
+      iex> create_keyword(%User{}, %{field: value})
+      {:ok, %Keyword{}}
+
+      iex> create_keyword(%User{}, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_keyword(%User{} = user, attrs \\ %{}) do
+    user
+    |> Keyword.changeset(%Keyword{}, attrs)
+    |> Repo.insert()
+  end
+
+  def create_keywords(%User{} = user, keywords) when is_list(keywords) do
+    # TODO: implement insert_all
+    Enum.map(keywords, fn keyword ->
+      create_keyword(user, %{title: keyword})
+    end)
   end
 
   def parse_csv!(path) when is_binary(path) do
