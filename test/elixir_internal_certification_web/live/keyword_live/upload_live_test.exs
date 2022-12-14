@@ -14,7 +14,10 @@ defmodule ElixirInternalCertificationWeb.UploadLiveTest do
                            )
 
   describe "LIVE /" do
-    test "given a valid CSV file containing keywords, uploads the keywords", %{conn: conn, user: user} do
+    test "given a valid CSV file containing keywords and submits, uploads the keywords", %{
+      conn: conn,
+      user: user
+    } do
       {:ok, view, _html} =
         live(conn, Routes.upload_path(ElixirInternalCertificationWeb.Endpoint, :index))
 
@@ -52,7 +55,10 @@ defmodule ElixirInternalCertificationWeb.UploadLiveTest do
              ) == true
     end
 
-    test "uploads valid CSV file and cancels", %{conn: conn, user: user} do
+    test "given a valid CSV file containing keywords and cancels, does NOT upload the keywords", %{
+      conn: conn,
+      user: user
+    } do
       {:ok, view, _html} =
         live(conn, Routes.upload_path(ElixirInternalCertificationWeb.Endpoint, :index))
 
@@ -85,7 +91,7 @@ defmodule ElixirInternalCertificationWeb.UploadLiveTest do
       assert keywords == []
     end
 
-    test "uploads INVALID file extension", %{conn: conn} do
+    test "given INVALID file extension, displays the error", %{conn: conn} do
       {:ok, view, _html} =
         live(conn, Routes.upload_path(ElixirInternalCertificationWeb.Endpoint, :index))
 
@@ -108,7 +114,7 @@ defmodule ElixirInternalCertificationWeb.UploadLiveTest do
       assert result =~ dgettext("errors", "You have selected an unacceptable file type")
     end
 
-    test "uploads too large file", %{conn: conn} do
+    test "given too large file, displays the error", %{conn: conn} do
       {:ok, view, _html} =
         live(conn, Routes.upload_path(ElixirInternalCertificationWeb.Endpoint, :index))
 
@@ -132,7 +138,7 @@ defmodule ElixirInternalCertificationWeb.UploadLiveTest do
       assert result =~ dgettext("errors", "Too large")
     end
 
-    test "uploads more than 1 file", %{conn: conn} do
+    test "given more than 1 file, displays the error", %{conn: conn} do
       {:ok, view, _html} =
         live(conn, Routes.upload_path(ElixirInternalCertificationWeb.Endpoint, :index))
 
@@ -161,7 +167,7 @@ defmodule ElixirInternalCertificationWeb.UploadLiveTest do
       assert result =~ dgettext("errors", "You have selected too many files")
     end
 
-    test "uploads more than 1,000 keywords", %{conn: conn} do
+    test "given a file with more than 1,000 keywords, displays the error", %{conn: conn} do
       {:ok, view, _html} =
         live(conn, Routes.upload_path(ElixirInternalCertificationWeb.Endpoint, :index))
 
