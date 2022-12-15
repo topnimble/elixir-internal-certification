@@ -161,8 +161,10 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
       assert {:ok, []} = Keywords.parse_csv!(path)
     end
 
-    test "given an existing file path with more than 1,000 keywords, returns {:error, :too_many_keywords}" do
-      path = Path.join([@fixture_path, "/assets/too_many_keywords.csv"])
+    test "given an existing file path with too many keywords, returns {:error, :too_many_keywords}" do
+      path = Path.join([@fixture_path, "/assets/keywords.csv"])
+
+      expect(Keywords, :parse_csv!, fn _ -> {:error, :too_many_keywords} end)
 
       assert {:error, :too_many_keywords} = Keywords.parse_csv!(path)
     end
