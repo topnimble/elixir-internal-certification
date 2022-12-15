@@ -56,6 +56,21 @@ defmodule ElixirInternalCertification.Keyword.Keywords do
     end
   end
 
+  def parse_csv!(path) when is_binary(path) do
+    keywords =
+      path
+      |> File.stream!()
+      |> CSV.parse_stream(skip_headers: false)
+      |> Enum.to_list()
+      |> List.flatten()
+
+    if length(keywords) <= @max_keywords_per_upload do
+      {:ok, keywords}
+    else
+      {:error, :too_many_keywords}
+    end
+  end
+
   defp keywords_valid?(user, keywords) do
     {_valid_changesets, invalid_changesets} =
       keywords
@@ -73,20 +88,5 @@ defmodule ElixirInternalCertification.Keyword.Keywords do
     Enum.map(keywords, fn keyword ->
       %{user_id: user.id, title: keyword, inserted_at: now, updated_at: now}
     end)
-  end
-
-  def parse_csv!(path) when is_binary(path) do
-    keywords =
-      path
-      |> File.stream!()
-      |> CSV.parse_stream(skip_headers: false)
-      |> Enum.to_list()
-      |> List.flatten()
-
-    if length(keywords) <= @max_keywords_per_upload do
-      {:ok, keywords}
-    else
-      {:error, :too_many_keywords}
-    end
   end
 end
