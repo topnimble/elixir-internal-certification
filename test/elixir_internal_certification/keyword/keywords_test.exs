@@ -165,7 +165,7 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
 
       expect(Keywords, :parse_csv!, fn _ -> {:error, :too_many_keywords} end)
 
-      assert {:error, :too_many_keywords} = Keywords.parse_csv!(path)
+      assert Keywords.parse_csv!(path) == {:error, :too_many_keywords}
     end
 
     test "given the path is nil, raises FunctionClauseError" do
