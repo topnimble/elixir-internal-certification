@@ -41,7 +41,7 @@ defmodule ElixirInternalCertification.Keyword.Keywords do
   """
   def create_keyword(%User{} = user, attrs \\ %{}) do
     user
-    |> Keyword.changeset(%Keyword{}, attrs)
+    |> Keyword.changeset(attrs)
     |> Repo.insert()
   end
 
@@ -49,7 +49,7 @@ defmodule ElixirInternalCertification.Keyword.Keywords do
     {valid_changesets, invalid_changesets} =
       keywords
       |> Enum.map(fn keyword ->
-        Keyword.changeset(user, %Keyword{}, %{title: keyword})
+        Keyword.changeset(user, %{title: keyword})
       end)
       |> Enum.split_with(fn changeset -> changeset.valid? end)
 
