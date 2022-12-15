@@ -50,10 +50,11 @@ defmodule ElixirInternalCertificationWeb.UploadLiveTest do
 
       assert length(keywords) == 3
 
-      assert MapSet.equal?(
-               MapSet.new(Enum.map(keywords, fn keyword -> keyword.title end)),
-               MapSet.new(["first keyword", "second keyword", "third keyword"])
-             ) == true
+      assert equal?(Enum.map(keywords, fn keyword -> keyword.title end), [
+               "first keyword",
+               "second keyword",
+               "third keyword"
+             ]) == true
     end
 
     test "given a cancellation of a CSV file containing keywords, does NOT upload the keywords", %{

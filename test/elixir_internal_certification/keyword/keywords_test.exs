@@ -91,19 +91,21 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
 
       assert number_of_keywords == 3
 
-      assert MapSet.equal?(
-               MapSet.new(Enum.map(records, fn record -> record.title end)),
-               MapSet.new(["first keyword", "second keyword", "third keyword"])
-             ) == true
+      assert equal?(Enum.map(records, fn record -> record.title end), [
+               "first keyword",
+               "second keyword",
+               "third keyword"
+             ]) == true
 
       keywords = Keywords.list_keywords(user)
 
       assert length(keywords) == 3
 
-      assert MapSet.equal?(
-               MapSet.new(Enum.map(keywords, fn keyword -> keyword.title end)),
-               MapSet.new(["first keyword", "second keyword", "third keyword"])
-             ) == true
+      assert equal?(Enum.map(keywords, fn keyword -> keyword.title end), [
+               "first keyword",
+               "second keyword",
+               "third keyword"
+             ]) == true
 
       assert Enum.map(keywords, fn keyword -> assert keyword.user_id == user_id end)
     end
@@ -149,10 +151,7 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
 
       assert {:ok, keywords} = Keywords.parse_csv!(path)
 
-      assert MapSet.equal?(
-               MapSet.new(keywords),
-               MapSet.new(["first keyword", "second keyword", "third keyword"])
-             ) == true
+      assert equal?(keywords, ["first keyword", "second keyword", "third keyword"]) == true
     end
 
     test "given an existing file path with NO keywords, returns :ok with an empty list of keywords" do

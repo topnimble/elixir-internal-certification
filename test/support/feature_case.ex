@@ -7,6 +7,7 @@ defmodule ElixirInternalCertificationWeb.FeatureCase do
       use Mimic
 
       import ElixirInternalCertification.Factory
+      import ElixirInternalCertification.TestHelper
       import ElixirInternalCertificationWeb.Gettext
 
       alias ElixirInternalCertification.Repo
