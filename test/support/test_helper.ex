@@ -3,10 +3,5 @@ defprotocol ElixirInternalCertification.TestHelper do
 end
 
 defimpl ElixirInternalCertification.TestHelper, for: List do
-  def equal?(first_data, second_data),
-    do:
-      MapSet.equal?(
-        MapSet.new(first_data),
-        MapSet.new(second_data)
-      )
+  def equal?(first_data, second_data), do: Enum.sort(first_data) == Enum.sort(second_data)
 end
