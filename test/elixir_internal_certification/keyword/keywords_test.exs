@@ -111,7 +111,7 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
     test "given valid and empty attributes, returns :error" do
       user = insert(:user)
 
-      assert :error = Keywords.create_keywords(user, @valid_and_empty_attrs)
+      assert Keywords.create_keywords(user, @valid_and_empty_attrs) == :error
 
       keywords = Keywords.list_keywords(user)
 
@@ -121,7 +121,7 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
     test "given INVALID attributes, returns :error" do
       user = insert(:user)
 
-      assert :error = Keywords.create_keywords(user, @invalid_attrs)
+      assert Keywords.create_keywords(user, @invalid_attrs) == :error
 
       keywords = Keywords.list_keywords(user)
 
