@@ -34,9 +34,7 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
 
       insert(:keyword, user: another_user, title: "another keyword")
 
-      keywords = Keywords.list_keywords(user)
-
-      assert keywords == []
+      assert Keywords.list_keywords(user) == []
     end
 
     test "given a user is nil, raises FunctionClauseError" do
@@ -113,9 +111,7 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
 
       assert Keywords.create_keywords(user, @valid_and_empty_attrs) == :error
 
-      keywords = Keywords.list_keywords(user)
-
-      assert keywords == []
+      assert Keywords.list_keywords(user) == []
     end
 
     test "given INVALID attributes, returns :error" do
@@ -123,9 +119,7 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
 
       assert Keywords.create_keywords(user, @invalid_attrs) == :error
 
-      keywords = Keywords.list_keywords(user)
-
-      assert keywords == []
+      assert Keywords.list_keywords(user) == []
     end
 
     test "given INVALID attribute type, raises FunctionClauseError" do
@@ -135,9 +129,7 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
         Keywords.create_keywords(user, "invalid attribute type")
       end
 
-      keywords = Keywords.list_keywords(user)
-
-      assert keywords == []
+      assert Keywords.list_keywords(user) == []
     end
 
     test "given a user is nil, raises FunctionClauseError" do

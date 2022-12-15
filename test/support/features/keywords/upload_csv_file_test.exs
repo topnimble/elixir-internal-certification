@@ -42,8 +42,6 @@ defmodule ElixirInternalCertificationWeb.Features.Keywords.UploadCSVFileTest do
     |> attach_file(Query.file_field("keyword"), path: @fixture_path <> "/assets/keywords.csv")
     |> click(css(@selectors[:remove_file_button]))
 
-    keywords = Keywords.list_keywords(user)
-
-    assert keywords == []
+    assert Keywords.list_keywords(user) == []
   end
 end

@@ -86,9 +86,7 @@ defmodule ElixirInternalCertificationWeb.UploadLiveTest do
 
       refute result =~ "keywords.csv"
 
-      keywords = Keywords.list_keywords(user)
-
-      assert keywords == []
+      assert Keywords.list_keywords(user) == []
     end
 
     test "given INVALID file extension, displays the error", %{conn: conn, user: user} do
@@ -113,9 +111,7 @@ defmodule ElixirInternalCertificationWeb.UploadLiveTest do
 
       assert result =~ dgettext("errors", "You have selected an unacceptable file type")
 
-      keywords = Keywords.list_keywords(user)
-
-      assert keywords == []
+      assert Keywords.list_keywords(user) == []
     end
 
     test "given too large file, displays the error", %{conn: conn, user: user} do
@@ -141,9 +137,7 @@ defmodule ElixirInternalCertificationWeb.UploadLiveTest do
 
       assert result =~ dgettext("errors", "Too large")
 
-      keywords = Keywords.list_keywords(user)
-
-      assert keywords == []
+      assert Keywords.list_keywords(user) == []
     end
 
     test "given more than 1 file, displays the error", %{conn: conn, user: user} do
@@ -174,9 +168,7 @@ defmodule ElixirInternalCertificationWeb.UploadLiveTest do
 
       assert result =~ dgettext("errors", "You have selected too many files")
 
-      keywords = Keywords.list_keywords(user)
-
-      assert keywords == []
+      assert Keywords.list_keywords(user) == []
     end
 
     test "given a file with more than 1,000 keywords, displays the error", %{conn: conn, user: user} do
@@ -206,9 +198,7 @@ defmodule ElixirInternalCertificationWeb.UploadLiveTest do
 
       assert result =~ dgettext("errors", "You have selected file with more than 1000 keywords")
 
-      keywords = Keywords.list_keywords(user)
-
-      assert keywords == []
+      assert Keywords.list_keywords(user) == []
     end
 
     test "given a file with INVALID data, displays the error", %{conn: conn, user: user} do
@@ -233,9 +223,7 @@ defmodule ElixirInternalCertificationWeb.UploadLiveTest do
 
       assert result =~ dgettext("errors", "You have selected file with invalid data")
 
-      keywords = Keywords.list_keywords(user)
-
-      assert keywords == []
+      assert Keywords.list_keywords(user) == []
     end
   end
 end
