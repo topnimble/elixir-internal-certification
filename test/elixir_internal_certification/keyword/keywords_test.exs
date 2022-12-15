@@ -61,7 +61,9 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
     test "given INVALID attributes, returns {:error, %Ecto.Changeset{}}" do
       user = insert(:user)
 
-      assert {:error, %Ecto.Changeset{}} = Keywords.create_keyword(user, @invalid_attrs)
+      assert {:error, changeset} = Keywords.create_keyword(user, @invalid_attrs)
+
+      assert "can't be blank" in errors_on(changeset).title
     end
 
     test "given a user is nil, raises FunctionClauseError" do
