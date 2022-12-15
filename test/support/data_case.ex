@@ -31,6 +31,7 @@ defmodule ElixirInternalCertification.DataCase do
       import Ecto.Query
       import ElixirInternalCertification.DataCase
       import ElixirInternalCertification.Factory
+      import ElixirInternalCertification.TestHelper
     end
   end
 

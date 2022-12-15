@@ -1,0 +1,48 @@
+<%= for err <- upload_errors(@uploads.keyword) do %>
+  <p class="alert alert-danger"><%= error_to_string(err) %></p>
+<% end %>
+
+<%= for entry <- @uploads.keyword.entries do %>
+  <%= for err <- upload_errors(@uploads.keyword, entry) do %>
+    <p class="alert alert-danger"><%= error_to_string(err) %></p>
+  <% end %>
+
+  <div class="card card-body mb-3">
+    <div class="upload-entry">
+      <div>
+        <div><%= entry.client_name %></div>
+      </div>
+
+      <div class="d-flex">
+        <progress class="flex-fill" value={entry.progress} max="100">
+          <%= entry.progress %>%
+        </progress>
+
+        <button
+          class="btn btn-light remove-file-button"
+          phx-click="cancel-upload"
+          phx-value-ref={entry.ref}
+          aria-label="cancel"
+        >
+          &times;
+        </button>
+      </div>
+    </div>
+  </div>
+<% end %>
+
+<section phx-drop-target={@uploads.keyword.ref}>
+  <form id="upload-form" phx-submit="save" phx-change="validate">
+    <div class="d-flex flex-column">
+      <%= live_file_input(@uploads.keyword, class: "form-control") %>
+
+      <small>
+        Note: The CSV file cannot contain more than <%= max_keywords_per_upload() %> keywords
+      </small>
+
+      <%= if length(@uploads.keyword.entries) > 0 do %>
+        <button class="btn btn-primary mt-3 upload-button" type="submit">Upload</button>
+      <% end %>
+    </div>
+  </form>
+</section>

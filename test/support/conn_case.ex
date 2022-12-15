@@ -32,6 +32,7 @@ defmodule ElixirInternalCertificationWeb.ConnCase do
       import Phoenix.ConnTest
       import ElixirInternalCertificationWeb.ConnCase
       import ElixirInternalCertification.Factory
+      import ElixirInternalCertification.TestHelper
 
       alias ElixirInternalCertificationWeb.Router.Helpers, as: Routes
 
