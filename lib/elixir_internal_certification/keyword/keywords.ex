@@ -27,6 +27,8 @@ defmodule ElixirInternalCertification.Keyword.Keywords do
   # """
   def list_keywords(%User{} = user), do: Repo.all(KeywordQuery.list_keywords_by_user(user))
 
+  def get_keyword!(id), do: Repo.get!(Keyword, id)
+
   @doc """
   Creates a keyword.
 
