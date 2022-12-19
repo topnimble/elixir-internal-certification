@@ -9,8 +9,3 @@
 ## effect: edit them in PO (.po) files instead.
 msgid ""
 msgstr ""
-
-#: lib/elixir_internal_certification_web/templates/page/index.html.heex:2
-#, elixir-autogen, elixir-format
-msgid "Welcome to %{name}!"
-msgstr ""

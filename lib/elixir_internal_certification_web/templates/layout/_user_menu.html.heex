@@ -1,4 +1,4 @@
-<div>
+<div class="user-menu">
   <%= if @current_user do %>
     <div class="dropdown text-end">
       <a
@@ -7,7 +7,6 @@
         data-bs-toggle="dropdown"
         aria-expanded="false"
       >
-        <img src="" alt="" class="rounded-circle" width="32" height="32" />
         <%= @current_user.email %>
       </a>
       <ul class="dropdown-menu text-small" style="">
@@ -15,7 +14,7 @@
           <%= link("Log out",
             to: Routes.user_session_path(@conn, :delete),
             method: :delete,
-            class: "dropdown-item"
+            class: "dropdown-item log-out-button"
           ) %>
         </li>
       </ul>
