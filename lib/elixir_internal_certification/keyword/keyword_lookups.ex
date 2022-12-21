@@ -26,8 +26,8 @@ defmodule ElixirInternalCertification.Keyword.KeywordLookups do
     create_keyword_lookup(data_to_insert)
   end
 
-  def parse_lookup_result(doc) do
-    {:ok, html} = Floki.parse_document(doc)
+  def parse_lookup_result(raw_html) do
+    {:ok, html} = Floki.parse_document(raw_html)
 
     number_of_adwords_advertisers =
       html
@@ -44,30 +44,29 @@ defmodule ElixirInternalCertification.Keyword.KeywordLookups do
       html
       |> Floki.find("#tads")
       |> Floki.find("[data-text-ad=1]")
-      |> Floki.find("a[data-ved]:first-child")
+      |> Floki.find("a[href][data-ved]:first-child")
       |> Floki.attribute("a", "href")
 
-    number_of_non_adwords =
+    urls_of_non_adwords =
       html
       |> Floki.find("#res")
-      |> Floki.filter_out("[aria-hidden=true]")
-      |> Floki.find("a[data-ved]:first-child")
-      |> length()
-
-    urls_of_non_adwords = html
-      |> Floki.find("#res")
-      |> Floki.filter_out("[aria-hidden=true]")
-      |> Floki.find("a[data-ved]:first-child")
+      |> Floki.find("a[href][data-ved][data-usg]:first-child")
       |> Floki.attribute("a", "href")
 
-    number_of_links =
+    number_of_non_adwords = length(urls_of_non_adwords)
+
+    urls_of_adwords_advertisers_bottom_position =
       html
-      |> Floki.filter_out("[aria-hidden=true]")
-      |> Floki.find("a[data-ved]:first-child")
-      |> length()
+      |> Floki.find("#bottomads")
+      |> Floki.find("[data-text-ad=1]")
+      |> Floki.find("a[href][data-ved]:first-child")
+      |> Floki.attribute("a", "href")
+
+    link_urls = urls_of_adwords_advertisers_top_position ++ urls_of_non_adwords ++ urls_of_adwords_advertisers_bottom_position
+    number_of_links = length(link_urls)
 
     %{
-      html: html,
+      html: raw_html,
       number_of_adwords_advertisers: number_of_adwords_advertisers,
       number_of_adwords_advertisers_top_position: number_of_adwords_advertisers_top_position,
       urls_of_adwords_advertisers_top_position: urls_of_adwords_advertisers_top_position,

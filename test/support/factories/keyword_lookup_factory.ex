@@ -9,7 +9,8 @@ defmodule ElixirInternalCertification.KeywordLookupFactory do
           html: Faker.Lorem.paragraphs(),
           number_of_adwords_advertisers: random_between(0, 10),
           number_of_adwords_advertisers_top_position: random_between(0, 10),
-          urls_of_adwords_advertisers_top_position: Faker.Util.sample_uniq(random_between(0, 10), &Faker.Internet.url/0),
+          urls_of_adwords_advertisers_top_position:
+            Faker.Util.sample_uniq(random_between(0, 10), &Faker.Internet.url/0),
           number_of_non_adwords: random_between(0, 10),
           urls_of_non_adwords: Faker.Util.sample_uniq(random_between(0, 10), &Faker.Internet.url/0),
           number_of_links: random_between(0, 10)
