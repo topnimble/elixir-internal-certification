@@ -184,4 +184,20 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
       end
     end
   end
+
+  describe "get_keyword!/1" do
+    test "given a valid keyword ID, returns the keyword" do
+      %Keyword{id: keyword_id} = insert(:keyword)
+
+      keyword = Keywords.get_keyword!(keyword_id)
+
+      assert keyword.id == keyword_id
+    end
+
+    test "given empty keyword ID, raises ArgumentError" do
+      assert_raise ArgumentError, fn ->
+        Keywords.get_keyword!(nil)
+      end
+    end
+  end
 end
