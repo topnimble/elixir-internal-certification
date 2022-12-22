@@ -52,6 +52,7 @@ defmodule ElixirInternalCertification.MixProject do
       {:faker, "~> 0.17.0", [only: [:dev, :test], runtime: false]},
       {:floki, ">= 0.30.0", only: :test},
       {:gettext, "~> 0.18"},
+      {:hackney, "~> 1.18"},
       {:jason, "~> 1.2"},
       {:mimic, "~> 1.7.4", [only: :test]},
       {:mix_test_interactive, "~> 1.2.1", [only: :dev, runtime: false]},
@@ -70,6 +71,7 @@ defmodule ElixirInternalCertification.MixProject do
       {:swoosh, "~> 1.3"},
       {:telemetry_metrics, "~> 0.6"},
       {:telemetry_poller, "~> 1.0"},
+      {:tesla, "~> 1.5"},
       {:wallaby, "~> 0.30.1", [only: :test, runtime: false]}
     ]
   end
