@@ -62,7 +62,10 @@ defmodule ElixirInternalCertification.Keyword.KeywordLookups do
       |> Floki.find("a[href][data-ved]:first-child")
       |> Floki.attribute("a", "href")
 
-    link_urls = urls_of_adwords_advertisers_top_position ++ urls_of_non_adwords ++ urls_of_adwords_advertisers_bottom_position
+    link_urls =
+      urls_of_adwords_advertisers_top_position ++
+        urls_of_non_adwords ++ urls_of_adwords_advertisers_bottom_position
+
     number_of_links = length(link_urls)
 
     %{
@@ -82,7 +85,7 @@ defmodule ElixirInternalCertification.Keyword.KeywordLookups do
     |> Repo.insert()
   end
 
-  defp get_search_results(query) do
+  defp get_html_of_search_results(query) do
     {:ok, %Tesla.Env{body: body}} = Google.search(query)
     body
   end
