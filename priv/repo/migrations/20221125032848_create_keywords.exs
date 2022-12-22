@@ -3,8 +3,8 @@ defmodule ElixirInternalCertification.Repo.Migrations.CreateKeywords do
 
   def change do
     create table(:keywords) do
-      add :title, :string, null: false
-      add :user_id, references(:users, on_delete: :nothing)
+      add :title, :text, null: false
+      add :user_id, references(:users, on_delete: :delete_all), null: false
 
       timestamps()
     end

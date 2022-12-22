@@ -1,4 +1,4 @@
-defmodule ElixirInternalCertification.Google.Client do
+defmodule ElixirInternalCertification.Fetcher.Client.Google do
   use Tesla
 
   plug Tesla.Middleware.BaseUrl, "https://google.com"

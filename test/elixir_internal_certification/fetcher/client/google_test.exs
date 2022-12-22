@@ -1,8 +1,8 @@
-defmodule ElixirInternalCertification.Google.ClientTest do
+defmodule ElixirInternalCertification.Fetcher.Client.GoogleTest do
   use ExUnit.Case, async: true
   use ExVCR.Mock, adapter: ExVCR.Adapter.Hackney
 
-  alias ElixirInternalCertification.Google.Client, as: GoogleClient
+  alias ElixirInternalCertification.Fetcher.Client.Google, as: GoogleClient
 
   describe "search/1" do
     test "given a search query, returns the search results" do

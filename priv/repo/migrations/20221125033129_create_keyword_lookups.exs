@@ -3,14 +3,14 @@ defmodule ElixirInternalCertification.Repo.Migrations.CreateKeywordLookups do
 
   def change do
     create table(:keyword_lookups) do
-      add :keyword_id, references(:keywords)
-      add :html, :text
-      add :number_of_adwords_advertisers, :integer
-      add :number_of_adwords_advertisers_top_position, :integer
-      add :urls_of_adwords_advertisers_top_position, {:array, :string}
-      add :number_of_non_adwords, :integer
-      add :urls_of_non_adwords, {:array, :string}
-      add :number_of_links, :integer
+      add :keyword_id, references(:keywords, on_delete: :delete_all), null: false
+      add :html, :text, null: false
+      add :number_of_adwords_advertisers, :integer, null: false
+      add :number_of_adwords_advertisers_top_position, :integer, null: false
+      add :urls_of_adwords_advertisers_top_position, {:array, :text}, null: false
+      add :number_of_non_adwords, :integer, null: false
+      add :urls_of_non_adwords, {:array, :text}, null: false
+      add :number_of_links, :integer, null: false
 
       timestamps()
     end
