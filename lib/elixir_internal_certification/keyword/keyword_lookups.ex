@@ -6,10 +6,9 @@ defmodule ElixirInternalCertification.Keyword.KeywordLookups do
 
   import Ecto.Query, warn: false
 
-  alias ElixirInternalCertification.Google
+  alias ElixirInternalCertification.{Google, Repo}
   alias ElixirInternalCertification.Keyword.Keywords
-  alias ElixirInternalCertification.Keyword.Schemas.KeywordLookup
-  alias ElixirInternalCertification.Repo
+  alias ElixirInternalCertification.Keyword.Schemas.{Keyword, KeywordLookup}
 
   @impl true
   def perform(%{args: %{"keyword_id" => keyword_id}}) do
@@ -18,12 +17,14 @@ defmodule ElixirInternalCertification.Keyword.KeywordLookups do
   end
 
   def look_up(keyword_id) do
-    keyword = Keywords.get_keyword!(keyword_id)
-    response_body = get_search_results(keyword)
-    response_body = filter_out_invalid_characters(response_body)
-    parsed_lookup_result = parse_lookup_result(response_body)
-    data_to_insert = parsed_lookup_result |> Map.put(:title, keyword.title)
-    create_keyword_lookup(data_to_insert)
+    %Keyword{title: keyword_title} = Keywords.get_keyword!(keyword_id)
+
+    keyword_title
+    |> get_html_of_search_results()
+    |> filter_out_invalid_characters()
+    |> parse_lookup_result()
+    |> Map.put(:title, keyword_title)
+    |> create_keyword_lookup()
   end
 
   def parse_lookup_result(raw_html) do

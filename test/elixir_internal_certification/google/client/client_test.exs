@@ -6,7 +6,10 @@ defmodule ElixirInternalCertification.Google.ClientTest do
 
   describe "search/1" do
     test "given a search query, returns the search results" do
-      use_cassette :stub, [url: "https://google.com/search?q=nimble", body: ~S(<html itemscope="" itemtype="http://schema.org/SearchResultsPage" lang="en"><head><title>nimble - Google Search</title>...</head>...</html>)] do
+      use_cassette :stub,
+        url: "https://google.com/search?q=nimble",
+        body:
+          ~S(<html itemscope="" itemtype="http://schema.org/SearchResultsPage" lang="en"><head><title>nimble - Google Search</title>...</head>...</html>) do
         assert {:ok, %Tesla.Env{} = response} = GoogleClient.search("nimble")
         assert response.body =~ "nimble"
         assert response.status == 200
