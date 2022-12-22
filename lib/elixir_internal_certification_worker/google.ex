@@ -4,7 +4,7 @@ defmodule ElixirInternalCertificationWorker.Google do
   import Ecto.Query, warn: false
 
   alias ElixirInternalCertification.Fetcher.Google, as: GoogleFetcher
-  alias ElixirInternalCertification.Keyword.{Keywords, KeywordLookups}
+  alias ElixirInternalCertification.Keyword.{KeywordLookups, Keywords}
   alias ElixirInternalCertification.Keyword.Schemas.Keyword
   alias ElixirInternalCertification.Parser.Google, as: GoogleParser
 
