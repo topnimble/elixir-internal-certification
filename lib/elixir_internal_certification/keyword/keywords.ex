@@ -55,6 +55,12 @@ defmodule ElixirInternalCertification.Keyword.Keywords do
     end
   end
 
+  def update_status(%Keyword{} = keyword, status) do
+    keyword
+    |> Keyword.update_status_changeset(%{status: status})
+    |> Repo.update()
+  end
+
   defp keywords_valid?(user, keywords) do
     {_valid_changesets, invalid_changesets} =
       keywords
@@ -70,7 +76,7 @@ defmodule ElixirInternalCertification.Keyword.Keywords do
     now = NaiveDateTime.truncate(NaiveDateTime.utc_now(), :second)
 
     Enum.map(keywords, fn keyword ->
-      %{user_id: user_id, title: keyword, inserted_at: now, updated_at: now}
+      %{user_id: user_id, title: keyword, status: :pending, inserted_at: now, updated_at: now}
     end)
   end
 end

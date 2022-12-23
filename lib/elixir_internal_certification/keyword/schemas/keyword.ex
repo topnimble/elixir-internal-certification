@@ -6,8 +6,11 @@ defmodule ElixirInternalCertification.Keyword.Schemas.Keyword do
 
   alias ElixirInternalCertification.Account.Schemas.User
 
+  @keyword_status_enum [:pending, :completed, :failed]
+
   schema "keywords" do
     field :title, :string
+    field :status, Ecto.Enum, values: @keyword_status_enum, default: :pending
 
     belongs_to :user, User
 
@@ -21,5 +24,11 @@ defmodule ElixirInternalCertification.Keyword.Schemas.Keyword do
     |> validate_required([:title])
     |> put_assoc(:user, user)
     |> assoc_constraint(:user)
+  end
+
+  def update_status_changeset(keyword \\ %__MODULE__{}, attrs) do
+    keyword
+    |> cast(attrs, [:status])
+    |> validate_required([:status])
   end
 end

@@ -5,7 +5,7 @@ defmodule ElixirInternalCertification.KeywordLookupFactory do
     quote do
       def keyword_lookup_factory(attrs \\ %{}) do
         keyword_lookup = %KeywordLookup{
-          keyword: build(:keyword),
+          keyword: build(:keyword, status: :completed),
           html: Faker.Lorem.paragraphs(),
           number_of_adwords_advertisers: random_between(0, 10),
           number_of_adwords_advertisers_top_position: random_between(0, 10),

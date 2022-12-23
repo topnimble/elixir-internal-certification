@@ -1,5 +1,5 @@
 defmodule ElixirInternalCertificationWorker.Google do
-  use Oban.Worker, max_attempts: 10
+  use Oban.Worker, max_attempts: 4
 
   import Ecto.Query, warn: false
 
@@ -8,11 +8,21 @@ defmodule ElixirInternalCertificationWorker.Google do
   alias ElixirInternalCertification.Keyword.Schemas.Keyword
   alias ElixirInternalCertification.Parser.Google, as: GoogleParser
 
-  @impl Oban.Worker
-  def perform(%Oban.Job{args: %{"keyword_id" => keyword_id}} = _oban_job), do: execute(keyword_id)
+  def perform(%Oban.Job{args: %{"keyword_id" => keyword_id}} = _oban_job, attempt: 4) do
+    keyword = Keywords.get_keyword!(keyword_id)
+    Keywords.update_status(keyword, :failed)
+    {:error, "Failed to look up the keyword ID: #{keyword_id}"}
+  end
 
-  def execute(keyword_id) do
-    %Keyword{id: keyword_id, title: keyword_title} = _keyword = Keywords.get_keyword!(keyword_id)
+  def perform(%Oban.Job{args: %{"keyword_id" => keyword_id}} = _oban_job) do
+    keyword = Keywords.get_keyword!(keyword_id)
+    result = execute(keyword)
+    Keywords.update_status(keyword, :completed)
+    result
+  end
+
+  def execute(%Keyword{} = keyword) do
+    %Keyword{id: keyword_id, title: keyword_title} = keyword
 
     keyword_title
     |> get_html_of_search_results()

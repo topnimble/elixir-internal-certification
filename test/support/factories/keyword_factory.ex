@@ -6,7 +6,8 @@ defmodule ElixirInternalCertification.KeywordFactory do
       def keyword_factory(attrs \\ %{}) do
         keyword = %Keyword{
           title: Faker.Lorem.word(),
-          user: build(:user)
+          user: build(:user),
+          status: :pending
         }
 
         keyword
