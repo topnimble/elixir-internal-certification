@@ -29,24 +29,6 @@ defmodule ElixirInternalCertification.Keyword.Keywords do
 
   def get_keyword!(id), do: Repo.get!(Keyword, id)
 
-  @doc """
-  Creates a keyword.
-
-  ## Examples
-
-      iex> create_keyword(%User{}, %{field: value})
-      {:ok, %Keyword{}}
-
-      iex> create_keyword(%User{}, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def create_keyword(%User{} = user, attrs \\ %{}) do
-    user
-    |> Keyword.changeset(attrs)
-    |> Repo.insert()
-  end
-
   def create_keywords(%User{id: _user_id} = user, keywords) when is_list(keywords) do
     case keywords_valid?(user, keywords) do
       true ->
