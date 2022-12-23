@@ -24,7 +24,7 @@ defmodule ElixirInternalCertification.Keyword.KeywordLookups do
     |> Repo.insert()
   end
 
-  defp randomize_number_of_seconds_based_on_pending_jobs() do
+  defp randomize_number_of_seconds_based_on_pending_jobs do
     number_of_pending_oban_jobs =
       Oban
       |> Oban.config()
