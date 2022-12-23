@@ -1,6 +1,5 @@
 defmodule ElixirInternalCertificationWorker.GoogleTest do
   use ElixirInternalCertification.DataCase, async: true
-  use Oban.Testing, repo: ElixirInternalCertification.Repo
 
   alias ElixirInternalCertification.Keyword.Schemas.Keyword
   alias ElixirInternalCertificationWorker.Google, as: GoogleWorker

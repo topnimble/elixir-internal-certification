@@ -27,6 +27,8 @@ defmodule ElixirInternalCertificationWeb.ConnCase do
 
       use Mimic
 
+      use Oban.Testing, repo: ElixirInternalCertification.Repo
+
       # Import conveniences for testing with connections
       import Plug.Conn
       import Phoenix.ConnTest

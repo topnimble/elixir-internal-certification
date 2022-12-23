@@ -1,6 +1,5 @@
 defmodule ElixirInternalCertification.Keyword.KeywordLookupsTest do
   use ElixirInternalCertification.DataCase
-  use Oban.Testing, repo: ElixirInternalCertification.Repo
 
   alias ElixirInternalCertification.Keyword.KeywordLookups
   alias ElixirInternalCertification.Keyword.Schemas.{Keyword, KeywordLookup}
