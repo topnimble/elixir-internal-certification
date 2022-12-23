@@ -16,7 +16,6 @@ defmodule ElixirInternalCertificationWorker.Google do
 
     keyword_title
     |> get_html_of_search_results()
-    |> filter_out_invalid_characters()
     |> GoogleParser.parse_lookup_result()
     |> Map.put(:keyword_id, keyword_id)
     |> KeywordLookups.create_keyword_lookup()
@@ -25,16 +24,5 @@ defmodule ElixirInternalCertificationWorker.Google do
   defp get_html_of_search_results(query) do
     {:ok, %Tesla.Env{body: body}} = GoogleFetcher.search(query)
     body
-  end
-
-  defp filter_out_invalid_characters(string) do
-    if String.valid?(string) do
-      string
-    else
-      string
-      |> String.chunk(:printable)
-      |> Enum.filter(&String.printable?/1)
-      |> Enum.join()
-    end
   end
 end
