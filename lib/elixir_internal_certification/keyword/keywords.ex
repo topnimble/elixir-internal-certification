@@ -66,11 +66,11 @@ defmodule ElixirInternalCertification.Keyword.Keywords do
     Enum.empty?(invalid_changesets)
   end
 
-  defp create_params_from_keywords(user, keywords) do
+  defp create_params_from_keywords(%User{id: user_id} = _user, keywords) do
     now = NaiveDateTime.truncate(NaiveDateTime.utc_now(), :second)
 
     Enum.map(keywords, fn keyword ->
-      %{user_id: user.id, title: keyword, inserted_at: now, updated_at: now}
+      %{user_id: user_id, title: keyword, inserted_at: now, updated_at: now}
     end)
   end
 end
