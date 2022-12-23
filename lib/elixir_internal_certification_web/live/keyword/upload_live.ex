@@ -1,7 +1,7 @@
 defmodule ElixirInternalCertificationWeb.UploadLive do
   use ElixirInternalCertificationWeb, :live_view
 
-  alias ElixirInternalCertification.Keyword.{Keywords, KeywordLookups}
+  alias ElixirInternalCertification.Keyword.{KeywordLookups, Keywords}
   alias ElixirInternalCertificationWeb.LiveHelpers
 
   @max_keywords_per_upload Application.compile_env!(
@@ -62,10 +62,12 @@ defmodule ElixirInternalCertificationWeb.UploadLive do
         current_user = LiveHelpers.get_current_user_from_socket(socket)
 
         case Keywords.create_keywords(current_user, keywords) do
-          :error -> {:postpone, {:error, :invalid_data}}
+          :error ->
+            {:postpone, {:error, :invalid_data}}
+
           {_, records} ->
-            Enum.map(records, &KeywordLookups.schedule_keyword_lookup/1)
-            {:ok, path}
+            scheduled_keyword_lookups = Enum.map(records, &KeywordLookups.schedule_keyword_lookup/1)
+            {:ok, {path, scheduled_keyword_lookups}}
         end
 
       {:error, reason} ->
