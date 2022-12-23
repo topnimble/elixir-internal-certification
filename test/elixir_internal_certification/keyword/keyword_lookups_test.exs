@@ -10,9 +10,15 @@ defmodule ElixirInternalCertification.Keyword.KeywordLookupsTest do
     test "given a keyword, returns the enqueued job" do
       %Keyword{id: keyword_id} = keyword = insert(:keyword)
 
-      KeywordLookups.schedule_keyword_lookup(keyword)
+      assert {:ok, %Oban.Job{}} = KeywordLookups.schedule_keyword_lookup(keyword)
 
-      assert_enqueued worker: GoogleWorker, args: %{"keyword_id" => keyword_id}
+      assert_enqueued(worker: GoogleWorker, args: %{"keyword_id" => keyword_id})
+    end
+
+    test "given EMPTY keyword, raises FunctionClauseError" do
+      assert_raise FunctionClauseError, fn ->
+        KeywordLookups.schedule_keyword_lookup(nil)
+      end
     end
   end
 

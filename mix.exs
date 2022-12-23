@@ -50,7 +50,7 @@ defmodule ElixirInternalCertification.MixProject do
       {:excoveralls, "~> 0.15.0", [only: :test]},
       {:exvcr, "~> 0.13.4", [only: :test]},
       {:faker, "~> 0.17.0", [only: [:dev, :test], runtime: false]},
-      {:floki, ">= 0.30.0", only: :test},
+      {:floki, ">= 0.30.0"},
       {:gettext, "~> 0.18"},
       {:hackney, "~> 1.18"},
       {:jason, "~> 1.2"},
