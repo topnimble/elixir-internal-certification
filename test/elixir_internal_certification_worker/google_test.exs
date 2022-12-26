@@ -1,6 +1,7 @@
 defmodule ElixirInternalCertificationWorker.GoogleTest do
   use ElixirInternalCertification.DataCase, async: false
 
+  alias ElixirInternalCertification.Fetcher.Google, as: GoogleFetcher
   alias ElixirInternalCertification.Keyword.Schemas.{Keyword, KeywordLookup}
   alias ElixirInternalCertificationWorker.Google, as: GoogleWorker
 
@@ -9,12 +10,29 @@ defmodule ElixirInternalCertificationWorker.GoogleTest do
       use_cassette "google/nimble", match_requests_on: [:query] do
         %Keyword{id: keyword_id} = keyword = insert(:keyword, title: "nimble")
 
-        {:ok, %KeywordLookup{keyword_id: updated_keyword_lookup_keyword_id}} = perform_job(GoogleWorker, %{"keyword_id" => keyword_id})
+        {:ok, %KeywordLookup{keyword_id: updated_keyword_lookup_keyword_id}} =
+          perform_job(GoogleWorker, %{"keyword_id" => keyword_id})
 
         %Keyword{status: updated_keyword_status} = Repo.reload(keyword)
 
         assert updated_keyword_lookup_keyword_id == keyword_id
         assert updated_keyword_status == :completed
+      end
+    end
+
+    test "given a keyword ID and the job is failed, returns the keyword lookup" do
+      use_cassette "google/nimble", match_requests_on: [:query] do
+        expect(GoogleFetcher, :search, fn _query ->
+          {:error, :timeout}
+        end)
+
+        %Keyword{id: keyword_id} = keyword = insert(:keyword, title: "nimble")
+
+        {:error, :timeout} = perform_job(GoogleWorker, %{"keyword_id" => keyword_id})
+
+        %Keyword{status: updated_keyword_status} = Repo.reload(keyword)
+
+        assert updated_keyword_status == :pending
       end
     end
 

@@ -177,7 +177,10 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
       %Keyword{status: keyword_status} = keyword = insert(:keyword, status: :pending)
 
       assert keyword_status == :pending
-      assert {:ok, %Keyword{status: updated_keyword_status}} = Keywords.update_status(keyword, :completed)
+
+      assert {:ok, %Keyword{status: updated_keyword_status}} =
+               Keywords.update_status(keyword, :completed)
+
       assert updated_keyword_status == :completed
     end
 
