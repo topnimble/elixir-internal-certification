@@ -1,28 +1,40 @@
 defmodule ElixirInternalCertificationWorker.GoogleTest do
-  use ElixirInternalCertification.DataCase, async: true
+  use ElixirInternalCertification.DataCase, async: false
 
-  alias ElixirInternalCertification.Keyword.Schemas.Keyword
+  alias ElixirInternalCertification.Keyword.Schemas.{Keyword, KeywordLookup}
   alias ElixirInternalCertificationWorker.Google, as: GoogleWorker
 
   describe "perform/1" do
-    test "given a keyword ID, returns the keyword lookup" do
+    test "given a keyword ID and the job is completed, returns the keyword lookup" do
       use_cassette "google/nimble", match_requests_on: [:query] do
         %Keyword{id: keyword_id} = keyword = insert(:keyword, title: "nimble")
 
-        {:ok, keyword_lookup} = perform_job(GoogleWorker, %{"keyword_id" => keyword_id})
+        {:ok, %KeywordLookup{keyword_id: updated_keyword_lookup_keyword_id}} = perform_job(GoogleWorker, %{"keyword_id" => keyword_id})
 
-        keyword = Repo.reload(keyword)
+        %Keyword{status: updated_keyword_status} = Repo.reload(keyword)
 
-        assert keyword_lookup.keyword_id == keyword_id
-        assert keyword.status == :completed
+        assert updated_keyword_lookup_keyword_id == keyword_id
+        assert updated_keyword_status == :completed
+      end
+    end
+
+    test "given max attempts reached, returns {:error, message}" do
+      use_cassette "google/nimble", match_requests_on: [:query] do
+        %Keyword{id: keyword_id} = keyword = insert(:keyword, title: "nimble")
+
+        {:error, message} = perform_job(GoogleWorker, %{"keyword_id" => keyword_id}, attempt: 4)
+
+        assert message == "Failed to look up the keyword ID: #{keyword_id}"
+
+        %Keyword{status: updated_keyword_status} = Repo.reload(keyword)
+
+        assert updated_keyword_status == :failed
       end
     end
 
     test "given EMPTY keyword ID, raises ArgumentError" do
-      use_cassette "google/nimble", match_requests_on: [:query] do
-        assert_raise ArgumentError, fn ->
-          perform_job(GoogleWorker, %{"keyword_id" => nil})
-        end
+      assert_raise ArgumentError, fn ->
+        perform_job(GoogleWorker, %{"keyword_id" => nil})
       end
     end
   end
