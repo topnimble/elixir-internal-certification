@@ -17,6 +17,12 @@ defmodule ElixirInternalCertification.Keyword.Schemas.Keyword do
     timestamps()
   end
 
+  def update_status_changeset(keyword \\ %__MODULE__{}, attrs) do
+    keyword
+    |> cast(attrs, [:status])
+    |> validate_required([:status])
+  end
+
   @doc false
   def changeset(%User{} = user, keyword \\ %__MODULE__{}, attrs) do
     keyword
@@ -24,11 +30,5 @@ defmodule ElixirInternalCertification.Keyword.Schemas.Keyword do
     |> validate_required([:title])
     |> put_assoc(:user, user)
     |> assoc_constraint(:user)
-  end
-
-  def update_status_changeset(keyword \\ %__MODULE__{}, attrs) do
-    keyword
-    |> cast(attrs, [:status])
-    |> validate_required([:status])
   end
 end

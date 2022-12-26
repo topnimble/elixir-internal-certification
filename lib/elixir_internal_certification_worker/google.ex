@@ -35,9 +35,8 @@ defmodule ElixirInternalCertificationWorker.Google do
          params <-
            body
            |> GoogleParser.parse_lookup_result()
-           |> Map.put(:keyword_id, keyword_id),
-         result <- KeywordLookups.create_keyword_lookup(params) do
-      result
+           |> Map.put(:keyword_id, keyword_id) do
+      KeywordLookups.create_keyword_lookup(params)
     end
   end
 end
