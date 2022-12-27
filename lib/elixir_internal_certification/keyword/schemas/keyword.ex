@@ -23,7 +23,6 @@ defmodule ElixirInternalCertification.Keyword.Schemas.Keyword do
     |> validate_required([:status])
   end
 
-  @doc false
   def changeset(%User{} = user, keyword \\ %__MODULE__{}, attrs) do
     keyword
     |> cast(attrs, [:title])

@@ -18,7 +18,6 @@ defmodule ElixirInternalCertification.Keyword.Schemas.KeywordLookup do
     timestamps()
   end
 
-  @doc false
   def changeset(keyword_lookup \\ %__MODULE__{}, attrs) do
     keyword_lookup
     |> cast(attrs, [
