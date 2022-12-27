@@ -8,8 +8,10 @@ defmodule ElixirInternalCertificationWorker.Google do
   alias ElixirInternalCertification.Keyword.Schemas.Keyword
   alias ElixirInternalCertification.Parser.Google, as: GoogleParser
 
+  @max_attempts 4
+
   @impl Oban.Worker
-  def perform(%Oban.Job{args: %{"keyword_id" => keyword_id}, attempt: 4} = _oban_job) do
+  def perform(%Oban.Job{args: %{"keyword_id" => keyword_id}, attempt: @max_attempts} = _oban_job) do
     keyword = Keywords.get_keyword!(keyword_id)
     Keywords.update_status(keyword, :failed)
     {:error, "Failed to look up the keyword ID: #{keyword_id}"}

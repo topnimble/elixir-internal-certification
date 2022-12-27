@@ -5,6 +5,8 @@ defmodule ElixirInternalCertificationWorker.GoogleTest do
   alias ElixirInternalCertification.Keyword.Schemas.{Keyword, KeywordLookup}
   alias ElixirInternalCertificationWorker.Google, as: GoogleWorker
 
+  @max_attempts 4
+
   describe "perform/1" do
     test "given a keyword ID and the job is success, returns the keyword lookup" do
       use_cassette "google/nimble", match_requests_on: [:query] do
@@ -40,7 +42,7 @@ defmodule ElixirInternalCertificationWorker.GoogleTest do
       use_cassette "google/nimble", match_requests_on: [:query] do
         %Keyword{id: keyword_id} = keyword = insert(:keyword, title: "nimble")
 
-        {:error, message} = perform_job(GoogleWorker, %{"keyword_id" => keyword_id}, attempt: 4)
+        {:error, message} = perform_job(GoogleWorker, %{"keyword_id" => keyword_id}, attempt: @max_attempts)
 
         assert message == "Failed to look up the keyword ID: #{keyword_id}"
 
