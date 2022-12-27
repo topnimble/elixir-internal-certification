@@ -57,7 +57,7 @@ defmodule ElixirInternalCertification.Keyword.Keywords do
 
   def update_status(%Keyword{} = keyword, status) do
     keyword
-    |> Keyword.update_status_changeset(%{status: status})
+    |> Keyword.update_status_changeset(status)
     |> Repo.update()
   end
 

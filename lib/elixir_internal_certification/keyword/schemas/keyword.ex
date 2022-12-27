@@ -17,10 +17,8 @@ defmodule ElixirInternalCertification.Keyword.Schemas.Keyword do
     timestamps()
   end
 
-  def update_status_changeset(keyword \\ %__MODULE__{}, attrs) do
-    keyword
-    |> cast(attrs, [:status])
-    |> validate_required([:status])
+  def update_status_changeset(keyword \\ %__MODULE__{}, status) do
+    change(keyword, status: status)
   end
 
   def changeset(%User{} = user, keyword \\ %__MODULE__{}, attrs) do

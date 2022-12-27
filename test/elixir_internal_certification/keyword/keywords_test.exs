@@ -194,8 +194,10 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
       %Keyword{status: keyword_status} = keyword = insert(:keyword, status: :pending)
 
       assert keyword_status == :pending
-      assert {:error, changeset} = Keywords.update_status(keyword, :invalid_status)
-      assert "is invalid" in errors_on(changeset).status
+
+      assert_raise Ecto.ChangeError, fn ->
+        Keywords.update_status(keyword, :invalid_status)
+      end
     end
   end
 end
