@@ -42,7 +42,8 @@ defmodule ElixirInternalCertificationWorker.GoogleTest do
       use_cassette "google/nimble", match_requests_on: [:query] do
         %Keyword{id: keyword_id} = keyword = insert(:keyword, title: "nimble")
 
-        {:error, message} = perform_job(GoogleWorker, %{"keyword_id" => keyword_id}, attempt: @max_attempts)
+        {:error, message} =
+          perform_job(GoogleWorker, %{"keyword_id" => keyword_id}, attempt: @max_attempts)
 
         assert message == "Failed to look up the keyword ID: #{keyword_id}"
 
