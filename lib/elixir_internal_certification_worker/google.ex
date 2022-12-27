@@ -32,8 +32,7 @@ defmodule ElixirInternalCertificationWorker.Google do
     end
   end
 
-  defp execute(%Keyword{} = keyword) do
-    %Keyword{id: keyword_id, title: keyword_title} = keyword
+  defp execute(%Keyword{id: keyword_id, title: keyword_title} = _keyword) do
 
     with {:ok, %Tesla.Env{body: body}} <- GoogleFetcher.search(keyword_title),
          params <-
