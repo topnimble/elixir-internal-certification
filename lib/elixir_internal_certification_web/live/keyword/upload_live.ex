@@ -57,21 +57,14 @@ defmodule ElixirInternalCertificationWeb.UploadLive do
   end
 
   defp process_data(socket, path) do
-    case Keywords.parse_csv!(path) do
-      {:ok, keywords} ->
-        current_user = LiveHelpers.get_current_user_from_socket(socket)
-
-        case Keywords.create_keywords(current_user, keywords) do
-          :error ->
-            {:postpone, {:error, :invalid_data}}
-
-          {_, records} ->
-            scheduled_keyword_lookups = Enum.map(records, &KeywordLookups.schedule_keyword_lookup/1)
-            {:ok, {path, scheduled_keyword_lookups}}
-        end
-
-      {:error, reason} ->
-        {:postpone, {:error, reason}}
+    with {:ok, keywords} <- Keywords.parse_csv!(path),
+         current_user <- LiveHelpers.get_current_user_from_socket(socket),
+         {_, records} <- Keywords.create_keywords(current_user, keywords),
+         scheduled_keyword_lookups <- Enum.map(records, &KeywordLookups.schedule_keyword_lookup/1) do
+      {:ok, {path, scheduled_keyword_lookups}}
+    else
+      {:error, reason} -> {:postpone, {:error, reason}}
+      :error -> {:postpone, {:error, :invalid_data}}
     end
   end
 
