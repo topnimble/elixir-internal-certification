@@ -47,5 +47,3 @@ config :phoenix, :plug_init_mode, :runtime
 config :exvcr,
   vcr_cassette_library_dir: "test/support/fixtures/vcr_cassettes",
   ignore_localhost: true
-
-config :tesla, :adapter, Tesla.Adapter.Hackney
