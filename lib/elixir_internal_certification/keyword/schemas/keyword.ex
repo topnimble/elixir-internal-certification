@@ -17,9 +17,7 @@ defmodule ElixirInternalCertification.Keyword.Schemas.Keyword do
     timestamps()
   end
 
-  def update_status_changeset(keyword \\ %__MODULE__{}, status) do
-    change(keyword, status: status)
-  end
+  def update_status_changeset(keyword \\ %__MODULE__{}, status), do: change(keyword, status: status)
 
   def changeset(%User{} = user, keyword \\ %__MODULE__{}, attrs) do
     keyword
