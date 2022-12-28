@@ -8,7 +8,7 @@ defmodule ElixirInternalCertificationWorker.GoogleTest do
   @max_attempts 4
 
   describe "perform/1" do
-    test "given a keyword ID and the job is success, returns the keyword lookup" do
+    test "given a keyword ID and the job is success, returns the keyword lookup and changes the status to completed" do
       use_cassette "google/keyword_with_no_adwords", match_requests_on: [:query] do
         %Keyword{id: keyword_id} = keyword = insert(:keyword, title: "google")
 
@@ -22,7 +22,7 @@ defmodule ElixirInternalCertificationWorker.GoogleTest do
       end
     end
 
-    test "given a keyword ID and the job is failed, returns the error" do
+    test "given a keyword ID and the job is failed, returns the error and keeps the status as pending" do
       use_cassette "google/keyword_with_no_adwords", match_requests_on: [:query] do
         expect(GoogleFetcher, :search, fn _query -> {:error, :timeout} end)
 
@@ -36,7 +36,7 @@ defmodule ElixirInternalCertificationWorker.GoogleTest do
       end
     end
 
-    test "given max attempts reached, returns {:error, message}" do
+    test "given max attempts reached, returns {:error, message} and changes the status to failed" do
       use_cassette "google/keyword_with_no_adwords", match_requests_on: [:query] do
         %Keyword{id: keyword_id} = keyword = insert(:keyword, title: "google")
 
