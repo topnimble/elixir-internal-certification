@@ -24,9 +24,7 @@ defmodule ElixirInternalCertificationWorker.GoogleTest do
 
     test "given a keyword ID and the job is failed, returns the error" do
       use_cassette "google/nimble", match_requests_on: [:query] do
-        expect(GoogleFetcher, :search, fn _query ->
-          {:error, :timeout}
-        end)
+        expect(GoogleFetcher, :search, fn _query -> {:error, :timeout} end)
 
         %Keyword{id: keyword_id} = keyword = insert(:keyword, title: "nimble")
 
