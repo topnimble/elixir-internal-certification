@@ -8,7 +8,7 @@ defmodule ElixirInternalCertification.Keyword.KeywordLookups do
   alias ElixirInternalCertification.Keyword.Schemas.{Keyword, KeywordLookup}
   alias ElixirInternalCertificationWorker.Google, as: GoogleWorker
 
-  @average_number_of_seconds_between_each_lookup 60
+  @average_number_of_seconds_between_each_lookup 30
 
   def schedule_keyword_lookup(%Keyword{id: keyword_id} = _keyword) do
     number_of_seconds = randomize_number_of_seconds_based_on_pending_jobs()
