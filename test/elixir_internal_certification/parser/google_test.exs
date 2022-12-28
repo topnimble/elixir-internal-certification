@@ -6,7 +6,7 @@ defmodule ElixirInternalCertification.Parser.GoogleTest do
 
   describe "parse_lookup_result/1" do
     test "given a search result HTML of the `nimble` query, returns parsed result" do
-      use_cassette "google/nimble", match_requests_on: [:query] do
+      use_cassette "google/keyword_with_top_adwords", match_requests_on: [:query] do
         {:ok, _status_code, _headers, body} = GoogleFetcher.search("nimble")
         result = GoogleParser.parse_lookup_result(body)
 

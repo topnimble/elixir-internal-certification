@@ -6,7 +6,7 @@ defmodule ElixirInternalCertification.Fetcher.GoogleTest do
 
   describe "search/1" do
     test "given a search query and the server returns OK, returns {:ok, status_code, headers, body}" do
-      use_cassette "google/nimble", match_requests_on: [:query] do
+      use_cassette "google/keyword_with_top_adwords", match_requests_on: [:query] do
         assert {:ok, status_code, _headers, body} = GoogleFetcher.search("nimble")
         assert status_code == 200
         assert body =~ "nimble"

@@ -7,10 +7,7 @@ defmodule ElixirInternalCertification.Fetcher.Client.GoogleTest do
 
   describe "search/1" do
     test "given a search query and the server returns OK, returns the response with 200 status code and search results" do
-      use_cassette :stub,
-        url: "https://google.com/search?q=nimble",
-        body:
-          ~S(<html itemscope="" itemtype="http://schema.org/SearchResultsPage" lang="en"><head><title>nimble - Google Search</title>...</head>...</html>) do
+      use_cassette "google/keyword_with_top_adwords", match_requests_on: [:query] do
         assert {:ok, %Tesla.Env{status: status_code, body: body} = _response} =
                  GoogleClient.search("nimble")
 
