@@ -9,8 +9,8 @@ defmodule ElixirInternalCertificationWorker.GoogleTest do
 
   describe "perform/1" do
     test "given a keyword ID and the job is success, returns the keyword lookup" do
-      use_cassette "google/keyword_with_top_adwords", match_requests_on: [:query] do
-        %Keyword{id: keyword_id} = keyword = insert(:keyword, title: "nimble")
+      use_cassette "google/keyword_with_no_adwords", match_requests_on: [:query] do
+        %Keyword{id: keyword_id} = keyword = insert(:keyword, title: "google")
 
         {:ok, %KeywordLookup{keyword_id: updated_keyword_lookup_keyword_id}} =
           perform_job(GoogleWorker, %{"keyword_id" => keyword_id})
@@ -23,10 +23,10 @@ defmodule ElixirInternalCertificationWorker.GoogleTest do
     end
 
     test "given a keyword ID and the job is failed, returns the error" do
-      use_cassette "google/keyword_with_top_adwords", match_requests_on: [:query] do
+      use_cassette "google/keyword_with_no_adwords", match_requests_on: [:query] do
         expect(GoogleFetcher, :search, fn _query -> {:error, :timeout} end)
 
-        %Keyword{id: keyword_id} = keyword = insert(:keyword, title: "nimble")
+        %Keyword{id: keyword_id} = keyword = insert(:keyword, title: "google")
 
         {:error, :timeout} = perform_job(GoogleWorker, %{"keyword_id" => keyword_id})
 
@@ -37,8 +37,8 @@ defmodule ElixirInternalCertificationWorker.GoogleTest do
     end
 
     test "given max attempts reached, returns {:error, message}" do
-      use_cassette "google/keyword_with_top_adwords", match_requests_on: [:query] do
-        %Keyword{id: keyword_id} = keyword = insert(:keyword, title: "nimble")
+      use_cassette "google/keyword_with_no_adwords", match_requests_on: [:query] do
+        %Keyword{id: keyword_id} = keyword = insert(:keyword, title: "google")
 
         {:error, message} =
           perform_job(GoogleWorker, %{"keyword_id" => keyword_id}, attempt: @max_attempts)

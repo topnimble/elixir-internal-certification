@@ -5,7 +5,38 @@ defmodule ElixirInternalCertification.Parser.GoogleTest do
   alias ElixirInternalCertification.Parser.Google, as: GoogleParser
 
   describe "parse_lookup_result/1" do
-    test "given a search result HTML of the `nimble` query, returns parsed result" do
+    test "given a search result HTML of the `google` query keyword with NO AdWords, returns parsed result" do
+      use_cassette "google/keyword_with_no_adwords", match_requests_on: [:query] do
+        {:ok, _status_code, _headers, body} = GoogleFetcher.search("google")
+        result = GoogleParser.parse_lookup_result(body)
+
+        assert result.html == body
+        assert result.number_of_adwords_advertisers == 0
+        assert result.number_of_adwords_advertisers_top_position == 0
+
+        assert result.urls_of_adwords_advertisers_top_position == []
+
+        assert result.number_of_non_adwords == 11
+
+        assert result.urls_of_non_adwords == [
+                 "https://www.google.co.th/?hl=th",
+                 "https://www.google.co.th/maps/@18.3170581,99.3986862,17z?hl=th",
+                 "https://translate.google.co.th/?hl=th",
+                 "https://trends.google.co.th/trends/?geo=TH",
+                 "https://translate.google.co.th/?hl=en&sl=ja&tl=th",
+                 "https://www.google.co.th/",
+                 "https://www.google.com/intl/th_th/drive/",
+                 "https://www.google.com/intl/th_th/chrome/",
+                 "https://support.google.com/chrome/community?hl=th",
+                 "https://support.google.com/accounts/?hl=th",
+                 "https://accounts.google.com/login?hl=th"
+               ]
+
+        assert result.number_of_links == 11
+      end
+    end
+
+    test "given a search result HTML of the `nimble` query keyword with top AdWords, returns parsed result" do
       use_cassette "google/keyword_with_top_adwords", match_requests_on: [:query] do
         {:ok, _status_code, _headers, body} = GoogleFetcher.search("nimble")
         result = GoogleParser.parse_lookup_result(body)
@@ -42,6 +73,45 @@ defmodule ElixirInternalCertification.Parser.GoogleTest do
                ]
 
         assert result.number_of_links == 19
+      end
+    end
+
+    test "given a search result HTML of the `hosting` query keyword with top and bottom AdWords, returns parsed result" do
+      use_cassette "google/keyword_with_top_and_bottom_adwords", match_requests_on: [:query] do
+        {:ok, _status_code, _headers, body} = GoogleFetcher.search("hosting")
+        result = GoogleParser.parse_lookup_result(body)
+
+        assert result.html == body
+        assert result.number_of_adwords_advertisers == 7
+        assert result.number_of_adwords_advertisers_top_position == 4
+
+        assert result.urls_of_adwords_advertisers_top_position == [
+                 "https://www.top10.com/hosting/comparison",
+                 "https://www.top10.com/hosting/wordpresshosting-comparison",
+                 "https://hosting.z.com/th/share-hosting/",
+                 "https://hosting.z.com/th/share-hosting/",
+                 "https://www.hostatom.com/web-hosting/",
+                 "https://www.hostatom.com/wordpress-hosting",
+                 "https://www.thaidatahosting.com/hosting-solution/",
+                 "https://www.thaidatahosting.com/cloud-service/cloud-ssd-hosting/wordpress/"
+               ]
+
+        assert result.number_of_non_adwords == 10
+
+        assert result.urls_of_non_adwords == [
+                 "https://www.hostinglotus.com/",
+                 "https://www.hostinglotus.com/hosting-unlimited-database/",
+                 "https://www.pathosting.co.th/hosting/whatis",
+                 "https://www.godaddy.com/th-th/hosting/web-hosting",
+                 "https://www.hostneverdie.com/",
+                 "https://hosting.z.com/th/th/share-hosting/",
+                 "https://hosting.z.com/th/th/",
+                 "https://www.hostinger.in.th/",
+                 "https://netway.co.th/linux-hosting",
+                 "https://www.chaiyohosting.com/"
+               ]
+
+        assert result.number_of_links == 24
       end
     end
   end
