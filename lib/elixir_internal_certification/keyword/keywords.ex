@@ -30,13 +30,34 @@ defmodule ElixirInternalCertification.Keyword.Keywords do
   def get_keyword!(id), do: Repo.get!(Keyword, id)
 
   def create_keywords(%User{id: _user_id} = user, keywords) when is_list(keywords) do
-    case keywords_valid?(user, keywords) do
-      true ->
-        keyword_params = create_params_from_keywords(user, keywords)
-        Repo.insert_all(Keyword, keyword_params, returning: true)
+    {valid_changesets, invalid_changesets} =
+      keywords
+      |> Enum.map(fn keyword ->
+        Keyword.changeset(user, %Keyword{}, %{title: keyword})
+      end)
+      |> Enum.split_with(fn changeset -> changeset.valid? end)
 
-      false ->
-        :error
+    if invalid_changesets == [] do
+      entries =
+        Enum.map(valid_changesets, fn changeset ->
+          Ecto.Changeset.apply_changes(changeset)
+        end)
+
+      fields = Keyword.__schema__(:fields)
+      now = NaiveDateTime.truncate(NaiveDateTime.utc_now(), :second)
+
+      params =
+        Enum.map(entries, fn entry ->
+          entry
+          |> Map.take(fields)
+          |> Map.delete(:id)
+          |> Map.put(:inserted_at, now)
+          |> Map.put(:updated_at, now)
+        end)
+
+      Repo.insert_all(Keyword, params, returning: true)
+    else
+      :error
     end
   end
 
@@ -59,24 +80,5 @@ defmodule ElixirInternalCertification.Keyword.Keywords do
     keyword
     |> Keyword.update_status_changeset(status)
     |> Repo.update()
-  end
-
-  defp keywords_valid?(user, keywords) do
-    {_valid_changesets, invalid_changesets} =
-      keywords
-      |> Enum.map(fn keyword ->
-        Keyword.changeset(user, %{title: keyword})
-      end)
-      |> Enum.split_with(fn changeset -> changeset.valid? end)
-
-    Enum.empty?(invalid_changesets)
-  end
-
-  defp create_params_from_keywords(%User{id: user_id} = _user, keywords) do
-    now = NaiveDateTime.truncate(NaiveDateTime.utc_now(), :second)
-
-    Enum.map(keywords, fn keyword ->
-      %{user_id: user_id, title: keyword, status: :pending, inserted_at: now, updated_at: now}
-    end)
   end
 end
