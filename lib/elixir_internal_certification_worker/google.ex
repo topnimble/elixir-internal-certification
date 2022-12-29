@@ -12,8 +12,10 @@ defmodule ElixirInternalCertificationWorker.Google do
 
   @impl Oban.Worker
   def perform(%Oban.Job{args: %{"keyword_id" => keyword_id}, attempt: @max_attempts} = _oban_job) do
-    keyword = Keywords.get_keyword!(keyword_id)
-    Keywords.update_status(keyword, :failed)
+    keyword_id
+    |> Keywords.get_keyword!()
+    |> Keywords.update_status(:failed)
+    
     {:error, "Failed to look up the keyword ID: #{keyword_id}"}
   end
 
