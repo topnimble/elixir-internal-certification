@@ -10,9 +10,9 @@ defmodule ElixirInternalCertification.Keyword.Schemas.KeywordLookup do
     field :html, :string
     field :number_of_adwords_advertisers, :integer
     field :number_of_adwords_advertisers_top_position, :integer
-    field :urls_of_adwords_advertisers_top_position, {:array, :string}, default: []
+    field :urls_of_adwords_advertisers_top_position, {:array, :string}
     field :number_of_non_adwords, :integer
-    field :urls_of_non_adwords, {:array, :string}, default: []
+    field :urls_of_non_adwords, {:array, :string}
     field :number_of_links, :integer
 
     timestamps()
