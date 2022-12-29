@@ -50,7 +50,7 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
     test "given valid attributes, returns a number of keywords and a list of results" do
       %User{id: user_id} = user = insert(:user)
 
-      {number_of_keywords, records} =
+      {:ok, {number_of_keywords, records}} =
         Keywords.create_keywords(user, ["first keyword", "second keyword", "third keyword"])
 
       assert number_of_keywords == 3
@@ -79,7 +79,8 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
     test "given valid and EMPTY attribute values, returns :error" do
       user = insert(:user)
 
-      assert Keywords.create_keywords(user, ["first keyword", "second keyword", ""]) == :error
+      assert Keywords.create_keywords(user, ["first keyword", "second keyword", ""]) ==
+               {:error, :invalid_data}
 
       assert Keywords.list_keywords(user) == []
     end
@@ -91,7 +92,7 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
                "first keyword",
                "second keyword",
                %{}
-             ]) == :error
+             ]) == {:error, :invalid_data}
 
       assert Keywords.list_keywords(user) == []
     end

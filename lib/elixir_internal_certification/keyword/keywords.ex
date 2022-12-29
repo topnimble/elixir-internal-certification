@@ -55,9 +55,9 @@ defmodule ElixirInternalCertification.Keyword.Keywords do
           |> Map.put(:updated_at, now)
         end)
 
-      Repo.insert_all(Keyword, params, returning: true)
+      {:ok, Repo.insert_all(Keyword, params, returning: true)}
     else
-      :error
+      {:error, :invalid_data}
     end
   end
 
