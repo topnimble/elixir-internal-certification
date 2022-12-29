@@ -15,7 +15,7 @@ defmodule ElixirInternalCertificationWorker.Google do
     keyword_id
     |> Keywords.get_keyword!()
     |> Keywords.update_status(:failed)
-    
+
     {:error, "Failed to look up the keyword ID: #{keyword_id}"}
   end
 
