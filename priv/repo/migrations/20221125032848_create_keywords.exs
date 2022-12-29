@@ -5,7 +5,6 @@ defmodule ElixirInternalCertification.Repo.Migrations.CreateKeywords do
     create table(:keywords) do
       add :title, :text, null: false
       add :user_id, references(:users, on_delete: :delete_all), null: false
-      add :status, :string, null: false
 
       timestamps()
     end
