@@ -47,10 +47,10 @@ defmodule ElixirInternalCertification.Keyword.KeywordLookupsTest do
     test "given valid attributes, returns {:ok, %KeywordLookup{}}" do
       %Keyword{id: keyword_id} = keyword = insert(:keyword)
 
-      assert {:ok, %KeywordLookup{} = keyword_lookup} =
+      assert {:ok, %KeywordLookup{keyword_id: keyword_lookup_keyword_id} = _keyword_lookup} =
                KeywordLookups.create_keyword_lookup(valid_attrs(keyword))
 
-      assert keyword_lookup.keyword_id == keyword_id
+      assert keyword_lookup_keyword_id == keyword_id
     end
 
     test "given INVALID attributes, returns {:error, %Ecto.Changeset{}}" do

@@ -78,7 +78,7 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
                "third keyword"
              ]) == true
 
-      assert Enum.map(keywords, fn keyword -> assert keyword.user_id == user_id end)
+      assert Enum.map(keywords, fn %Keyword{user_id: keyword_user_id} -> assert keyword_user_id == user_id end)
     end
 
     test "given valid and empty attributes, returns :error" do
