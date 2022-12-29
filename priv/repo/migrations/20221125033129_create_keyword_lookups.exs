@@ -14,5 +14,7 @@ defmodule ElixirInternalCertification.Repo.Migrations.CreateKeywordLookups do
 
       timestamps()
     end
+
+    create index(:keyword_lookups, [:keyword_id])
   end
 end
