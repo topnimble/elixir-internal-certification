@@ -47,18 +47,11 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
   end
 
   describe "create_keywords/2" do
-    @valid_attrs ["first keyword", "second keyword", "third keyword"]
-    @valid_and_empty_attrs ["first keyword", ""]
-    @invalid_attrs [
-      %{title: "first invalid keyword"},
-      %{title: "second invalid keyword"},
-      %{title: "third invalid keyword"}
-    ]
-
     test "given valid attributes, returns a number of keywords and a list of results" do
       %User{id: user_id} = user = insert(:user)
 
-      {number_of_keywords, records} = Keywords.create_keywords(user, @valid_attrs)
+      {number_of_keywords, records} =
+        Keywords.create_keywords(user, ["first keyword", "second keyword", "third keyword"])
 
       assert number_of_keywords == 3
 
@@ -78,30 +71,46 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
                "third keyword"
              ]) == true
 
-      assert Enum.map(keywords, fn %Keyword{user_id: keyword_user_id} -> assert keyword_user_id == user_id end)
+      assert Enum.map(keywords, fn %Keyword{user_id: keyword_user_id} ->
+               assert keyword_user_id == user_id
+             end)
     end
 
-    test "given valid and empty attributes, returns :error" do
+    test "given valid and EMPTY attribute values, returns :error" do
       user = insert(:user)
 
-      assert Keywords.create_keywords(user, @valid_and_empty_attrs) == :error
+      assert Keywords.create_keywords(user, ["first keyword", "second keyword", ""]) == :error
 
       assert Keywords.list_keywords(user) == []
     end
 
-    test "given INVALID attributes, returns :error" do
+    test "given valid and INVALID attribute values, returns :error" do
       user = insert(:user)
 
-      assert Keywords.create_keywords(user, @invalid_attrs) == :error
+      assert Keywords.create_keywords(user, [
+               "first keyword",
+               "second keyword",
+               %{}
+             ]) == :error
 
       assert Keywords.list_keywords(user) == []
     end
 
-    test "given INVALID attribute type, raises FunctionClauseError" do
+    test "given EMPTY attributes, raises FunctionClauseError" do
       user = insert(:user)
 
       assert_raise FunctionClauseError, fn ->
-        Keywords.create_keywords(user, "invalid attribute type")
+        Keywords.create_keywords(user, nil)
+      end
+
+      assert Keywords.list_keywords(user) == []
+    end
+
+    test "given INVALID attributes, raises FunctionClauseError" do
+      user = insert(:user)
+
+      assert_raise FunctionClauseError, fn ->
+        Keywords.create_keywords(user, "invalid attribute")
       end
 
       assert Keywords.list_keywords(user) == []
@@ -111,7 +120,7 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
       user = nil
 
       assert_raise FunctionClauseError, fn ->
-        Keywords.create_keywords(user, @valid_attrs)
+        Keywords.create_keywords(user, ["first keyword", "second keyword", "third keyword"])
       end
     end
   end
