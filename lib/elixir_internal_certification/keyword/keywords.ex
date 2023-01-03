@@ -32,23 +32,7 @@ defmodule ElixirInternalCertification.Keyword.Keywords do
   def create_keywords(%User{id: _user_id} = user, keywords) when is_list(keywords) do
     case validate_keywords(user, keywords) do
       {true, valid_changesets} ->
-        entries =
-          Enum.map(valid_changesets, fn changeset ->
-            Ecto.Changeset.apply_changes(changeset)
-          end)
-
-        fields = Keyword.__schema__(:fields)
-        now = NaiveDateTime.truncate(NaiveDateTime.utc_now(), :second)
-
-        params =
-          Enum.map(entries, fn entry ->
-            entry
-            |> Map.take(fields)
-            |> Map.delete(:id)
-            |> Map.put(:inserted_at, now)
-            |> Map.put(:updated_at, now)
-          end)
-
+        params = create_params_from_changesets(valid_changesets)
         {:ok, Repo.insert_all(Keyword, params, returning: true)}
 
       {false, _invalid_changesets} ->
@@ -90,5 +74,23 @@ defmodule ElixirInternalCertification.Keyword.Keywords do
     else
       {false, invalid_changesets}
     end
+  end
+
+  defp create_params_from_changesets(changesets) when is_list(changesets) do
+    entries =
+      Enum.map(changesets, fn changeset ->
+        Ecto.Changeset.apply_changes(changeset)
+      end)
+
+    fields = Keyword.__schema__(:fields)
+    now = NaiveDateTime.truncate(NaiveDateTime.utc_now(), :second)
+
+    Enum.map(entries, fn entry ->
+      entry
+      |> Map.take(fields)
+      |> Map.delete(:id)
+      |> Map.put(:inserted_at, now)
+      |> Map.put(:updated_at, now)
+    end)
   end
 end
