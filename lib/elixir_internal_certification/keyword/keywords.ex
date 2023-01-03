@@ -30,34 +30,29 @@ defmodule ElixirInternalCertification.Keyword.Keywords do
   def get_keyword!(id), do: Repo.get!(Keyword, id)
 
   def create_keywords(%User{id: _user_id} = user, keywords) when is_list(keywords) do
-    {valid_changesets, invalid_changesets} =
-      keywords
-      |> Enum.map(fn keyword ->
-        Keyword.changeset(user, %Keyword{}, %{title: keyword})
-      end)
-      |> Enum.split_with(fn changeset -> changeset.valid? end)
+    case validate_keywords(user, keywords) do
+      {true, valid_changesets} ->
+        entries =
+          Enum.map(valid_changesets, fn changeset ->
+            Ecto.Changeset.apply_changes(changeset)
+          end)
 
-    if invalid_changesets == [] do
-      entries =
-        Enum.map(valid_changesets, fn changeset ->
-          Ecto.Changeset.apply_changes(changeset)
-        end)
+        fields = Keyword.__schema__(:fields)
+        now = NaiveDateTime.truncate(NaiveDateTime.utc_now(), :second)
 
-      fields = Keyword.__schema__(:fields)
-      now = NaiveDateTime.truncate(NaiveDateTime.utc_now(), :second)
+        params =
+          Enum.map(entries, fn entry ->
+            entry
+            |> Map.take(fields)
+            |> Map.delete(:id)
+            |> Map.put(:inserted_at, now)
+            |> Map.put(:updated_at, now)
+          end)
 
-      params =
-        Enum.map(entries, fn entry ->
-          entry
-          |> Map.take(fields)
-          |> Map.delete(:id)
-          |> Map.put(:inserted_at, now)
-          |> Map.put(:updated_at, now)
-        end)
+        {:ok, Repo.insert_all(Keyword, params, returning: true)}
 
-      {:ok, Repo.insert_all(Keyword, params, returning: true)}
-    else
-      {:error, :invalid_data}
+      {false, _invalid_changesets} ->
+        {:error, :invalid_data}
     end
   end
 
@@ -80,5 +75,20 @@ defmodule ElixirInternalCertification.Keyword.Keywords do
     keyword
     |> Keyword.update_status_changeset(status)
     |> Repo.update()
+  end
+
+  defp validate_keywords(user, keywords) do
+    {valid_changesets, invalid_changesets} =
+      keywords
+      |> Enum.map(fn keyword ->
+        Keyword.changeset(user, %Keyword{}, %{title: keyword})
+      end)
+      |> Enum.split_with(fn changeset -> changeset.valid? end)
+
+    if Enum.empty?(invalid_changesets) do
+      {true, valid_changesets}
+    else
+      {false, invalid_changesets}
+    end
   end
 end
