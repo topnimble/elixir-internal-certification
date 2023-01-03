@@ -6,35 +6,27 @@ defmodule ElixirInternalCertification.Keyword.Schemas.KeywordLookupTest do
 
   describe "changeset/2" do
     test "given valid params, returns a valid changeset" do
-      %Keyword{id: keyword_id} = _keyword = insert(:keyword, title: "keyword")
+      %Keyword{id: keyword_id} = keyword = insert(:keyword, title: "keyword")
+      valid_keyword_params = params_for(:keyword_lookup, keyword: keyword)
 
-      changeset =
-        KeywordLookup.changeset(%{
-          keyword_id: keyword_id,
-          html:
-            ~s(<html itemscope="" itemtype="http://schema.org/SearchResultsPage" lang="en"><head><title>keyword - Google Search</title>...</head>...</html>),
-          number_of_adwords_advertisers: 4,
-          number_of_adwords_advertisers_top_position: 2,
-          urls_of_adwords_advertisers_top_position: ["https://nimblehq.co"],
-          number_of_non_adwords: 10,
-          urls_of_non_adwords: ["https://nimblehq.co"],
-          number_of_links: 20
-        })
+      %Changeset{changes: changes} = changeset = KeywordLookup.changeset(valid_keyword_params)
 
-      assert %Changeset{
-               valid?: true,
-               changes: %{
-                 keyword_id: ^keyword_id,
-                 html:
-                   ~s(<html itemscope="" itemtype="http://schema.org/SearchResultsPage" lang="en"><head><title>keyword - Google Search</title>...</head>...</html>),
-                 number_of_adwords_advertisers: 4,
-                 number_of_adwords_advertisers_top_position: 2,
-                 urls_of_adwords_advertisers_top_position: ["https://nimblehq.co"],
-                 number_of_non_adwords: 10,
-                 urls_of_non_adwords: ["https://nimblehq.co"],
-                 number_of_links: 20
-               }
-             } = changeset
+      assert changeset.valid? == true
+      assert changes.keyword_id == keyword_id
+      assert changes.html == valid_keyword_params.html
+
+      assert changes.number_of_adwords_advertisers ==
+               valid_keyword_params.number_of_adwords_advertisers
+
+      assert changes.number_of_adwords_advertisers_top_position ==
+               valid_keyword_params.number_of_adwords_advertisers_top_position
+
+      assert changes.urls_of_adwords_advertisers_top_position ==
+               valid_keyword_params.urls_of_adwords_advertisers_top_position
+
+      assert changes.number_of_non_adwords == valid_keyword_params.number_of_non_adwords
+      assert changes.urls_of_non_adwords == valid_keyword_params.urls_of_non_adwords
+      assert changes.number_of_links == valid_keyword_params.number_of_links
     end
 
     test "given EMPTY params, returns an INVALID changeset" do

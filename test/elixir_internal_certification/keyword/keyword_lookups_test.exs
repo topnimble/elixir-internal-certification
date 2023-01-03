@@ -23,24 +23,29 @@ defmodule ElixirInternalCertification.Keyword.KeywordLookupsTest do
 
   describe "create_keyword_lookup/2" do
     test "given valid attributes, returns {:ok, %KeywordLookup{}}" do
-      %Keyword{id: keyword_id} = _keyword = insert(:keyword, title: "keyword")
+      %Keyword{id: keyword_id} = keyword = insert(:keyword, title: "keyword")
+      valid_keyword_params = params_for(:keyword_lookup, keyword: keyword)
 
-      assert {:ok,
-              %KeywordLookup{keyword_id: inserted_keyword_lookup_keyword_id} =
-                _inserted_keyword_lookup} =
-               KeywordLookups.create_keyword_lookup(%{
-                 keyword_id: keyword_id,
-                 html:
-                   ~s(<html itemscope="" itemtype="http://schema.org/SearchResultsPage" lang="en"><head><title>keyword - Google Search</title>...</head>...</html>),
-                 number_of_adwords_advertisers: 4,
-                 number_of_adwords_advertisers_top_position: 2,
-                 urls_of_adwords_advertisers_top_position: ["https://nimblehq.co"],
-                 number_of_non_adwords: 10,
-                 urls_of_non_adwords: ["https://nimblehq.co"],
-                 number_of_links: 20
-               })
+      assert {:ok, %KeywordLookup{} = inserted_keyword_lookup} =
+               KeywordLookups.create_keyword_lookup(valid_keyword_params)
 
-      assert inserted_keyword_lookup_keyword_id == keyword_id
+      assert inserted_keyword_lookup.keyword_id == keyword_id
+      assert inserted_keyword_lookup.html == valid_keyword_params.html
+
+      assert inserted_keyword_lookup.number_of_adwords_advertisers ==
+               valid_keyword_params.number_of_adwords_advertisers
+
+      assert inserted_keyword_lookup.number_of_adwords_advertisers_top_position ==
+               valid_keyword_params.number_of_adwords_advertisers_top_position
+
+      assert inserted_keyword_lookup.urls_of_adwords_advertisers_top_position ==
+               valid_keyword_params.urls_of_adwords_advertisers_top_position
+
+      assert inserted_keyword_lookup.number_of_non_adwords ==
+               valid_keyword_params.number_of_non_adwords
+
+      assert inserted_keyword_lookup.urls_of_non_adwords == valid_keyword_params.urls_of_non_adwords
+      assert inserted_keyword_lookup.number_of_links == valid_keyword_params.number_of_links
 
       assert %Keyword{id: ^keyword_id} = Keywords.get_keyword!(keyword_id)
     end
