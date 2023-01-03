@@ -65,19 +65,11 @@ defmodule ElixirInternalCertification.Keyword.Schemas.KeywordLookupTest do
       assert "is invalid" in errors_on(changeset).number_of_links
     end
 
-    test "given INVALID keyword ID, returns :error with an INVALID changeset" do
+    test "given a NON-existing keyword ID, returns {:error, %Ecto.Changeset{}}" do
+      invalid_keyword_params = params_for(:keyword_lookup, keyword_id: 999_999)
+
       assert {:error, changeset} =
-               %{
-                 keyword_id: 999_999,
-                 html:
-                   ~s(<html itemscope="" itemtype="http://schema.org/SearchResultsPage" lang="en"><head><title>keyword - Google Search</title>...</head>...</html>),
-                 number_of_adwords_advertisers: 4,
-                 number_of_adwords_advertisers_top_position: 2,
-                 urls_of_adwords_advertisers_top_position: ["https://nimblehq.co"],
-                 number_of_non_adwords: 10,
-                 urls_of_non_adwords: ["https://nimblehq.co"],
-                 number_of_links: 20
-               }
+               invalid_keyword_params
                |> KeywordLookup.changeset()
                |> Repo.insert()
 
