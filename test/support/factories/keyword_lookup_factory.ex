@@ -1,6 +1,4 @@
 defmodule ElixirInternalCertification.KeywordLookupFactory do
-  import Faker.Random.Elixir
-
   alias ElixirInternalCertification.Keyword.Schemas.KeywordLookup
 
   defmacro __using__(_opts) do
@@ -9,13 +7,13 @@ defmodule ElixirInternalCertification.KeywordLookupFactory do
         keyword_lookup = %KeywordLookup{
           keyword: build(:keyword, status: :completed),
           html: Faker.Lorem.paragraph(),
-          number_of_adwords_advertisers: random_between(0, 10),
-          number_of_adwords_advertisers_top_position: random_between(0, 10),
+          number_of_adwords_advertisers: Enum.random(0..10),
+          number_of_adwords_advertisers_top_position: Enum.random(0..10),
           urls_of_adwords_advertisers_top_position:
-            Faker.Util.sample_uniq(random_between(1, 10), &Faker.Internet.url/0),
-          number_of_non_adwords: random_between(0, 10),
-          urls_of_non_adwords: Faker.Util.sample_uniq(random_between(1, 10), &Faker.Internet.url/0),
-          number_of_links: random_between(0, 10)
+            Faker.Util.sample_uniq(Enum.random(1..10), &Faker.Internet.url/0),
+          number_of_non_adwords: Enum.random(0..10),
+          urls_of_non_adwords: Faker.Util.sample_uniq(Enum.random(1..10), &Faker.Internet.url/0),
+          number_of_links: Enum.random(0..10)
         }
 
         keyword_lookup
