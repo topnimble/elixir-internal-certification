@@ -1,4 +1,4 @@
-defmodule ElixirInternalCertification.Repo.Migrations.CreateKeywords do
+defmodule ElixirInternalCertification.Repo.Migrations.CreateKeywordsTable do
   use Ecto.Migration
 
   def change do
