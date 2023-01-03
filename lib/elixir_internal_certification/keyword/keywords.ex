@@ -31,11 +31,11 @@ defmodule ElixirInternalCertification.Keyword.Keywords do
 
   def create_keywords(%User{id: _user_id} = user, keywords) when is_list(keywords) do
     case validate_keywords(user, keywords) do
-      {true, valid_changesets} ->
+      {:ok, valid_changesets} ->
         params = create_params_from_changesets(valid_changesets)
         {:ok, Repo.insert_all(Keyword, params, returning: true)}
 
-      {false, _invalid_changesets} ->
+      {:error, _invalid_changesets} ->
         {:error, :invalid_data}
     end
   end
@@ -70,9 +70,9 @@ defmodule ElixirInternalCertification.Keyword.Keywords do
       |> Enum.split_with(fn changeset -> changeset.valid? end)
 
     if Enum.empty?(invalid_changesets) do
-      {true, valid_changesets}
+      {:ok, valid_changesets}
     else
-      {false, invalid_changesets}
+      {:error, invalid_changesets}
     end
   end
 
