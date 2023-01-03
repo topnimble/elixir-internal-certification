@@ -6,11 +6,11 @@ defmodule ElixirInternalCertification.Keyword.Schemas.Keyword do
 
   alias ElixirInternalCertification.Account.Schemas.User
 
-  @statuses [:pending, :completed, :failed]
+  @statuses [:new, :pending, :completed, :failed]
 
   schema "keywords" do
     field :title, :string
-    field :status, Ecto.Enum, values: @statuses, default: :pending
+    field :status, Ecto.Enum, values: @statuses, default: :new
 
     belongs_to :user, User
 

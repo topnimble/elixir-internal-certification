@@ -22,6 +22,7 @@ defmodule ElixirInternalCertificationWorker.Google do
   @impl Oban.Worker
   def perform(%Oban.Job{args: %{"keyword_id" => keyword_id}} = _oban_job) do
     keyword = Keywords.get_keyword!(keyword_id)
+    Keywords.update_status(keyword, :pending)
     result = execute(keyword)
 
     case result do

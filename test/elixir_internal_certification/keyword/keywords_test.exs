@@ -184,9 +184,9 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
 
   describe "update_status/2" do
     test "given a keyword and a status, returns :ok with the updated keyword" do
-      %Keyword{status: keyword_status} = keyword = insert(:keyword, status: :pending)
+      %Keyword{status: keyword_status} = keyword = insert(:keyword, status: :new)
 
-      assert keyword_status == :pending
+      assert keyword_status == :new
 
       assert {:ok, %Keyword{status: updated_keyword_status}} =
                Keywords.update_status(keyword, :completed)
@@ -201,9 +201,9 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
     end
 
     test "given a keyword and INVALID status, returns {:error, changeset}" do
-      %Keyword{status: keyword_status} = keyword = insert(:keyword, status: :pending)
+      %Keyword{status: keyword_status} = keyword = insert(:keyword, status: :new)
 
-      assert keyword_status == :pending
+      assert keyword_status == :new
 
       assert_raise Ecto.ChangeError, fn ->
         Keywords.update_status(keyword, :invalid_status)
