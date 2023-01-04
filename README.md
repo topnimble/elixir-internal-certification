@@ -1,5 +1,8 @@
 [![Build Status](CI_BADGE_URL goes here)](REPO_URL goes here)
 
+Staging: https://elixir-internal-certification-docker-9bg8.onrender.com
+Production: https://elixir-internal-certification-docker.onrender.com
+
 ## Introduction
 
 > *App introduction goes here ...*

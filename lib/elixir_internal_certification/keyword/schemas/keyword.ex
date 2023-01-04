@@ -6,15 +6,19 @@ defmodule ElixirInternalCertification.Keyword.Schemas.Keyword do
 
   alias ElixirInternalCertification.Account.Schemas.User
 
+  @statuses [:new, :pending, :completed, :failed]
+
   schema "keywords" do
     field :title, :string
+    field :status, Ecto.Enum, values: @statuses, default: :new
 
     belongs_to :user, User
 
     timestamps()
   end
 
-  @doc false
+  def update_status_changeset(keyword, status), do: change(keyword, status: status)
+
   def changeset(%User{} = user, keyword \\ %__MODULE__{}, attrs) do
     keyword
     |> cast(attrs, [:title])

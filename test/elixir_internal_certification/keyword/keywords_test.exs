@@ -46,48 +46,12 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
     end
   end
 
-  describe "create_keyword/2" do
-    @valid_attrs %{title: "some title"}
-    @invalid_attrs %{title: nil}
-
-    test "given valid attributes, returns {:ok, %Keyword{}}" do
-      %User{id: user_id} = user = insert(:user)
-
-      assert {:ok, %Keyword{} = keyword} = Keywords.create_keyword(user, @valid_attrs)
-      assert keyword.title == "some title"
-      assert keyword.user_id == user_id
-    end
-
-    test "given INVALID attributes, returns {:error, %Ecto.Changeset{}}" do
-      user = insert(:user)
-
-      assert {:error, changeset} = Keywords.create_keyword(user, @invalid_attrs)
-
-      assert "can't be blank" in errors_on(changeset).title
-    end
-
-    test "given a user is nil, raises FunctionClauseError" do
-      user = nil
-
-      assert_raise FunctionClauseError, fn ->
-        Keywords.create_keyword(user, @valid_attrs)
-      end
-    end
-  end
-
   describe "create_keywords/2" do
-    @valid_attrs ["first keyword", "second keyword", "third keyword"]
-    @valid_and_empty_attrs ["first keyword", ""]
-    @invalid_attrs [
-      %{title: "first invalid keyword"},
-      %{title: "second invalid keyword"},
-      %{title: "third invalid keyword"}
-    ]
-
     test "given valid attributes, returns a number of keywords and a list of results" do
       %User{id: user_id} = user = insert(:user)
 
-      {number_of_keywords, records} = Keywords.create_keywords(user, @valid_attrs)
+      {:ok, {number_of_keywords, records}} =
+        Keywords.create_keywords(user, ["first keyword", "second keyword", "third keyword"])
 
       assert number_of_keywords == 3
 
@@ -107,30 +71,47 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
                "third keyword"
              ]) == true
 
-      assert Enum.map(keywords, fn keyword -> assert keyword.user_id == user_id end)
+      assert Enum.map(keywords, fn %Keyword{user_id: keyword_user_id} ->
+               assert keyword_user_id == user_id
+             end)
     end
 
-    test "given valid and empty attributes, returns :error" do
+    test "given a list of keywords containing an EMPTY value, returns {:error, :invalid_data}" do
       user = insert(:user)
 
-      assert Keywords.create_keywords(user, @valid_and_empty_attrs) == :error
+      assert Keywords.create_keywords(user, ["first keyword", "second keyword", ""]) ==
+               {:error, :invalid_data}
 
       assert Keywords.list_keywords(user) == []
     end
 
-    test "given INVALID attributes, returns :error" do
+    test "given a list of keywords containing an INVALID value, returns {:error, :invalid_data}" do
       user = insert(:user)
 
-      assert Keywords.create_keywords(user, @invalid_attrs) == :error
+      assert Keywords.create_keywords(user, [
+               "first keyword",
+               "second keyword",
+               %{}
+             ]) == {:error, :invalid_data}
 
       assert Keywords.list_keywords(user) == []
     end
 
-    test "given INVALID attribute type, raises FunctionClauseError" do
+    test "given EMPTY attributes, raises FunctionClauseError" do
       user = insert(:user)
 
       assert_raise FunctionClauseError, fn ->
-        Keywords.create_keywords(user, "invalid attribute type")
+        Keywords.create_keywords(user, nil)
+      end
+
+      assert Keywords.list_keywords(user) == []
+    end
+
+    test "given INVALID attributes, raises FunctionClauseError" do
+      user = insert(:user)
+
+      assert_raise FunctionClauseError, fn ->
+        Keywords.create_keywords(user, "invalid attribute")
       end
 
       assert Keywords.list_keywords(user) == []
@@ -140,7 +121,7 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
       user = nil
 
       assert_raise FunctionClauseError, fn ->
-        Keywords.create_keywords(user, @valid_attrs)
+        Keywords.create_keywords(user, ["first keyword", "second keyword", "third keyword"])
       end
     end
   end
@@ -181,6 +162,51 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
 
       assert_raise File.Error, fn ->
         Keywords.parse_csv!(path)
+      end
+    end
+  end
+
+  describe "get_keyword!/1" do
+    test "given a valid keyword ID, returns the keyword" do
+      %Keyword{id: keyword_id} = insert(:keyword)
+
+      keyword = Keywords.get_keyword!(keyword_id)
+
+      assert keyword.id == keyword_id
+    end
+
+    test "given empty keyword ID, raises ArgumentError" do
+      assert_raise ArgumentError, fn ->
+        Keywords.get_keyword!(nil)
+      end
+    end
+  end
+
+  describe "update_status/2" do
+    test "given a keyword and a status, returns :ok with the updated keyword" do
+      %Keyword{status: keyword_status} = keyword = insert(:keyword, status: :new)
+
+      assert keyword_status == :new
+
+      assert {:ok, %Keyword{status: updated_keyword_status}} =
+               Keywords.update_status(keyword, :completed)
+
+      assert updated_keyword_status == :completed
+    end
+
+    test "given EMPTY keyword and a status, raises FunctionClauseError" do
+      assert_raise FunctionClauseError, fn ->
+        Keywords.update_status(nil, :completed)
+      end
+    end
+
+    test "given a keyword and INVALID status, returns {:error, changeset}" do
+      %Keyword{status: keyword_status} = keyword = insert(:keyword, status: :new)
+
+      assert keyword_status == :new
+
+      assert_raise Ecto.ChangeError, fn ->
+        Keywords.update_status(keyword, :invalid_status)
       end
     end
   end

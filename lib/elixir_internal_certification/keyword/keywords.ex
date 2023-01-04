@@ -27,32 +27,16 @@ defmodule ElixirInternalCertification.Keyword.Keywords do
   # """
   def list_keywords(%User{} = user), do: Repo.all(KeywordQuery.list_keywords_by_user(user))
 
-  @doc """
-  Creates a keyword.
-
-  ## Examples
-
-      iex> create_keyword(%User{}, %{field: value})
-      {:ok, %Keyword{}}
-
-      iex> create_keyword(%User{}, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def create_keyword(%User{} = user, attrs \\ %{}) do
-    user
-    |> Keyword.changeset(attrs)
-    |> Repo.insert()
-  end
+  def get_keyword!(id), do: Repo.get!(Keyword, id)
 
   def create_keywords(%User{id: _user_id} = user, keywords) when is_list(keywords) do
-    case keywords_valid?(user, keywords) do
-      true ->
-        keyword_params = create_params_from_keywords(user, keywords)
-        Repo.insert_all(Keyword, keyword_params, returning: true)
+    case validate_keywords(user, keywords) do
+      {:ok, valid_changesets} ->
+        params = create_params_from_changesets(valid_changesets)
+        {:ok, Repo.insert_all(Keyword, params, returning: true)}
 
-      false ->
-        :error
+      {:error, _invalid_changesets} ->
+        {:error, :invalid_data}
     end
   end
 
@@ -71,22 +55,42 @@ defmodule ElixirInternalCertification.Keyword.Keywords do
     end
   end
 
-  defp keywords_valid?(user, keywords) do
-    {_valid_changesets, invalid_changesets} =
+  def update_status(%Keyword{} = keyword, status) do
+    keyword
+    |> Keyword.update_status_changeset(status)
+    |> Repo.update()
+  end
+
+  defp validate_keywords(user, keywords) do
+    {valid_changesets, invalid_changesets} =
       keywords
       |> Enum.map(fn keyword ->
-        Keyword.changeset(user, %{title: keyword})
+        Keyword.changeset(user, %Keyword{}, %{title: keyword})
       end)
       |> Enum.split_with(fn changeset -> changeset.valid? end)
 
-    Enum.empty?(invalid_changesets)
+    if Enum.empty?(invalid_changesets) do
+      {:ok, valid_changesets}
+    else
+      {:error, invalid_changesets}
+    end
   end
 
-  defp create_params_from_keywords(user, keywords) do
+  defp create_params_from_changesets(changesets) when is_list(changesets) do
+    entries =
+      Enum.map(changesets, fn changeset ->
+        Ecto.Changeset.apply_changes(changeset)
+      end)
+
+    fields = Keyword.__schema__(:fields)
     now = NaiveDateTime.truncate(NaiveDateTime.utc_now(), :second)
 
-    Enum.map(keywords, fn keyword ->
-      %{user_id: user.id, title: keyword, inserted_at: now, updated_at: now}
+    Enum.map(entries, fn entry ->
+      entry
+      |> Map.take(fields)
+      |> Map.delete(:id)
+      |> Map.put(:inserted_at, now)
+      |> Map.put(:updated_at, now)
     end)
   end
 end
