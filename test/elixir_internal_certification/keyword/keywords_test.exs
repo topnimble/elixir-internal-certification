@@ -3,7 +3,7 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
 
   alias ElixirInternalCertification.Account.Schemas.User
   alias ElixirInternalCertification.Keyword.Keywords
-  alias ElixirInternalCertification.Keyword.Schemas.Keyword
+  alias ElixirInternalCertification.Keyword.Schemas.{Keyword, KeywordLookup}
 
   @fixture_path "test/support/fixtures"
 
@@ -12,10 +12,26 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
       user = insert(:user)
       another_user = insert(:user)
 
-      %Keyword{id: first_keyword_id} = insert(:keyword, user: user, title: "first keyword")
-      %Keyword{id: second_keyword_id} = insert(:keyword, user: user, title: "second keyword")
-      %Keyword{id: third_keyword_id} = insert(:keyword, user: user, title: "third keyword")
-      insert(:keyword, user: another_user, title: "another keyword")
+      %Keyword{id: first_keyword_id} =
+        first_keyword = insert(:keyword, user: user, title: "first keyword")
+
+      %KeywordLookup{id: first_keyword_lookup_id} =
+        _first_keyword_lookup = insert(:keyword_lookup, keyword: first_keyword)
+
+      %Keyword{id: second_keyword_id} =
+        second_keyword = insert(:keyword, user: user, title: "second keyword")
+
+      %KeywordLookup{id: second_keyword_lookup_id} =
+        _second_keyword_lookup = insert(:keyword_lookup, keyword: second_keyword)
+
+      %Keyword{id: third_keyword_id} =
+        third_keyword = insert(:keyword, user: user, title: "third keyword")
+
+      %KeywordLookup{id: third_keyword_lookup_id} =
+        _third_keyword_lookup = insert(:keyword_lookup, keyword: third_keyword)
+
+      another_keyword = insert(:keyword, user: another_user, title: "another keyword")
+      _another_keyword_lookup = insert(:keyword_lookup, keyword: another_keyword)
 
       keywords = Keywords.list_keywords(user)
 
@@ -25,6 +41,12 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
                third_keyword_id,
                second_keyword_id,
                first_keyword_id
+             ]
+
+      assert Enum.map(keywords, fn keyword -> keyword.keyword_lookup.id end) == [
+               third_keyword_lookup_id,
+               second_keyword_lookup_id,
+               first_keyword_lookup_id
              ]
     end
 
@@ -178,6 +200,51 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
     test "given empty keyword ID, raises ArgumentError" do
       assert_raise ArgumentError, fn ->
         Keywords.get_keyword!(nil)
+      end
+    end
+  end
+
+  describe "get_keyword!/2" do
+    test "given a valid keyword ID, returns the keyword" do
+      %User{id: user_id} = user = insert(:user)
+      %Keyword{id: keyword_id} = keyword = insert(:keyword, user: user)
+
+      %KeywordLookup{id: keyword_lookup_id} =
+        _keyword_lookup = insert(:keyword_lookup, keyword: keyword)
+
+      keyword = Keywords.get_keyword!(user, keyword_id)
+
+      assert keyword.id == keyword_id
+      assert keyword.user_id == user_id
+      assert keyword.keyword_lookup.id == keyword_lookup_id
+    end
+
+    test "given a valid keyword ID but INVALID user ID, raises Ecto.NoResultsError" do
+      user = insert(:user)
+      another_user = insert(:user)
+      %Keyword{id: keyword_id} = keyword = insert(:keyword, user: user)
+      _keyword_lookup = insert(:keyword_lookup, keyword: keyword)
+
+      assert_raise Ecto.NoResultsError, fn ->
+        Keywords.get_keyword!(another_user, keyword_id)
+      end
+    end
+
+    test "given empty keyword ID, raises ArgumentError" do
+      user = insert(:user)
+
+      assert_raise ArgumentError, fn ->
+        Keywords.get_keyword!(user, nil)
+      end
+    end
+
+    test "given a user is nil, raises FunctionClauseError" do
+      user = insert(:user)
+      %Keyword{id: keyword_id} = keyword = insert(:keyword, user: user)
+      _keyword_lookup = insert(:keyword_lookup, keyword: keyword)
+
+      assert_raise FunctionClauseError, fn ->
+        Keywords.get_keyword!(nil, keyword_id)
       end
     end
   end

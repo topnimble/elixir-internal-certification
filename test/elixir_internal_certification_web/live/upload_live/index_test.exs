@@ -1,4 +1,4 @@
-defmodule ElixirInternalCertificationWeb.UploadLiveTest do
+defmodule ElixirInternalCertificationWeb.UploadLive.IndexTest do
   use ElixirInternalCertificationWeb.ConnCase, async: true
 
   import ElixirInternalCertificationWeb.Gettext
@@ -22,7 +22,7 @@ defmodule ElixirInternalCertificationWeb.UploadLiveTest do
            user: user
          } do
       {:ok, view, _html} =
-        live(conn, Routes.upload_path(ElixirInternalCertificationWeb.Endpoint, :index))
+        live(conn, Routes.upload_index_path(ElixirInternalCertificationWeb.Endpoint, :index))
 
       keyword =
         file_input(view, "#upload-form", :keyword, [
@@ -46,7 +46,10 @@ defmodule ElixirInternalCertificationWeb.UploadLiveTest do
       |> element("#upload-form")
       |> render_submit()
 
-      assert_redirected(view, Routes.keyword_path(ElixirInternalCertificationWeb.Endpoint, :index))
+      assert_redirected(
+        view,
+        Routes.keyword_index_path(ElixirInternalCertificationWeb.Endpoint, :index)
+      )
 
       keywords = Keywords.list_keywords(user)
 
@@ -68,7 +71,7 @@ defmodule ElixirInternalCertificationWeb.UploadLiveTest do
       user: user
     } do
       {:ok, view, _html} =
-        live(conn, Routes.upload_path(ElixirInternalCertificationWeb.Endpoint, :index))
+        live(conn, Routes.upload_index_path(ElixirInternalCertificationWeb.Endpoint, :index))
 
       keyword =
         file_input(view, "#upload-form", :keyword, [
@@ -101,7 +104,7 @@ defmodule ElixirInternalCertificationWeb.UploadLiveTest do
 
     test "given INVALID file extension, displays the error", %{conn: conn, user: user} do
       {:ok, view, _html} =
-        live(conn, Routes.upload_path(ElixirInternalCertificationWeb.Endpoint, :index))
+        live(conn, Routes.upload_index_path(ElixirInternalCertificationWeb.Endpoint, :index))
 
       keyword =
         file_input(view, "#upload-form", :keyword, [
@@ -128,7 +131,7 @@ defmodule ElixirInternalCertificationWeb.UploadLiveTest do
 
     test "given too large file, displays the error", %{conn: conn, user: user} do
       {:ok, view, _html} =
-        live(conn, Routes.upload_path(ElixirInternalCertificationWeb.Endpoint, :index))
+        live(conn, Routes.upload_index_path(ElixirInternalCertificationWeb.Endpoint, :index))
 
       keyword =
         file_input(view, "#upload-form", :keyword, [
@@ -156,7 +159,7 @@ defmodule ElixirInternalCertificationWeb.UploadLiveTest do
 
     test "given more than 1 file, displays the error", %{conn: conn, user: user} do
       {:ok, view, _html} =
-        live(conn, Routes.upload_path(ElixirInternalCertificationWeb.Endpoint, :index))
+        live(conn, Routes.upload_index_path(ElixirInternalCertificationWeb.Endpoint, :index))
 
       keyword =
         file_input(view, "#upload-form", :keyword, [
@@ -189,7 +192,7 @@ defmodule ElixirInternalCertificationWeb.UploadLiveTest do
 
     test "given a file with more than 1,000 keywords, displays the error", %{conn: conn, user: user} do
       {:ok, view, _html} =
-        live(conn, Routes.upload_path(ElixirInternalCertificationWeb.Endpoint, :index))
+        live(conn, Routes.upload_index_path(ElixirInternalCertificationWeb.Endpoint, :index))
 
       generated_content =
         Enum.map_join(1..(@max_keywords_per_upload + 1), "\n", fn _i ->
@@ -221,7 +224,7 @@ defmodule ElixirInternalCertificationWeb.UploadLiveTest do
 
     test "given a file with INVALID data, displays the error", %{conn: conn, user: user} do
       {:ok, view, _html} =
-        live(conn, Routes.upload_path(ElixirInternalCertificationWeb.Endpoint, :index))
+        live(conn, Routes.upload_index_path(ElixirInternalCertificationWeb.Endpoint, :index))
 
       keyword =
         file_input(view, "#upload-form", :keyword, [

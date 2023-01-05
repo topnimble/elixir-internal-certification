@@ -1,0 +1,102 @@
+<div class="mb-4">
+  <%= live_redirect("< Back", to: Routes.keyword_index_path(@socket, :index)) %>
+</div>
+
+<h1><%= @keyword.title %></h1>
+
+<div class="mb-4"><LiveHelpers.status_badge keyword={@keyword} /></div>
+
+<div class="row g-4 mb-3">
+  <div class="col-12 col-lg-4">
+    <div class="card">
+      <div class="card-header">
+        Number of advertisers
+      </div>
+      <div class="card-body">
+        <div class="display-1"><%= @keyword.keyword_lookup.number_of_adwords_advertisers %></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 col-lg-4">
+    <div class="card">
+      <div class="card-header">
+        Number of advertisers top position
+      </div>
+      <div class="card-body">
+        <div class="display-1">
+          <%= @keyword.keyword_lookup.number_of_adwords_advertisers_top_position %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 col-lg-4">
+    <div class="card">
+      <div class="card-header">
+        Number of non AdWords
+      </div>
+      <div class="card-body">
+        <div class="display-1"><%= @keyword.keyword_lookup.number_of_non_adwords %></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 col-lg-12">
+    <div class="card">
+      <div class="card-header">
+        URLs of AdWords top position
+      </div>
+      <div class="card-body">
+        <%= if length(@keyword.keyword_lookup.urls_of_adwords_advertisers_top_position) > 0 do %>
+          <ol>
+            <%= Enum.map(
+              @keyword.keyword_lookup.urls_of_adwords_advertisers_top_position,
+              fn url_of_adwords_advertiser_top_position ->
+                content_tag :li do
+                  link(url_of_adwords_advertiser_top_position,
+                    to: url_of_adwords_advertiser_top_position
+                  )
+                end
+              end
+            ) %>
+          </ol>
+        <% else %>
+          <div class="fst-italic text-muted">(Unavailable)</div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 col-lg-12">
+    <div class="card">
+      <div class="card-header">
+        URLs of non AdWords
+      </div>
+      <div class="card-body">
+        <%= if length(@keyword.keyword_lookup.urls_of_non_adwords) > 0 do %>
+          <ol>
+            <%= Enum.map(@keyword.keyword_lookup.urls_of_non_adwords, fn url_of_non_adwords ->
+              content_tag :li do
+                link(url_of_non_adwords, to: url_of_non_adwords)
+              end
+            end) %>
+          </ol>
+        <% else %>
+          <div class="fst-italic text-muted">(Unavailable)</div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 col-lg-12">
+    <div class="card">
+      <div class="card-header">
+        Preview
+      </div>
+      <div class="card-body p-0">
+        <%= tag(:iframe, srcdoc: @keyword.keyword_lookup.html, width: "100%", height: "500px") %>
+      </div>
+    </div>
+  </div>
+</div>

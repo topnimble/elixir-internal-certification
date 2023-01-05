@@ -12,9 +12,10 @@ defmodule ElixirInternalCertificationWorker.Google do
 
   @impl Oban.Worker
   def perform(%Oban.Job{args: %{"keyword_id" => keyword_id}, attempt: @max_attempts} = _oban_job) do
-    keyword_id
-    |> Keywords.get_keyword!()
-    |> Keywords.update_status(:failed)
+    keyword = Keywords.get_keyword!(keyword_id)
+
+    Keywords.update_status(keyword, :failed)
+    Keywords.broadcast_keyword_update(keyword)
 
     {:error, "Failed to look up the keyword ID: #{keyword_id}"}
   end
@@ -23,11 +24,13 @@ defmodule ElixirInternalCertificationWorker.Google do
   def perform(%Oban.Job{args: %{"keyword_id" => keyword_id}} = _oban_job) do
     keyword = Keywords.get_keyword!(keyword_id)
     Keywords.update_status(keyword, :pending)
+    Keywords.broadcast_keyword_update(keyword)
     result = execute(keyword)
 
     case result do
       {:ok, _} ->
         Keywords.update_status(keyword, :completed)
+        Keywords.broadcast_keyword_update(keyword)
         result
 
       error ->

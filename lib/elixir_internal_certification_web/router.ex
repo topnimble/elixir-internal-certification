@@ -27,8 +27,9 @@ defmodule ElixirInternalCertificationWeb.Router do
   scope "/", ElixirInternalCertificationWeb do
     pipe_through [:browser, :require_authenticated_user]
 
-    live "/", UploadLive, :index
-    live "/keywords", KeywordLive, :index
+    live "/", UploadLive.Index, :index
+    live "/keywords", KeywordLive.Index, :index
+    live "/keywords/:id", KeywordLive.Show, :show
   end
 
   # Other scopes may use custom stacks.
