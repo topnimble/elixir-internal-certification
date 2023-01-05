@@ -1,5 +1,9 @@
 <div class="d-flex justify-content-end">
-  <%= live_redirect("+ Upload file", to: Routes.upload_index_path(@socket, :index), type: "button", class: "btn btn-primary mb-3") %>
+  <%= live_redirect("+ Upload file",
+    to: Routes.upload_index_path(@socket, :index),
+    type: "button",
+    class: "btn btn-primary mb-3"
+  ) %>
 </div>
 
 <table class="table table-hover">
