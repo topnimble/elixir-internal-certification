@@ -36,7 +36,7 @@ defmodule ElixirInternalCertificationWeb.KeywordLive.IndexTest do
       assert html =~ "Pending"
       assert render(view) =~ "Pending"
 
-      {:ok, updated_keyword} = Keywords.update_status(keyword, :completed)
+      updated_keyword = Keywords.update_status!(keyword, :completed)
       send(pid, {:updated, updated_keyword})
 
       assert render(view) =~ "Completed"

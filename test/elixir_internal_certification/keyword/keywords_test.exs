@@ -249,31 +249,30 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
     end
   end
 
-  describe "update_status/2" do
+  describe "update_status!/2" do
     test "given a keyword and a status, returns :ok with the updated keyword" do
       %Keyword{status: keyword_status} = keyword = insert(:keyword, status: :new)
 
       assert keyword_status == :new
 
-      assert {:ok, %Keyword{status: updated_keyword_status}} =
-               Keywords.update_status(keyword, :completed)
+      assert %Keyword{status: updated_keyword_status} = Keywords.update_status!(keyword, :completed)
 
       assert updated_keyword_status == :completed
     end
 
     test "given EMPTY keyword and a status, raises FunctionClauseError" do
       assert_raise FunctionClauseError, fn ->
-        Keywords.update_status(nil, :completed)
+        Keywords.update_status!(nil, :completed)
       end
     end
 
-    test "given a keyword and INVALID status, returns {:error, changeset}" do
+    test "given a keyword and INVALID status, raises Ecto.ChangeError" do
       %Keyword{status: keyword_status} = keyword = insert(:keyword, status: :new)
 
       assert keyword_status == :new
 
       assert_raise Ecto.ChangeError, fn ->
-        Keywords.update_status(keyword, :invalid_status)
+        Keywords.update_status!(keyword, :invalid_status)
       end
     end
   end

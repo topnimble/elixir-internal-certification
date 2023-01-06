@@ -68,11 +68,21 @@ defmodule ElixirInternalCertification.Keyword.Keywords do
     end
   end
 
-  def update_status(%Keyword{} = keyword, status) do
+  def update_status!(%Keyword{} = keyword, status) do
     keyword
     |> Keyword.update_status_changeset(status)
-    |> Repo.update()
+    |> Repo.update!()
   end
+
+  def find_and_update_keyword(keywords, %Keyword{id: updated_keyword_id} = _updated_keyword),
+    do:
+      Enum.map(keywords, fn %Keyword{id: keyword_id} = keyword ->
+        if keyword_id == updated_keyword_id do
+          Repo.reload(keyword)
+        else
+          keyword
+        end
+      end)
 
   def subscribe_keyword_update(%User{id: user_id} = _user),
     do: Phoenix.PubSub.subscribe(ElixirInternalCertification.PubSub, "#{@topic}_#{user_id}")

@@ -9,4 +9,10 @@ defmodule ElixirInternalCertification.Keyword.Queries.KeywordQuery do
     |> where([k], k.user_id == ^user_id)
     |> order_by([k], desc: k.id)
   end
+
+  def list_keywords_by_user(%User{} = user, query) do
+    user
+    |> list_keywords_by_user()
+    |> where([k], ilike(k.title, ^"#{query}%"))
+  end
 end
