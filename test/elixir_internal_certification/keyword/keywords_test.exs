@@ -277,4 +277,51 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
       end
     end
   end
+
+  describe "subscribe_keyword_update/1" do
+    test "given the current process subscribes to the keyword update of the current user, receives {:updated, %Keyword{}}" do
+      user = insert(:user)
+      %Keyword{id: keyword_id} = keyword = insert(:keyword, user: user)
+      _keyword_lookup = insert(:keyword_lookup, keyword: keyword)
+
+      assert :ok = Keywords.subscribe_keyword_update(user)
+
+      Task.start(fn -> Keywords.broadcast_keyword_update(keyword) end)
+
+      assert_receive({:updated, %Keyword{id: ^keyword_id}})
+    end
+
+    test "given the current process subscribes to the keyword update of the another user, receives NOTHING" do
+      user = insert(:user)
+      another_user = insert(:user)
+      %Keyword{id: keyword_id} = keyword = insert(:keyword, user: user)
+      _keyword_lookup = insert(:keyword_lookup, keyword: keyword)
+
+      assert :ok = Keywords.subscribe_keyword_update(another_user)
+
+      Task.start(fn -> Keywords.broadcast_keyword_update(keyword) end)
+
+      refute_receive({:updated, %Keyword{id: ^keyword_id}})
+    end
+
+    test "given the current process does NOT subscribe to the keyword update, receives NOTHING" do
+      user = insert(:user)
+      %Keyword{id: keyword_id} = keyword = insert(:keyword, user: user)
+      _keyword_lookup = insert(:keyword_lookup, keyword: keyword)
+
+      Task.start(fn -> Keywords.broadcast_keyword_update(keyword) end)
+
+      refute_receive({:updated, %Keyword{id: ^keyword_id}})
+    end
+  end
+
+  describe "broadcast_keyword_update/1" do
+    test "given a keyword, returns :ok" do
+      user = insert(:user)
+      keyword = insert(:keyword, user: user)
+      insert(:keyword_lookup, keyword: keyword)
+
+      assert :ok = Keywords.broadcast_keyword_update(keyword)
+    end
+  end
 end
