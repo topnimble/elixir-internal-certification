@@ -13,6 +13,8 @@ defmodule ElixirInternalCertificationWeb.KeywordLive.IndexTest do
       insert(:keyword, user: user, title: "first keyword")
       insert(:keyword, user: user, title: "second keyword")
       insert(:keyword, user: user, title: "third keyword")
+      insert(:keyword, user: user, title: "fourth keyword")
+      insert(:keyword, user: user, title: "fifth keyword")
       insert(:keyword, user: another_user, title: "another keyword")
 
       {:ok, _view, html} =
@@ -21,25 +23,127 @@ defmodule ElixirInternalCertificationWeb.KeywordLive.IndexTest do
       assert html =~ "first keyword"
       assert html =~ "second keyword"
       assert html =~ "third keyword"
+      assert html =~ "fourth keyword"
+      assert html =~ "fifth keyword"
       refute html =~ "another keyword"
+    end
+
+    test "given EMPTY query in the URL params, lists all keywords", %{conn: conn, user: user} do
+      insert(:keyword, user: user, title: "first keyword")
+      insert(:keyword, user: user, title: "second keyword")
+      insert(:keyword, user: user, title: "third keyword")
+      insert(:keyword, user: user, title: "fourth keyword")
+      insert(:keyword, user: user, title: "fifth keyword")
+
+      {:ok, _view, html} =
+        live(
+          conn,
+          Routes.keyword_index_path(ElixirInternalCertificationWeb.Endpoint, :index, query: "")
+        )
+
+      assert html =~ "first keyword"
+      assert html =~ "second keyword"
+      assert html =~ "third keyword"
+      assert html =~ "fourth keyword"
+      assert html =~ "fifth keyword"
+    end
+
+    test "given a query in the URL params, lists matched keywords", %{conn: conn, user: user} do
+      insert(:keyword, user: user, title: "first keyword")
+      insert(:keyword, user: user, title: "second keyword")
+      insert(:keyword, user: user, title: "third keyword")
+      insert(:keyword, user: user, title: "fourth keyword")
+      insert(:keyword, user: user, title: "fifth keyword")
+
+      {:ok, _view, html} =
+        live(
+          conn,
+          Routes.keyword_index_path(ElixirInternalCertificationWeb.Endpoint, :index, query: "fi")
+        )
+
+      assert html =~ "first keyword"
+      assert html =~ "fifth keyword"
+      refute html =~ "second keyword"
+      refute html =~ "third keyword"
+      refute html =~ "fourth keyword"
+    end
+
+    test "given a changed form, lists matched keywords", %{conn: conn, user: user} do
+      insert(:keyword, user: user, title: "first keyword")
+      insert(:keyword, user: user, title: "second keyword")
+      insert(:keyword, user: user, title: "third keyword")
+      insert(:keyword, user: user, title: "fourth keyword")
+      insert(:keyword, user: user, title: "fifth keyword")
+
+      {:ok, view, _html} =
+        live(conn, Routes.keyword_index_path(ElixirInternalCertificationWeb.Endpoint, :index))
+
+      query = "fi"
+
+      render_change(view, :change_search_query, %{"search_box" => %{"query" => query}})
+
+      assert_patch(view, "/?query=fi")
+
+      rendered_view = render(view)
+
+      assert rendered_view =~ "first keyword"
+      assert rendered_view =~ "fifth keyword"
+      refute rendered_view =~ "second keyword"
+      refute rendered_view =~ "third keyword"
+      refute rendered_view =~ "fourth keyword"
+    end
+
+    test "given a submitted form, lists matched keywords", %{conn: conn, user: user} do
+      insert(:keyword, user: user, title: "first keyword")
+      insert(:keyword, user: user, title: "second keyword")
+      insert(:keyword, user: user, title: "third keyword")
+      insert(:keyword, user: user, title: "fourth keyword")
+      insert(:keyword, user: user, title: "fifth keyword")
+
+      {:ok, view, _html} =
+        live(conn, Routes.keyword_index_path(ElixirInternalCertificationWeb.Endpoint, :index))
+
+      query = "fi"
+
+      {:ok, view_2, _html_2} =
+        view
+        |> render_submit(:submit_search_query, %{"search_box" => %{"query" => query}})
+        |> follow_redirect(conn)
+
+      assert_redirected(view, "/?query=fi")
+
+      rendered_view = render(view_2)
+
+      assert rendered_view =~ "first keyword"
+      assert rendered_view =~ "fifth keyword"
+      refute rendered_view =~ "second keyword"
+      refute rendered_view =~ "third keyword"
+      refute rendered_view =~ "fourth keyword"
     end
   end
 
   describe "handle_info/2" do
     test "given the {:updated, %Keyword{}}, updates the keyword list", %{conn: conn, user: user} do
       keyword = insert(:keyword, user: user, status: :pending)
-      _keyword_lookup = insert(:keyword_lookup, keyword: keyword)
 
       {:ok, %Phoenix.LiveViewTest.View{pid: pid} = view, html} =
         live(conn, Routes.keyword_index_path(ElixirInternalCertificationWeb.Endpoint, :index))
 
       assert html =~ "Pending"
-      assert render(view) =~ "Pending"
+      refute html =~ "Completed"
+
+      rendered_view = render(view)
+
+      assert rendered_view =~ "Pending"
+      refute rendered_view =~ "Completed"
 
       updated_keyword = Keywords.update_status!(keyword, :completed)
       send(pid, {:updated, updated_keyword})
 
-      assert render(view) =~ "Completed"
+      rendered_view_after_update = render(view)
+
+      assert rendered_view_after_update =~ "Completed"
+      refute rendered_view_after_update =~ "Pending"
     end
   end
 end

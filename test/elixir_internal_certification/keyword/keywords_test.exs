@@ -258,14 +258,16 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
       assert Enum.member?(updated_keywords, keyword) == false
 
       intersected_keywords =
-        MapSet.new(updated_keywords)
+        updated_keywords
+        |> MapSet.new()
         |> MapSet.intersection(MapSet.new(keywords))
         |> MapSet.to_list()
 
       assert length(intersected_keywords) == 4
 
       different_keywords =
-        MapSet.new(updated_keywords)
+        updated_keywords
+        |> MapSet.new()
         |> MapSet.difference(MapSet.new(keywords))
         |> MapSet.to_list()
 
@@ -277,7 +279,7 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
       assert different_keyword.status == updated_keyword.status
     end
 
-    test "given a list of keywords and an updated keyword but NOT in the current list, returns a list of keywords" do
+    test "given a list of keywords and an updated keyword but does NOT belong to the current list, returns a list of keywords" do
       keyword = insert(:keyword, status: :new)
       keywords = insert_list(5, :keyword)
 

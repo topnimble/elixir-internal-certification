@@ -49,12 +49,8 @@ defmodule ElixirInternalCertificationWeb.KeywordLive.Index do
     {:noreply, socket}
   end
 
-  defp generate_url_with_query(socket, query) do
-    case query do
-      "" -> Routes.keyword_index_path(socket, :index)
-      _ -> Routes.keyword_index_path(socket, :index, query: query)
-    end
-  end
+  defp generate_url_with_query(socket, query),
+    do: Routes.keyword_index_path(socket, :index, query: query)
 
   defp apply_action(socket, :index, params) do
     query = get_query_from_params(params)
