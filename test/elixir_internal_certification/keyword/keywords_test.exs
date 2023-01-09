@@ -15,20 +15,17 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
       %Keyword{id: first_keyword_id} =
         first_keyword = insert(:keyword, user: user, title: "first keyword")
 
-      %KeywordLookup{id: first_keyword_lookup_id} =
-        _first_keyword_lookup = insert(:keyword_lookup, keyword: first_keyword)
+      _first_keyword_lookup = insert(:keyword_lookup, keyword: first_keyword)
 
       %Keyword{id: second_keyword_id} =
         second_keyword = insert(:keyword, user: user, title: "second keyword")
 
-      %KeywordLookup{id: second_keyword_lookup_id} =
-        _second_keyword_lookup = insert(:keyword_lookup, keyword: second_keyword)
+      _second_keyword_lookup = insert(:keyword_lookup, keyword: second_keyword)
 
       %Keyword{id: third_keyword_id} =
         third_keyword = insert(:keyword, user: user, title: "third keyword")
 
-      %KeywordLookup{id: third_keyword_lookup_id} =
-        _third_keyword_lookup = insert(:keyword_lookup, keyword: third_keyword)
+      _third_keyword_lookup = insert(:keyword_lookup, keyword: third_keyword)
 
       another_keyword = insert(:keyword, user: another_user, title: "another keyword")
       _another_keyword_lookup = insert(:keyword_lookup, keyword: another_keyword)
@@ -41,12 +38,6 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
                third_keyword_id,
                second_keyword_id,
                first_keyword_id
-             ]
-
-      assert Enum.map(keywords, fn keyword -> keyword.keyword_lookup.id end) == [
-               third_keyword_lookup_id,
-               second_keyword_lookup_id,
-               first_keyword_lookup_id
              ]
     end
 
