@@ -31,7 +31,6 @@ defmodule ElixirInternalCertification.Keyword.Keywords do
     user
     |> KeywordQuery.list_keywords_by_user()
     |> Repo.all()
-    |> Repo.preload(:keyword_lookup)
   end
 
   def get_keyword!(id), do: Repo.get!(Keyword, id)

@@ -42,12 +42,6 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
                second_keyword_id,
                first_keyword_id
              ]
-
-      assert Enum.map(keywords, fn keyword -> keyword.keyword_lookup.id end) == [
-               third_keyword_lookup_id,
-               second_keyword_lookup_id,
-               first_keyword_lookup_id
-             ]
     end
 
     test "given a user with NO keywords, returns an empty list" do
