@@ -56,21 +56,31 @@ defmodule ElixirInternalCertificationWeb.KeywordLive.Index do
     end
   end
 
-  defp apply_action(socket, :index, _params) do
+  defp apply_action(socket, :index, params) do
+    query = get_query_from_params(params)
+
     socket
     |> assign(:page_title, "Listing Keywords")
-    |> assign_keywords()
+    |> assign(:query, query)
+    |> assign_keywords(query)
   end
 
-  defp assign_keywords(socket),
+  defp get_query_from_params(params) do
+    case params do
+      %{"query" => query} -> query
+      _ -> nil
+    end
+  end
+
+  defp assign_keywords(socket, query),
     do:
       assign(
         socket,
         :keywords,
         socket
         |> LiveHelpers.get_current_user_from_socket()
-        |> list_keywords()
+        |> list_keywords(query)
       )
 
-  defp list_keywords(%User{} = user), do: Keywords.list_keywords(user)
+  defp list_keywords(%User{} = user, query), do: Keywords.list_keywords(user, query)
 end

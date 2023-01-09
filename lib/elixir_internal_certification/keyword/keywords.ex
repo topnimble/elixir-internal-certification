@@ -18,15 +18,14 @@ defmodule ElixirInternalCertification.Keyword.Keywords do
 
   @topic __MODULE__
 
-  # @doc """
-  # Returns the list of keywords.
+  def list_keywords(%User{} = user, query) when is_binary(query) and query != "" do
+    user
+    |> KeywordQuery.list_keywords_by_user(query)
+    |> Repo.all()
+  end
 
-  # ## Examples
+  def list_keywords(%User{} = user, _query), do: list_keywords(user)
 
-  #     iex> list_keywords(%User{})
-  #     [%Keyword{}, ...]
-
-  # """
   def list_keywords(%User{} = user) do
     user
     |> KeywordQuery.list_keywords_by_user()
