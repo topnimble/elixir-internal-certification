@@ -76,13 +76,13 @@ defmodule ElixirInternalCertification.Keyword.Keywords do
   def subscribe_keyword_update(%User{id: user_id} = _user),
     do: Phoenix.PubSub.subscribe(ElixirInternalCertification.PubSub, "#{@topic}_#{user_id}")
 
-  def broadcast_keyword_update(%Keyword{user_id: user_id} = keyword),
-    do:
-      Phoenix.PubSub.broadcast(
-        ElixirInternalCertification.PubSub,
-        "#{@topic}_#{user_id}",
-        {:updated, keyword}
-      )
+  def broadcast_keyword_update(%Keyword{user_id: user_id} = keyword) do
+    Phoenix.PubSub.broadcast(
+      ElixirInternalCertification.PubSub,
+      "#{@topic}_#{user_id}",
+      {:updated, keyword}
+    )
+  end
 
   defp validate_keywords(user, keywords) do
     {valid_changesets, invalid_changesets} =
