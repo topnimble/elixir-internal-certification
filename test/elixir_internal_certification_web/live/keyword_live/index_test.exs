@@ -93,6 +93,12 @@ defmodule ElixirInternalCertificationWeb.KeywordLive.IndexTest do
       refute rendered_view =~ "second keyword"
       refute rendered_view =~ "third keyword"
       refute rendered_view =~ "fourth keyword"
+
+      view
+      |> form(".search-form", %{"search_box" => %{"query" => ""}})
+      |> render_change()
+
+      assert_patch(view, "/")
     end
 
     test "given a submitted form, lists matched keywords", %{conn: conn, user: user} do
@@ -115,13 +121,19 @@ defmodule ElixirInternalCertificationWeb.KeywordLive.IndexTest do
 
       assert_redirected(view, "/?query=fi")
 
-      rendered_view = render(view_2)
+      rendered_view_2 = render(view_2)
 
-      assert rendered_view =~ "first keyword"
-      assert rendered_view =~ "fifth keyword"
-      refute rendered_view =~ "second keyword"
-      refute rendered_view =~ "third keyword"
-      refute rendered_view =~ "fourth keyword"
+      assert rendered_view_2 =~ "first keyword"
+      assert rendered_view_2 =~ "fifth keyword"
+      refute rendered_view_2 =~ "second keyword"
+      refute rendered_view_2 =~ "third keyword"
+      refute rendered_view_2 =~ "fourth keyword"
+
+      view_2
+      |> form(".search-form", %{"search_box" => %{"query" => ""}})
+      |> render_submit()
+
+      assert_redirect(view_2, "/")
     end
   end
 
