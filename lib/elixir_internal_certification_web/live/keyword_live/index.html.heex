@@ -9,13 +9,13 @@
 <.form
   let={f}
   for={:search_box}
-  class="mb-3"
+  class="mb-3 search-form"
   role="search"
   phx-change="change_search_query"
   phx-submit="submit_search_query"
 >
   <%= search_input(f, :query,
-    class: "form-control search-box",
+    class: "form-control",
     placeholder: "Search...",
     "aria-label": "Search",
     value: @query

@@ -80,7 +80,9 @@ defmodule ElixirInternalCertificationWeb.KeywordLive.IndexTest do
 
       query = "fi"
 
-      render_change(view, :change_search_query, %{"search_box" => %{"query" => query}})
+      view
+      |> form(".search-form", %{"search_box" => %{"query" => query}})
+      |> render_change()
 
       assert_patch(view, "/?query=fi")
 
@@ -107,7 +109,8 @@ defmodule ElixirInternalCertificationWeb.KeywordLive.IndexTest do
 
       {:ok, view_2, _html_2} =
         view
-        |> render_submit(:submit_search_query, %{"search_box" => %{"query" => query}})
+        |> form(".search-form", %{"search_box" => %{"query" => query}})
+        |> render_submit()
         |> follow_redirect(conn)
 
       assert_redirected(view, "/?query=fi")
