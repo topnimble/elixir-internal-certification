@@ -16,7 +16,9 @@ defmodule ElixirInternalCertificationWeb.KeywordLive.ShowTest do
         keyword: keyword,
         number_of_adwords_advertisers: 6,
         number_of_adwords_advertisers_top_position: 5,
-        number_of_non_adwords: 16
+        number_of_non_adwords: 16,
+        urls_of_adwords_advertisers_top_position: ["https://nimblehq.co/"],
+        urls_of_non_adwords: ["https://www.google.com/"]
       )
 
       {:ok, _view, html} =
@@ -26,6 +28,8 @@ defmodule ElixirInternalCertificationWeb.KeywordLive.ShowTest do
         )
 
       assert html =~ "current user keyword"
+      assert html =~ "https://nimblehq.co/"
+      assert html =~ "https://www.google.com/"
 
       parsed_html = Floki.parse_document!(html)
 

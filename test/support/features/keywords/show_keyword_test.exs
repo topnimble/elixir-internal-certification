@@ -14,7 +14,9 @@ defmodule ElixirInternalCertificationWeb.Features.Keywords.ShowKeywordTest do
       keyword: keyword,
       number_of_adwords_advertisers: 6,
       number_of_adwords_advertisers_top_position: 5,
-      number_of_non_adwords: 16
+      number_of_non_adwords: 16,
+      urls_of_adwords_advertisers_top_position: ["https://nimblehq.co/"],
+      urls_of_non_adwords: ["https://www.google.com/"]
     )
 
     session
@@ -24,6 +26,8 @@ defmodule ElixirInternalCertificationWeb.Features.Keywords.ShowKeywordTest do
     |> assert_has(Query.css(".number-of-adwords-advertisers", text: "6"))
     |> assert_has(Query.css(".number-of-adwords-advertisers-top-position", text: "5"))
     |> assert_has(Query.css(".number-of-non-adwords", text: "16"))
+    |> assert_has(Query.text("https://nimblehq.co/"))
+    |> assert_has(Query.text("https://www.google.com/"))
   end
 
   feature "does NOT show the keyword of another user", %{session: session} do
