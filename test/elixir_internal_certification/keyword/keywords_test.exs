@@ -252,8 +252,10 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
 
       assert Enum.member?(keywords, keyword) == true
 
-      updated_keyword = Keywords.update_status!(keyword, :pending)
-      updated_keywords = Keywords.find_and_update_keyword(keywords, updated_keyword)
+      %Keyword{id: updated_keyword_id, status: updated_keyword_status} =
+        Keywords.update_status!(keyword, :pending)
+
+      updated_keywords = Keywords.find_and_update_keyword(keywords, updated_keyword_id)
 
       assert Enum.member?(updated_keywords, keyword) == false
 
@@ -275,24 +277,24 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
 
       [different_keyword] = different_keywords
 
-      assert different_keyword.id == updated_keyword.id
-      assert different_keyword.status == updated_keyword.status
+      assert different_keyword.id == updated_keyword_id
+      assert different_keyword.status == updated_keyword_status
     end
 
     test "given a list of keywords and an updated keyword but does NOT belong to the current list, returns a list of keywords" do
       keyword = insert(:keyword, status: :new)
       keywords = insert_list(5, :keyword)
 
-      updated_keyword = Keywords.update_status!(keyword, :pending)
-      updated_keywords = Keywords.find_and_update_keyword(keywords, updated_keyword)
+      %Keyword{id: updated_keyword_id} = Keywords.update_status!(keyword, :pending)
+      updated_keywords = Keywords.find_and_update_keyword(keywords, updated_keyword_id)
 
       assert keywords == updated_keywords
     end
 
     test "given an EMPTY list, returns an EMPTY list" do
-      keyword = insert(:keyword)
+      %Keyword{id: keyword_id} = _keyword = insert(:keyword)
 
-      assert Keywords.find_and_update_keyword([], keyword) == []
+      assert Keywords.find_and_update_keyword([], keyword_id) == []
     end
 
     test "given a list of keywords and an EMPTY keyword, raises FunctionClauseError" do
@@ -304,10 +306,10 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
     end
 
     test "given a list of keywords is nil, raises Protocol.UndefinedError" do
-      keyword = insert(:keyword)
+      %Keyword{id: keyword_id} = _keyword = insert(:keyword)
 
       assert_raise Protocol.UndefinedError, fn ->
-        Keywords.find_and_update_keyword(nil, keyword)
+        Keywords.find_and_update_keyword(nil, keyword_id)
       end
     end
   end
