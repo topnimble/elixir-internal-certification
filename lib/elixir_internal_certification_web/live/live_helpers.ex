@@ -34,27 +34,15 @@ defmodule ElixirInternalCertificationWeb.LiveHelpers do
 
   def show_button(assigns), do: ~H()
 
-  def status_badge(%{keyword: %Keyword{status: keyword_status}} = assigns)
-      when keyword_status == :new,
-      do: ~H"""
-      <span class="badge rounded-pill bg-secondary">New</span>
-      """
+  def status_badge(%{keyword: %Keyword{status: :new}} = assigns),
+    do: ~H(<span class="badge rounded-pill bg-secondary">New</span>)
 
-  def status_badge(%{keyword: %Keyword{status: keyword_status}} = assigns)
-      when keyword_status == :pending,
-      do: ~H"""
-      <span class="badge rounded-pill bg-info">Pending</span>
-      """
+  def status_badge(%{keyword: %Keyword{status: :pending}} = assigns),
+    do: ~H(<span class="badge rounded-pill bg-info">Pending</span>)
 
-  def status_badge(%{keyword: %Keyword{status: keyword_status}} = assigns)
-      when keyword_status == :completed,
-      do: ~H"""
-      <span class="badge rounded-pill bg-success">Completed</span>
-      """
+  def status_badge(%{keyword: %Keyword{status: :completed}} = assigns),
+    do: ~H(<span class="badge rounded-pill bg-success">Completed</span>)
 
-  def status_badge(%{keyword: %Keyword{status: keyword_status}} = assigns)
-      when keyword_status == :failed,
-      do: ~H"""
-      <span class="badge rounded-pill bg-danger">Failed</span>
-      """
+  def status_badge(%{keyword: %Keyword{status: :failed}} = assigns),
+    do: ~H(<span class="badge rounded-pill bg-danger">Failed</span>)
 end
