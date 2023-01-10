@@ -3,6 +3,7 @@ defmodule ElixirInternalCertificationWeb.KeywordLive.Index do
 
   alias ElixirInternalCertification.Account.Schemas.User
   alias ElixirInternalCertification.Keyword.Keywords
+  alias ElixirInternalCertification.Keyword.Schemas.Keyword
   alias ElixirInternalCertificationWeb.LiveHelpers
   alias Phoenix.LiveView.Socket
 
@@ -24,8 +25,13 @@ defmodule ElixirInternalCertificationWeb.KeywordLive.Index do
     do: {:noreply, apply_action(socket, socket.assigns.live_action, params)}
 
   @impl true
-  def handle_info({:updated, keyword} = _message, %Socket{assigns: %{keywords: keywords}} = socket),
-    do: {:noreply, assign(socket, :keywords, Keywords.find_and_update_keyword(keywords, keyword))}
+  def handle_info(
+        {:updated, %Keyword{id: keyword_id} = _keyword} = _message,
+        %Socket{assigns: %{keywords: keywords}} = socket
+      ),
+      do:
+        {:noreply,
+         assign(socket, :keywords, Keywords.find_and_update_keyword(keywords, keyword_id))}
 
   @impl true
   def handle_event(
@@ -49,12 +55,8 @@ defmodule ElixirInternalCertificationWeb.KeywordLive.Index do
     {:noreply, socket}
   end
 
-  defp generate_url_with_query(socket, query) do
-    case query do
-      "" -> Routes.keyword_index_path(socket, :index)
-      _ -> Routes.keyword_index_path(socket, :index, query: query)
-    end
-  end
+  defp generate_url_with_query(socket, query),
+    do: Routes.keyword_index_path(socket, :index, query: query)
 
   defp apply_action(socket, :index, params) do
     query = get_query_from_params(params)
