@@ -23,7 +23,7 @@ defmodule ElixirInternalCertificationWeb.KeywordLive.ShowTest do
       assert html =~ "current user keyword"
     end
 
-    test "do NOT show the keyword of another user", %{conn: conn, user: _user} do
+    test "does NOT show the keyword of another user", %{conn: conn, user: _user} do
       another_user = insert(:user)
 
       %Keyword{id: keyword_id} =
