@@ -13,7 +13,9 @@
         Number of advertisers
       </div>
       <div class="card-body">
-        <div class="display-1"><%= @keyword.keyword_lookup.number_of_adwords_advertisers %></div>
+        <div class="display-1 number-of-adwords-advertisers">
+          <%= @keyword.keyword_lookup.number_of_adwords_advertisers %>
+        </div>
       </div>
     </div>
   </div>
@@ -24,7 +26,7 @@
         Number of advertisers top position
       </div>
       <div class="card-body">
-        <div class="display-1">
+        <div class="display-1 number-of-adwords-advertisers-top-position">
           <%= @keyword.keyword_lookup.number_of_adwords_advertisers_top_position %>
         </div>
       </div>
@@ -37,7 +39,9 @@
         Number of non AdWords
       </div>
       <div class="card-body">
-        <div class="display-1"><%= @keyword.keyword_lookup.number_of_non_adwords %></div>
+        <div class="display-1 number-of-non-adwords">
+          <%= @keyword.keyword_lookup.number_of_non_adwords %>
+        </div>
       </div>
     </div>
   </div>

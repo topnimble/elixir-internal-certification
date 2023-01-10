@@ -74,15 +74,15 @@ defmodule ElixirInternalCertificationWeb.KeywordLive.Index do
     end
   end
 
-  defp assign_keywords(socket, query),
-    do:
-      assign(
-        socket,
-        :keywords,
-        socket
-        |> LiveHelpers.get_current_user_from_socket()
-        |> list_keywords(query)
-      )
+  defp assign_keywords(socket, query) do
+    assign(
+      socket,
+      :keywords,
+      socket
+      |> LiveHelpers.get_current_user_from_socket()
+      |> list_keywords(query)
+    )
+  end
 
   defp list_keywords(%User{} = user, query), do: Keywords.list_keywords(user, query)
 end
