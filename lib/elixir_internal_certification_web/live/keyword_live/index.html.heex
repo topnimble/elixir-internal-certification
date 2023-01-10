@@ -1,0 +1,26 @@
+<div class="d-flex justify-content-end">
+  <%= live_redirect("+ Upload file",
+    to: Routes.upload_index_path(@socket, :index),
+    type: "button",
+    class: "btn btn-primary mb-3"
+  ) %>
+</div>
+
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th>Keyword</th>
+      <th width="9%"></th>
+      <th width="6%"></th>
+    </tr>
+  </thead>
+  <tbody id="keywords">
+    <%= for keyword <- @keywords do %>
+      <tr id={"keyword-#{keyword.id}"}>
+        <td class="align-middle"><%= keyword.title %></td>
+        <td class="align-middle"><LiveHelpers.status_badge keyword={keyword} /></td>
+        <td class="align-middle text-end"><LiveHelpers.show_button keyword={keyword} /></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

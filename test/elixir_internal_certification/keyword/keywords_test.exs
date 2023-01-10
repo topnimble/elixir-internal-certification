@@ -3,7 +3,7 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
 
   alias ElixirInternalCertification.Account.Schemas.User
   alias ElixirInternalCertification.Keyword.Keywords
-  alias ElixirInternalCertification.Keyword.Schemas.Keyword
+  alias ElixirInternalCertification.Keyword.Schemas.{Keyword, KeywordLookup}
 
   @fixture_path "test/support/fixtures"
 
@@ -12,10 +12,23 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
       user = insert(:user)
       another_user = insert(:user)
 
-      %Keyword{id: first_keyword_id} = insert(:keyword, user: user, title: "first keyword")
-      %Keyword{id: second_keyword_id} = insert(:keyword, user: user, title: "second keyword")
-      %Keyword{id: third_keyword_id} = insert(:keyword, user: user, title: "third keyword")
-      insert(:keyword, user: another_user, title: "another keyword")
+      %Keyword{id: first_keyword_id} =
+        first_keyword = insert(:keyword, user: user, title: "first keyword")
+
+      _first_keyword_lookup = insert(:keyword_lookup, keyword: first_keyword)
+
+      %Keyword{id: second_keyword_id} =
+        second_keyword = insert(:keyword, user: user, title: "second keyword")
+
+      _second_keyword_lookup = insert(:keyword_lookup, keyword: second_keyword)
+
+      %Keyword{id: third_keyword_id} =
+        third_keyword = insert(:keyword, user: user, title: "third keyword")
+
+      _third_keyword_lookup = insert(:keyword_lookup, keyword: third_keyword)
+
+      another_keyword = insert(:keyword, user: another_user, title: "another keyword")
+      _another_keyword_lookup = insert(:keyword_lookup, keyword: another_keyword)
 
       keywords = Keywords.list_keywords(user)
 
@@ -182,6 +195,51 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
     end
   end
 
+  describe "get_keyword!/2" do
+    test "given a valid keyword ID, returns the keyword" do
+      %User{id: user_id} = user = insert(:user)
+      %Keyword{id: keyword_id} = keyword = insert(:keyword, user: user)
+
+      %KeywordLookup{id: keyword_lookup_id} =
+        _keyword_lookup = insert(:keyword_lookup, keyword: keyword)
+
+      keyword = Keywords.get_keyword!(user, keyword_id)
+
+      assert keyword.id == keyword_id
+      assert keyword.user_id == user_id
+      assert keyword.keyword_lookup.id == keyword_lookup_id
+    end
+
+    test "given a valid keyword ID but INVALID user ID, raises Ecto.NoResultsError" do
+      user = insert(:user)
+      another_user = insert(:user)
+      %Keyword{id: keyword_id} = keyword = insert(:keyword, user: user)
+      _keyword_lookup = insert(:keyword_lookup, keyword: keyword)
+
+      assert_raise Ecto.NoResultsError, fn ->
+        Keywords.get_keyword!(another_user, keyword_id)
+      end
+    end
+
+    test "given empty keyword ID, raises ArgumentError" do
+      user = insert(:user)
+
+      assert_raise ArgumentError, fn ->
+        Keywords.get_keyword!(user, nil)
+      end
+    end
+
+    test "given a user is nil, raises FunctionClauseError" do
+      user = insert(:user)
+      %Keyword{id: keyword_id} = keyword = insert(:keyword, user: user)
+      _keyword_lookup = insert(:keyword_lookup, keyword: keyword)
+
+      assert_raise FunctionClauseError, fn ->
+        Keywords.get_keyword!(nil, keyword_id)
+      end
+    end
+  end
+
   describe "update_status/2" do
     test "given a keyword and a status, returns :ok with the updated keyword" do
       %Keyword{status: keyword_status} = keyword = insert(:keyword, status: :new)
@@ -208,6 +266,53 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
       assert_raise Ecto.ChangeError, fn ->
         Keywords.update_status(keyword, :invalid_status)
       end
+    end
+  end
+
+  describe "subscribe_keyword_update/1" do
+    test "given the current process subscribes to the keyword update of the current user, receives {:updated, %Keyword{}}" do
+      user = insert(:user)
+      %Keyword{id: keyword_id} = keyword = insert(:keyword, user: user)
+      _keyword_lookup = insert(:keyword_lookup, keyword: keyword)
+
+      assert :ok = Keywords.subscribe_keyword_update(user)
+
+      Task.start(fn -> Keywords.broadcast_keyword_update(keyword) end)
+
+      assert_receive({:updated, %Keyword{id: ^keyword_id}})
+    end
+
+    test "given the current process subscribes to the keyword update of the another user, receives NOTHING" do
+      user = insert(:user)
+      another_user = insert(:user)
+      %Keyword{id: keyword_id} = keyword = insert(:keyword, user: user)
+      _keyword_lookup = insert(:keyword_lookup, keyword: keyword)
+
+      assert :ok = Keywords.subscribe_keyword_update(another_user)
+
+      Task.start(fn -> Keywords.broadcast_keyword_update(keyword) end)
+
+      refute_receive({:updated, %Keyword{id: ^keyword_id}})
+    end
+
+    test "given the current process does NOT subscribe to the keyword update, receives NOTHING" do
+      user = insert(:user)
+      %Keyword{id: keyword_id} = keyword = insert(:keyword, user: user)
+      _keyword_lookup = insert(:keyword_lookup, keyword: keyword)
+
+      Task.start(fn -> Keywords.broadcast_keyword_update(keyword) end)
+
+      refute_receive({:updated, %Keyword{id: ^keyword_id}})
+    end
+  end
+
+  describe "broadcast_keyword_update/1" do
+    test "given a keyword, returns :ok" do
+      user = insert(:user)
+      keyword = insert(:keyword, user: user)
+      insert(:keyword_lookup, keyword: keyword)
+
+      assert :ok = Keywords.broadcast_keyword_update(keyword)
     end
   end
 end

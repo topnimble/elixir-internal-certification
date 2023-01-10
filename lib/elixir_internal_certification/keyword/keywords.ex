@@ -16,6 +16,8 @@ defmodule ElixirInternalCertification.Keyword.Keywords do
                              :max_keywords_per_upload
                            )
 
+  @topic __MODULE__
+
   # @doc """
   # Returns the list of keywords.
 
@@ -25,9 +27,19 @@ defmodule ElixirInternalCertification.Keyword.Keywords do
   #     [%Keyword{}, ...]
 
   # """
-  def list_keywords(%User{} = user), do: Repo.all(KeywordQuery.list_keywords_by_user(user))
+  def list_keywords(%User{} = user) do
+    user
+    |> KeywordQuery.list_keywords_by_user()
+    |> Repo.all()
+  end
 
   def get_keyword!(id), do: Repo.get!(Keyword, id)
+
+  def get_keyword!(%User{id: user_id} = _user, id) do
+    Keyword
+    |> Repo.get_by!(id: id, user_id: user_id)
+    |> Repo.preload(:keyword_lookup)
+  end
 
   def create_keywords(%User{id: _user_id} = user, keywords) when is_list(keywords) do
     case validate_keywords(user, keywords) do
@@ -59,6 +71,17 @@ defmodule ElixirInternalCertification.Keyword.Keywords do
     keyword
     |> Keyword.update_status_changeset(status)
     |> Repo.update()
+  end
+
+  def subscribe_keyword_update(%User{id: user_id} = _user),
+    do: Phoenix.PubSub.subscribe(ElixirInternalCertification.PubSub, "#{@topic}_#{user_id}")
+
+  def broadcast_keyword_update(%Keyword{user_id: user_id} = keyword) do
+    Phoenix.PubSub.broadcast(
+      ElixirInternalCertification.PubSub,
+      "#{@topic}_#{user_id}",
+      {:updated, keyword}
+    )
   end
 
   defp validate_keywords(user, keywords) do

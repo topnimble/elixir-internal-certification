@@ -1,4 +1,4 @@
-defmodule ElixirInternalCertificationWeb.UploadLive do
+defmodule ElixirInternalCertificationWeb.UploadLive.Index do
   use ElixirInternalCertificationWeb, :live_view
 
   alias ElixirInternalCertification.Keyword.{KeywordLookups, Keywords}
@@ -50,7 +50,7 @@ defmodule ElixirInternalCertificationWeb.UploadLive do
       {:noreply,
        socket
        |> update(:uploaded_files, &(&1 ++ uploaded_files))
-       |> redirect(to: Routes.keyword_path(ElixirInternalCertificationWeb.Endpoint, :index))}
+       |> redirect(to: Routes.keyword_index_path(ElixirInternalCertificationWeb.Endpoint, :index))}
     else
       {:noreply, put_flash(socket, :error, Enum.join(errors, ", "))}
     end

@@ -18,7 +18,7 @@ defmodule ElixirInternalCertificationWeb.Features.Keywords.UploadCSVFileTest do
 
     session
     |> FeatureHelper.authenticated_user(user)
-    |> visit(Routes.upload_path(ElixirInternalCertificationWeb.Endpoint, :index))
+    |> visit(Routes.upload_index_path(ElixirInternalCertificationWeb.Endpoint, :index))
     |> attach_file(Query.file_field("keyword"),
       path: Path.join(@fixture_path, "/assets/keywords.csv")
     )
@@ -41,7 +41,7 @@ defmodule ElixirInternalCertificationWeb.Features.Keywords.UploadCSVFileTest do
 
     session
     |> FeatureHelper.authenticated_user(user)
-    |> visit(Routes.upload_path(ElixirInternalCertificationWeb.Endpoint, :index))
+    |> visit(Routes.upload_index_path(ElixirInternalCertificationWeb.Endpoint, :index))
     |> attach_file(Query.file_field("keyword"),
       path: Path.join(@fixture_path, "/assets/keywords.csv")
     )
