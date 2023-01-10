@@ -17,7 +17,7 @@ defmodule ElixirInternalCertificationWeb.Features.Keywords.ShowKeywordTest do
     |> assert_has(Query.text("current user keyword"))
   end
 
-  feature "do NOT show the keyword of another user", %{session: session} do
+  feature "does NOT show the keyword of another user", %{session: session} do
     user = insert(:user)
     another_user = insert(:user)
 
