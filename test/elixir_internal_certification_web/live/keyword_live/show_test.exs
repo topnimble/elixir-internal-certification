@@ -12,7 +12,12 @@ defmodule ElixirInternalCertificationWeb.KeywordLive.ShowTest do
       %Keyword{id: keyword_id} =
         keyword = insert(:keyword, user: user, title: "current user keyword")
 
-      insert(:keyword_lookup, keyword: keyword)
+      insert(:keyword_lookup,
+        keyword: keyword,
+        number_of_adwords_advertisers: 6,
+        number_of_adwords_advertisers_top_position: 5,
+        number_of_non_adwords: 16
+      )
 
       {:ok, _view, html} =
         live(
@@ -21,6 +26,21 @@ defmodule ElixirInternalCertificationWeb.KeywordLive.ShowTest do
         )
 
       assert html =~ "current user keyword"
+
+      parsed_html = Floki.parse_document!(html)
+
+      assert Floki.find(parsed_html, ".number-of-adwords-advertisers") == [
+               {"div", [{"class", "display-1 number-of-adwords-advertisers"}], ["\n6\n        "]}
+             ]
+
+      assert Floki.find(parsed_html, ".number-of-adwords-advertisers-top-position") == [
+               {"div", [{"class", "display-1 number-of-adwords-advertisers-top-position"}],
+                ["\n5\n        "]}
+             ]
+
+      assert Floki.find(parsed_html, ".number-of-non-adwords") == [
+               {"div", [{"class", "display-1 number-of-non-adwords"}], ["\n16\n        "]}
+             ]
     end
 
     test "does NOT show the keyword of another user", %{conn: conn, user: _user} do
