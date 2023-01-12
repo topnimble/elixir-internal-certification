@@ -63,19 +63,12 @@ defmodule ElixirInternalCertificationWeb.KeywordLive.Index do
   end
 
   defp apply_action(socket, :index, params) do
-    search_query = get_search_query_from_params(params)
+    search_query = params["query"]
 
     socket
     |> assign(:page_title, "Listing Keywords")
     |> assign(:search_query, search_query)
     |> assign_keywords(search_query)
-  end
-
-  defp get_search_query_from_params(params) do
-    case params do
-      %{"query" => search_query} -> search_query
-      _ -> nil
-    end
   end
 
   defp assign_keywords(socket, search_query) do
