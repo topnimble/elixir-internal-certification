@@ -28,7 +28,7 @@ defmodule ElixirInternalCertification.Fetcher.GoogleTest do
     end
 
     test "given a search query and the request is timeout, returns {:error, :timeout}" do
-      expect(GoogleClient, :search, fn _query -> {:error, :timeout} end)
+      expect(GoogleClient, :search, fn _search_query -> {:error, :timeout} end)
 
       assert {:error, :timeout} = GoogleFetcher.search("google")
     end

@@ -28,7 +28,7 @@ defmodule ElixirInternalCertificationWeb.KeywordLive.IndexTest do
       refute html =~ "another keyword"
     end
 
-    test "given EMPTY query in the URL params, lists all keywords", %{conn: conn, user: user} do
+    test "given EMPTY search query in the URL params, lists all keywords", %{conn: conn, user: user} do
       insert(:keyword, user: user, title: "first keyword")
       insert(:keyword, user: user, title: "second keyword")
       insert(:keyword, user: user, title: "third keyword")
@@ -48,7 +48,7 @@ defmodule ElixirInternalCertificationWeb.KeywordLive.IndexTest do
       assert html =~ "fifth keyword"
     end
 
-    test "given a query in the URL params, lists matched keywords", %{conn: conn, user: user} do
+    test "given a search query in the URL params, lists matched keywords", %{conn: conn, user: user} do
       insert(:keyword, user: user, title: "first keyword")
       insert(:keyword, user: user, title: "second keyword")
       insert(:keyword, user: user, title: "third keyword")
@@ -78,10 +78,10 @@ defmodule ElixirInternalCertificationWeb.KeywordLive.IndexTest do
       {:ok, view, _html} =
         live(conn, Routes.keyword_index_path(ElixirInternalCertificationWeb.Endpoint, :index))
 
-      query = "fi"
+      search_query = "fi"
 
       view
-      |> form(".search-form", %{"search_box" => %{"query" => query}})
+      |> form(".search-form", %{"search_box" => %{"search_query" => search_query}})
       |> render_change()
 
       assert_patch(view, "/?query=fi")
@@ -95,7 +95,7 @@ defmodule ElixirInternalCertificationWeb.KeywordLive.IndexTest do
       refute rendered_view =~ "fourth keyword"
 
       view
-      |> form(".search-form", %{"search_box" => %{"query" => ""}})
+      |> form(".search-form", %{"search_box" => %{"search_query" => ""}})
       |> render_change()
 
       assert_patch(view, "/")
@@ -111,11 +111,11 @@ defmodule ElixirInternalCertificationWeb.KeywordLive.IndexTest do
       {:ok, view, _html} =
         live(conn, Routes.keyword_index_path(ElixirInternalCertificationWeb.Endpoint, :index))
 
-      query = "fi"
+      search_query = "fi"
 
       {:ok, view_2, _html_2} =
         view
-        |> form(".search-form", %{"search_box" => %{"query" => query}})
+        |> form(".search-form", %{"search_box" => %{"search_query" => search_query}})
         |> render_submit()
         |> follow_redirect(conn)
 
@@ -130,7 +130,7 @@ defmodule ElixirInternalCertificationWeb.KeywordLive.IndexTest do
       refute rendered_view_2 =~ "fourth keyword"
 
       view_2
-      |> form(".search-form", %{"search_box" => %{"query" => ""}})
+      |> form(".search-form", %{"search_box" => %{"search_query" => ""}})
       |> render_submit()
 
       assert_redirect(view_2, "/")

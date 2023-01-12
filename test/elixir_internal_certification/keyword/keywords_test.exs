@@ -60,7 +60,7 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
   end
 
   describe "list_keywords/2" do
-    test "given a user and a query with nil value, returns a list of keywords belongs to the user sorted by ID in descending order" do
+    test "given a user and a search query with nil value, returns a list of keywords belongs to the user sorted by ID in descending order" do
       user = insert(:user)
       another_user = insert(:user)
 
@@ -105,7 +105,7 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
              ]
     end
 
-    test "given a user and a query with empty string, returns a list of keywords belongs to the user sorted by ID in descending order" do
+    test "given a user and a search query with empty string, returns a list of keywords belongs to the user sorted by ID in descending order" do
       user = insert(:user)
       another_user = insert(:user)
 
@@ -150,7 +150,7 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
              ]
     end
 
-    test "given a user and a query with `fi` value, returns a list of keywords belongs to the user and the query sorted by ID in descending order" do
+    test "given a user and a search query with `fi` value, returns a list of keywords belongs to the user and the search query sorted by ID in descending order" do
       user = insert(:user)
       another_user = insert(:user)
 
@@ -192,7 +192,7 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
              ]
     end
 
-    test "given a user and a query with NO results, returns an empty list" do
+    test "given a user and a search query with NO results, returns an empty list" do
       user = insert(:user)
       another_user = insert(:user)
 
@@ -224,7 +224,7 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
       another_keyword = insert(:keyword, user: another_user, title: "another keyword")
       _another_keyword_lookup = insert(:keyword_lookup, keyword: another_keyword)
 
-      assert Keywords.list_keywords(user, "query with no results") == []
+      assert Keywords.list_keywords(user, "search query with no results") == []
     end
 
     test "given a user with NO keywords, returns an empty list" do
