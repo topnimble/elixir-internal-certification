@@ -14,9 +14,7 @@ defmodule ElixirInternalCertificationWorker.Google do
   def perform(%Oban.Job{args: %{"keyword_id" => keyword_id}, attempt: @max_attempts} = _oban_job) do
     keyword = Keywords.get_keyword!(keyword_id)
 
-    keyword
-    |> Keywords.update_status!(:failed)
-    |> Keywords.broadcast_keyword_update()
+    update_status_and_broadcast_keyword_update!(keyword, :failed)
 
     {:error, "Failed to look up the keyword ID: #{keyword_id}"}
   end
@@ -25,17 +23,13 @@ defmodule ElixirInternalCertificationWorker.Google do
   def perform(%Oban.Job{args: %{"keyword_id" => keyword_id}} = _oban_job) do
     keyword = Keywords.get_keyword!(keyword_id)
 
-    keyword
-    |> Keywords.update_status!(:pending)
-    |> Keywords.broadcast_keyword_update()
+    update_status_and_broadcast_keyword_update!(keyword, :pending)
 
     result = execute(keyword)
 
     case result do
       {:ok, _} ->
-        keyword
-        |> Keywords.update_status!(:completed)
-        |> Keywords.broadcast_keyword_update()
+        update_status_and_broadcast_keyword_update!(keyword, :completed)
 
         result
 
@@ -52,5 +46,11 @@ defmodule ElixirInternalCertificationWorker.Google do
            |> Map.put(:keyword_id, keyword_id) do
       KeywordLookups.create_keyword_lookup(params)
     end
+  end
+
+  defp update_status_and_broadcast_keyword_update!(keyword, status) do
+    keyword
+    |> Keywords.update_status!(status)
+    |> Keywords.broadcast_keyword_update()
   end
 end
