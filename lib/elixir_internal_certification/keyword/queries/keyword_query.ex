@@ -13,6 +13,6 @@ defmodule ElixirInternalCertification.Keyword.Queries.KeywordQuery do
   def list_keywords_by_user(%User{} = user, search_query) do
     user
     |> list_keywords_by_user()
-    |> where([k], ilike(k.title, ^"#{search_query}%"))
+    |> where([k], ilike(k.title, ^"%#{search_query}%"))
   end
 end
