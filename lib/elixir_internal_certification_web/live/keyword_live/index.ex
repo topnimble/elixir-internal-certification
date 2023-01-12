@@ -36,7 +36,7 @@ defmodule ElixirInternalCertificationWeb.KeywordLive.Index do
   @impl true
   def handle_event(
         "change_search_query",
-        %{"search_box" => %{"search_query" => search_query}} = _unsigned_params,
+        %{"search_form" => %{"search_query" => search_query}} = _unsigned_params,
         socket
       ) do
     url = generate_url_with_search_query(socket, search_query)
@@ -47,7 +47,7 @@ defmodule ElixirInternalCertificationWeb.KeywordLive.Index do
   @impl true
   def handle_event(
         "submit_search_query",
-        %{"search_box" => %{"search_query" => search_query}} = _unsigned_params,
+        %{"search_form" => %{"search_query" => search_query}} = _unsigned_params,
         socket
       ) do
     url = generate_url_with_search_query(socket, search_query)

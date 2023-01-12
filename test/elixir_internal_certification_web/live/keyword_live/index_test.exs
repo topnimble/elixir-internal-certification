@@ -81,7 +81,7 @@ defmodule ElixirInternalCertificationWeb.KeywordLive.IndexTest do
       search_query = "fi"
 
       view
-      |> form(".search-form", %{"search_box" => %{"search_query" => search_query}})
+      |> form(".search-form", %{"search_form" => %{"search_query" => search_query}})
       |> render_change()
 
       assert_patch(view, "/?query=fi")
@@ -95,7 +95,7 @@ defmodule ElixirInternalCertificationWeb.KeywordLive.IndexTest do
       refute rendered_view =~ "fourth keyword"
 
       view
-      |> form(".search-form", %{"search_box" => %{"search_query" => ""}})
+      |> form(".search-form", %{"search_form" => %{"search_query" => ""}})
       |> render_change()
 
       assert_patch(view, "/")
@@ -115,7 +115,7 @@ defmodule ElixirInternalCertificationWeb.KeywordLive.IndexTest do
 
       {:ok, view_2, _html_2} =
         view
-        |> form(".search-form", %{"search_box" => %{"search_query" => search_query}})
+        |> form(".search-form", %{"search_form" => %{"search_query" => search_query}})
         |> render_submit()
         |> follow_redirect(conn)
 
@@ -130,7 +130,7 @@ defmodule ElixirInternalCertificationWeb.KeywordLive.IndexTest do
       refute rendered_view_2 =~ "fourth keyword"
 
       view_2
-      |> form(".search-form", %{"search_box" => %{"search_query" => ""}})
+      |> form(".search-form", %{"search_form" => %{"search_query" => ""}})
       |> render_submit()
 
       assert_redirect(view_2, "/")
