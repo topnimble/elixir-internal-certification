@@ -18,7 +18,8 @@ defmodule ElixirInternalCertification.Keyword.Keywords do
 
   @topic __MODULE__
 
-  def list_keywords(%User{} = user, search_query) when is_binary(search_query) and search_query != "" do
+  def list_keywords(%User{} = user, search_query)
+      when is_binary(search_query) and search_query != "" do
     user
     |> KeywordQuery.list_keywords_by_user(search_query)
     |> Repo.all()
