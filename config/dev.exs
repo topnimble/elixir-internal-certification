@@ -86,3 +86,5 @@ config :phoenix, :plug_init_mode, :runtime
 
 config :mix_test_interactive,
   clear: true
+
+config :elixir_internal_certification, ElixirInternalCertification.Guardian, secret_key: "7WT5B7dnVG8esz2/OtpmlAWgOYGQft0ZzrFcRJBdqlWC9epCbF68r5T9sEpbHSvk"

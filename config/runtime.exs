@@ -57,6 +57,8 @@ if config_env() == :prod do
     ],
     secret_key_base: secret_key_base
 
+  config :elixir_internal_certification, ElixirInternalCertification.Guardian, secret_key: System.fetch_env!("GUARDIAN_SECRET_KEY")
+
   # ## Configuring the mailer
   #
   # In production you need to configure the mailer to use a different adapter.

@@ -73,6 +73,14 @@ config :elixir_internal_certification, Oban,
 
 config :tesla, :adapter, Tesla.Adapter.Hackney
 
+config :elixir_internal_certification, ElixirInternalCertification.Guardian, issuer: "elixir_internal_certification"
+
+config :elixir_internal_certification, ElixirInternalCertificationWeb.AuthenticatedAccessPipeline, module: ElixirInternalCertification.Guardian, error_handler: ElixirInternalCertificationWeb.AuthErrorHandler
+
+config :elixir_internal_certification, ElixirInternalCertificationWeb.UnauthenticatedAccessPipeline, module: ElixirInternalCertification.Guardian, error_handler: ElixirInternalCertificationWeb.AuthErrorHandler
+
+config :jsonapi, remove_links: true
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{config_env()}.exs"

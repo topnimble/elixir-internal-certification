@@ -20,6 +20,13 @@ defmodule ElixirInternalCertificationWeb.Router do
     plug :accepts, ["json"]
   end
 
+  pipeline :unauthenticated_api do
+    plug ElixirInternalCertificationWeb.UnauthenticatedAccessPipeline
+  end
+
+  pipeline :authenticated_api do
+    plug ElixirInternalCertificationWeb.AuthenticatedAccessPipeline
+  end
   # coveralls-ignore-stop
 
   forward RouterHelper.health_path(), ElixirInternalCertificationWeb.HealthPlug
@@ -32,10 +39,20 @@ defmodule ElixirInternalCertificationWeb.Router do
     live "/uploads", UploadLive.Index, :index
   end
 
-  # Other scopes may use custom stacks.
-  # scope "/api", ElixirInternalCertificationWeb do
-  #   pipe_through :api
-  # end
+  scope "/api", ElixirInternalCertificationWeb.Api, as: :api do
+    pipe_through [:api, :unauthenticated_api]
+
+    scope "/v1", V1, as: :v1 do
+      post "/users/log_in", UserSessionController, :create
+    end
+  end
+
+  scope "/api", ElixirInternalCertificationWeb.Api, as: :api do
+    pipe_through [:api, :authenticated_api]
+
+    scope "/v1", V1, as: :v1 do
+    end
+  end
 
   # Enables LiveDashboard only for development
   #
