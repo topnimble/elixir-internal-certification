@@ -24,7 +24,7 @@ defmodule ElixirInternalCertificationWorker.GoogleTest do
 
     test "given a keyword ID and the job is failed, returns the error and keeps the status as pending" do
       use_cassette "google/keyword_with_no_adwords", match_requests_on: [:query] do
-        expect(GoogleFetcher, :search, fn _query -> {:error, :timeout} end)
+        expect(GoogleFetcher, :search, fn _search_query -> {:error, :timeout} end)
 
         %Keyword{id: keyword_id} = keyword = insert(:keyword, title: "google")
 

@@ -36,10 +36,10 @@ defmodule ElixirInternalCertificationWeb.KeywordLive.Index do
   @impl true
   def handle_event(
         "change_search_query",
-        %{"search_box" => %{"query" => query}} = _unsigned_params,
+        %{"search_box" => %{"search_query" => search_query}} = _unsigned_params,
         socket
       ) do
-    url = generate_url_with_query(socket, query)
+    url = generate_url_with_search_query(socket, search_query)
     socket = push_patch(socket, to: url)
     {:noreply, socket}
   end
@@ -47,46 +47,46 @@ defmodule ElixirInternalCertificationWeb.KeywordLive.Index do
   @impl true
   def handle_event(
         "submit_search_query",
-        %{"search_box" => %{"query" => query}} = _unsigned_params,
+        %{"search_box" => %{"search_query" => search_query}} = _unsigned_params,
         socket
       ) do
-    url = generate_url_with_query(socket, query)
+    url = generate_url_with_search_query(socket, search_query)
     socket = push_redirect(socket, to: url)
     {:noreply, socket}
   end
 
-  defp generate_url_with_query(socket, query) do
-    case query do
+  defp generate_url_with_search_query(socket, search_query) do
+    case search_query do
       "" -> Routes.keyword_index_path(socket, :index)
-      _ -> Routes.keyword_index_path(socket, :index, query: query)
+      _ -> Routes.keyword_index_path(socket, :index, query: search_query)
     end
   end
 
   defp apply_action(socket, :index, params) do
-    query = get_query_from_params(params)
+    search_query = get_search_query_from_params(params)
 
     socket
     |> assign(:page_title, "Listing Keywords")
-    |> assign(:query, query)
-    |> assign_keywords(query)
+    |> assign(:search_query, search_query)
+    |> assign_keywords(search_query)
   end
 
-  defp get_query_from_params(params) do
+  defp get_search_query_from_params(params) do
     case params do
-      %{"query" => query} -> query
+      %{"query" => search_query} -> search_query
       _ -> nil
     end
   end
 
-  defp assign_keywords(socket, query) do
+  defp assign_keywords(socket, search_query) do
     assign(
       socket,
       :keywords,
       socket
       |> LiveHelpers.get_current_user_from_socket()
-      |> list_keywords(query)
+      |> list_keywords(search_query)
     )
   end
 
-  defp list_keywords(%User{} = user, query), do: Keywords.list_keywords(user, query)
+  defp list_keywords(%User{} = user, search_query), do: Keywords.list_keywords(user, search_query)
 end
