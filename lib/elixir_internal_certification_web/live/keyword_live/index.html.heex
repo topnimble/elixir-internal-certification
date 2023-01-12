@@ -14,11 +14,11 @@
   phx-change="change_search_query"
   phx-submit="submit_search_query"
 >
-  <%= search_input(f, :query,
+  <%= search_input(f, :search_query,
     class: "form-control",
     placeholder: "Search...",
     "aria-label": "Search",
-    value: @query
+    value: @search_query
   ) %>
 </.form>
 
