@@ -66,7 +66,7 @@ defmodule ElixirInternalCertification.Keyword.Schemas.KeywordLookupTest do
     end
 
     test "given a NON-existing keyword ID, returns {:error, %Ecto.Changeset{}}" do
-      invalid_keyword_params = params_for(:keyword_lookup, keyword_id: 999_999)
+      invalid_keyword_params = params_for(:keyword_lookup, keyword_id: -1)
 
       assert {:error, changeset} =
                invalid_keyword_params
