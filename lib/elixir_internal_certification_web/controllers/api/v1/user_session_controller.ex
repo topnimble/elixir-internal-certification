@@ -2,11 +2,9 @@ defmodule ElixirInternalCertificationWeb.Api.V1.UserSessionController do
   use ElixirInternalCertificationWeb, :controller
 
   alias ElixirInternalCertification.Account.Accounts
+  alias ElixirInternalCertification.Account.Schemas.UserApiToken
   alias ElixirInternalCertification.Guardian
   alias ElixirInternalCertificationWeb.AuthErrorHandler
-
-  alias ElixirInternalCertification.Account.Schemas.UserApiToken
-  alias ElixirInternalCertification.Repo
 
   def create(conn, %{"email" => email, "password" => password}) do
     if user = Accounts.get_user_by_email_and_password(email, password) do

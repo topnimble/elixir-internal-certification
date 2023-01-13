@@ -1,7 +1,7 @@
 defmodule ElixirInternalCertificationWeb.AuthErrorHandler do
-  import Plug.Conn
-
   @behaviour Guardian.Plug.ErrorHandler
+
+  import Plug.Conn
 
   @impl Guardian.Plug.ErrorHandler
   def auth_error(conn, {type, _reason}, _opts) do
