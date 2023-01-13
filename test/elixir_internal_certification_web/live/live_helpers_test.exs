@@ -2,7 +2,10 @@ defmodule ElixirInternalCertificationWeb.LiveHelpersTest do
   use ElixirInternalCertificationWeb.ConnCase, async: true
   use Phoenix.Component
 
+  import Phoenix.LiveViewTest
+
   alias ElixirInternalCertification.Account.Schemas.User
+  alias ElixirInternalCertification.Keyword.Schemas.Keyword
   alias ElixirInternalCertificationWeb.LiveHelpers
   alias Phoenix.LiveView.Socket
 
@@ -47,6 +50,72 @@ defmodule ElixirInternalCertificationWeb.LiveHelpersTest do
       assert_raise FunctionClauseError, fn ->
         LiveHelpers.get_current_user_from_socket(socket)
       end
+    end
+  end
+
+  describe "show_button/1" do
+    test "given a keyword with `new` status, returns a spinner icon" do
+      keyword = insert(:keyword, status: :new)
+
+      assert render_component(&LiveHelpers.show_button/1, keyword: keyword) ==
+               ~S(<div class="spinner-border spinner-border-sm" role="status">
+  <span class="visually-hidden">Processing...</span>
+</div>)
+    end
+
+    test "given a keyword with `pending` status, returns a spinner icon" do
+      keyword = insert(:keyword, status: :pending)
+
+      assert render_component(&LiveHelpers.show_button/1, keyword: keyword) ==
+               ~S(<div class="spinner-border spinner-border-sm" role="status">
+  <span class="visually-hidden">Processing...</span>
+</div>)
+    end
+
+    test "given a keyword with `completed` status, returns a show button" do
+      %Keyword{id: keyword_id} = keyword = insert(:keyword, status: :completed)
+      _keyword_lookup = insert(:keyword_lookup, keyword: keyword)
+
+      keyword = ElixirInternalCertification.Repo.preload(keyword, :keyword_lookup)
+
+      assert render_component(&LiveHelpers.show_button/1, keyword: keyword) ==
+               ~s(<a data-phx-link="redirect" data-phx-link-state="push" href="/keywords/#{keyword_id}">Show</a>)
+    end
+
+    test "given a keyword with `failed` status, returns empty" do
+      keyword = insert(:keyword, status: :failed)
+
+      assert render_component(&LiveHelpers.show_button/1, keyword: keyword) == ""
+    end
+  end
+
+  describe "status_badge/1" do
+    test "given a keyword with `new` status, returns a badge" do
+      keyword = insert(:keyword, status: :new)
+
+      assert render_component(&LiveHelpers.status_badge/1, keyword: keyword) ==
+               ~S(<span class="badge rounded-pill bg-secondary">New</span>)
+    end
+
+    test "given a keyword with `pending` status, returns a badge" do
+      keyword = insert(:keyword, status: :pending)
+
+      assert render_component(&LiveHelpers.status_badge/1, keyword: keyword) ==
+               ~S(<span class="badge rounded-pill bg-info">Pending</span>)
+    end
+
+    test "given a keyword with `completed` status, returns a badge" do
+      keyword = insert(:keyword, status: :completed)
+
+      assert render_component(&LiveHelpers.status_badge/1, keyword: keyword) ==
+               ~S(<span class="badge rounded-pill bg-success">Completed</span>)
+    end
+
+    test "given a keyword with `failed` status, returns a badge" do
+      keyword = insert(:keyword, status: :failed)
+
+      assert render_component(&LiveHelpers.status_badge/1, keyword: keyword) ==
+               ~S(<span class="badge rounded-pill bg-danger">Failed</span>)
     end
   end
 end

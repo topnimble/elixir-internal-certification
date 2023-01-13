@@ -15,7 +15,7 @@ defmodule ElixirInternalCertificationWeb.Features.Keywords.ViewKeywordListTest d
 
     session
     |> FeatureHelper.authenticated_user(user)
-    |> visit(Routes.keyword_path(ElixirInternalCertificationWeb.Endpoint, :index))
+    |> visit(Routes.keyword_index_path(ElixirInternalCertificationWeb.Endpoint, :index))
     |> assert_has(Query.text("first keyword"))
     |> assert_has(Query.text("second keyword"))
     |> assert_has(Query.text("third keyword"))

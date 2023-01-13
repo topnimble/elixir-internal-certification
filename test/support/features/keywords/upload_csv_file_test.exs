@@ -18,8 +18,10 @@ defmodule ElixirInternalCertificationWeb.Features.Keywords.UploadCSVFileTest do
 
     session
     |> FeatureHelper.authenticated_user(user)
-    |> visit(Routes.upload_path(ElixirInternalCertificationWeb.Endpoint, :index))
-    |> attach_file(Query.file_field("keyword"), path: @fixture_path <> "/assets/keywords.csv")
+    |> visit(Routes.upload_index_path(ElixirInternalCertificationWeb.Endpoint, :index))
+    |> attach_file(Query.file_field("keyword"),
+      path: Path.join(@fixture_path, "/assets/keywords.csv")
+    )
     |> click(css(@selectors[:upload_button]))
     |> find(css(@selectors[:upload_button], count: 0))
 
@@ -39,8 +41,10 @@ defmodule ElixirInternalCertificationWeb.Features.Keywords.UploadCSVFileTest do
 
     session
     |> FeatureHelper.authenticated_user(user)
-    |> visit(Routes.upload_path(ElixirInternalCertificationWeb.Endpoint, :index))
-    |> attach_file(Query.file_field("keyword"), path: @fixture_path <> "/assets/keywords.csv")
+    |> visit(Routes.upload_index_path(ElixirInternalCertificationWeb.Endpoint, :index))
+    |> attach_file(Query.file_field("keyword"),
+      path: Path.join(@fixture_path, "/assets/keywords.csv")
+    )
     |> click(css(@selectors[:remove_file_button]))
 
     assert Keywords.list_keywords(user) == []

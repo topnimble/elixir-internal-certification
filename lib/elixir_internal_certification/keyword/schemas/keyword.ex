@@ -5,16 +5,21 @@ defmodule ElixirInternalCertification.Keyword.Schemas.Keyword do
   import Ecto.Changeset
 
   alias ElixirInternalCertification.Account.Schemas.User
+  alias ElixirInternalCertification.Keyword.Schemas.KeywordLookup
+
+  @statuses [:new, :pending, :completed, :failed]
 
   schema "keywords" do
     field :title, :string
-
+    field :status, Ecto.Enum, values: @statuses, default: :new
+    has_one :keyword_lookup, KeywordLookup
     belongs_to :user, User
 
     timestamps()
   end
 
-  @doc false
+  def update_status_changeset(keyword, status), do: change(keyword, status: status)
+
   def changeset(%User{} = user, keyword \\ %__MODULE__{}, attrs) do
     keyword
     |> cast(attrs, [:title])

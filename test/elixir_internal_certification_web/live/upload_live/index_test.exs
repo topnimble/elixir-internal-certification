@@ -1,10 +1,12 @@
-defmodule ElixirInternalCertificationWeb.UploadLiveTest do
+defmodule ElixirInternalCertificationWeb.UploadLive.IndexTest do
   use ElixirInternalCertificationWeb.ConnCase, async: true
 
   import ElixirInternalCertificationWeb.Gettext
   import Phoenix.LiveViewTest
 
   alias ElixirInternalCertification.Keyword.Keywords
+  alias ElixirInternalCertification.Keyword.Schemas.Keyword
+  alias ElixirInternalCertificationWorker.Google, as: GoogleWorker
 
   setup [:register_and_log_in_user]
 
@@ -20,7 +22,7 @@ defmodule ElixirInternalCertificationWeb.UploadLiveTest do
            user: user
          } do
       {:ok, view, _html} =
-        live(conn, Routes.upload_path(ElixirInternalCertificationWeb.Endpoint, :index))
+        live(conn, Routes.upload_index_path(ElixirInternalCertificationWeb.Endpoint, :index))
 
       keyword =
         file_input(view, "#upload-form", :keyword, [
@@ -44,17 +46,24 @@ defmodule ElixirInternalCertificationWeb.UploadLiveTest do
       |> element("#upload-form")
       |> render_submit()
 
-      assert_redirected(view, Routes.keyword_path(ElixirInternalCertificationWeb.Endpoint, :index))
+      assert_redirected(
+        view,
+        Routes.keyword_index_path(ElixirInternalCertificationWeb.Endpoint, :index)
+      )
 
       keywords = Keywords.list_keywords(user)
 
       assert length(keywords) == 3
 
-      assert equal?(Enum.map(keywords, fn keyword -> keyword.title end), [
+      assert equal?(Enum.map(keywords, fn %Keyword{title: keyword_title} -> keyword_title end), [
                "first keyword",
                "second keyword",
                "third keyword"
              ]) == true
+
+      Enum.map(keywords, fn %Keyword{id: keyword_id} ->
+        assert_enqueued(worker: GoogleWorker, args: %{"keyword_id" => keyword_id})
+      end)
     end
 
     test "given a cancellation of a CSV file containing keywords, does NOT upload the keywords", %{
@@ -62,7 +71,7 @@ defmodule ElixirInternalCertificationWeb.UploadLiveTest do
       user: user
     } do
       {:ok, view, _html} =
-        live(conn, Routes.upload_path(ElixirInternalCertificationWeb.Endpoint, :index))
+        live(conn, Routes.upload_index_path(ElixirInternalCertificationWeb.Endpoint, :index))
 
       keyword =
         file_input(view, "#upload-form", :keyword, [
@@ -89,11 +98,13 @@ defmodule ElixirInternalCertificationWeb.UploadLiveTest do
       refute result =~ "keywords.csv"
 
       assert Keywords.list_keywords(user) == []
+
+      refute_enqueued(worker: GoogleWorker)
     end
 
     test "given INVALID file extension, displays the error", %{conn: conn, user: user} do
       {:ok, view, _html} =
-        live(conn, Routes.upload_path(ElixirInternalCertificationWeb.Endpoint, :index))
+        live(conn, Routes.upload_index_path(ElixirInternalCertificationWeb.Endpoint, :index))
 
       keyword =
         file_input(view, "#upload-form", :keyword, [
@@ -114,11 +125,13 @@ defmodule ElixirInternalCertificationWeb.UploadLiveTest do
       assert result =~ dgettext("errors", "You have selected an unacceptable file type")
 
       assert Keywords.list_keywords(user) == []
+
+      refute_enqueued(worker: GoogleWorker)
     end
 
     test "given too large file, displays the error", %{conn: conn, user: user} do
       {:ok, view, _html} =
-        live(conn, Routes.upload_path(ElixirInternalCertificationWeb.Endpoint, :index))
+        live(conn, Routes.upload_index_path(ElixirInternalCertificationWeb.Endpoint, :index))
 
       keyword =
         file_input(view, "#upload-form", :keyword, [
@@ -140,11 +153,13 @@ defmodule ElixirInternalCertificationWeb.UploadLiveTest do
       assert result =~ dgettext("errors", "Too large")
 
       assert Keywords.list_keywords(user) == []
+
+      refute_enqueued(worker: GoogleWorker)
     end
 
     test "given more than 1 file, displays the error", %{conn: conn, user: user} do
       {:ok, view, _html} =
-        live(conn, Routes.upload_path(ElixirInternalCertificationWeb.Endpoint, :index))
+        live(conn, Routes.upload_index_path(ElixirInternalCertificationWeb.Endpoint, :index))
 
       keyword =
         file_input(view, "#upload-form", :keyword, [
@@ -171,11 +186,13 @@ defmodule ElixirInternalCertificationWeb.UploadLiveTest do
       assert result =~ dgettext("errors", "You have selected too many files")
 
       assert Keywords.list_keywords(user) == []
+
+      refute_enqueued(worker: GoogleWorker)
     end
 
     test "given a file with more than 1,000 keywords, displays the error", %{conn: conn, user: user} do
       {:ok, view, _html} =
-        live(conn, Routes.upload_path(ElixirInternalCertificationWeb.Endpoint, :index))
+        live(conn, Routes.upload_index_path(ElixirInternalCertificationWeb.Endpoint, :index))
 
       generated_content =
         Enum.map_join(1..(@max_keywords_per_upload + 1), "\n", fn _i ->
@@ -201,11 +218,13 @@ defmodule ElixirInternalCertificationWeb.UploadLiveTest do
       assert result =~ dgettext("errors", "You have selected file with more than 1000 keywords")
 
       assert Keywords.list_keywords(user) == []
+
+      refute_enqueued(worker: GoogleWorker)
     end
 
     test "given a file with INVALID data, displays the error", %{conn: conn, user: user} do
       {:ok, view, _html} =
-        live(conn, Routes.upload_path(ElixirInternalCertificationWeb.Endpoint, :index))
+        live(conn, Routes.upload_index_path(ElixirInternalCertificationWeb.Endpoint, :index))
 
       keyword =
         file_input(view, "#upload-form", :keyword, [
@@ -226,6 +245,8 @@ defmodule ElixirInternalCertificationWeb.UploadLiveTest do
       assert result =~ dgettext("errors", "You have selected file with invalid data")
 
       assert Keywords.list_keywords(user) == []
+
+      refute_enqueued(worker: GoogleWorker)
     end
   end
 end

@@ -3,7 +3,7 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
 
   alias ElixirInternalCertification.Account.Schemas.User
   alias ElixirInternalCertification.Keyword.Keywords
-  alias ElixirInternalCertification.Keyword.Schemas.Keyword
+  alias ElixirInternalCertification.Keyword.Schemas.{Keyword, KeywordLookup}
 
   @fixture_path "test/support/fixtures"
 
@@ -12,10 +12,23 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
       user = insert(:user)
       another_user = insert(:user)
 
-      %Keyword{id: first_keyword_id} = insert(:keyword, user: user, title: "first keyword")
-      %Keyword{id: second_keyword_id} = insert(:keyword, user: user, title: "second keyword")
-      %Keyword{id: third_keyword_id} = insert(:keyword, user: user, title: "third keyword")
-      insert(:keyword, user: another_user, title: "another keyword")
+      %Keyword{id: first_keyword_id} =
+        first_keyword = insert(:keyword, user: user, title: "first keyword")
+
+      _first_keyword_lookup = insert(:keyword_lookup, keyword: first_keyword)
+
+      %Keyword{id: second_keyword_id} =
+        second_keyword = insert(:keyword, user: user, title: "second keyword")
+
+      _second_keyword_lookup = insert(:keyword_lookup, keyword: second_keyword)
+
+      %Keyword{id: third_keyword_id} =
+        third_keyword = insert(:keyword, user: user, title: "third keyword")
+
+      _third_keyword_lookup = insert(:keyword_lookup, keyword: third_keyword)
+
+      another_keyword = insert(:keyword, user: another_user, title: "another keyword")
+      _another_keyword_lookup = insert(:keyword_lookup, keyword: another_keyword)
 
       keywords = Keywords.list_keywords(user)
 
@@ -46,48 +59,267 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
     end
   end
 
-  describe "create_keyword/2" do
-    @valid_attrs %{title: "some title"}
-    @invalid_attrs %{title: nil}
+  describe "list_keywords/2" do
+    test "given a user and a search query with nil value, returns a list of keywords belongs to the user sorted by ID in descending order" do
+      user = insert(:user)
+      another_user = insert(:user)
 
-    test "given valid attributes, returns {:ok, %Keyword{}}" do
-      %User{id: user_id} = user = insert(:user)
+      %Keyword{id: first_keyword_id} =
+        first_keyword = insert(:keyword, user: user, title: "first keyword")
 
-      assert {:ok, %Keyword{} = keyword} = Keywords.create_keyword(user, @valid_attrs)
-      assert keyword.title == "some title"
-      assert keyword.user_id == user_id
+      _first_keyword_lookup = insert(:keyword_lookup, keyword: first_keyword)
+
+      %Keyword{id: second_keyword_id} =
+        second_keyword = insert(:keyword, user: user, title: "second keyword")
+
+      _second_keyword_lookup = insert(:keyword_lookup, keyword: second_keyword)
+
+      %Keyword{id: third_keyword_id} =
+        third_keyword = insert(:keyword, user: user, title: "third keyword")
+
+      _third_keyword_lookup = insert(:keyword_lookup, keyword: third_keyword)
+
+      %Keyword{id: fourth_keyword_id} =
+        fourth_keyword = insert(:keyword, user: user, title: "fourth keyword")
+
+      _fourth_keyword_lookup = insert(:keyword_lookup, keyword: fourth_keyword)
+
+      %Keyword{id: fifth_keyword_id} =
+        fifth_keyword = insert(:keyword, user: user, title: "fifth keyword")
+
+      _fifth_keyword_lookup = insert(:keyword_lookup, keyword: fifth_keyword)
+
+      another_keyword = insert(:keyword, user: another_user, title: "another keyword")
+      _another_keyword_lookup = insert(:keyword_lookup, keyword: another_keyword)
+
+      keywords = Keywords.list_keywords(user, nil)
+
+      assert length(keywords) == 5
+
+      assert Enum.map(keywords, fn keyword -> keyword.id end) == [
+               fifth_keyword_id,
+               fourth_keyword_id,
+               third_keyword_id,
+               second_keyword_id,
+               first_keyword_id
+             ]
     end
 
-    test "given INVALID attributes, returns {:error, %Ecto.Changeset{}}" do
+    test "given a user and a search query with empty string, returns a list of keywords belongs to the user sorted by ID in descending order" do
       user = insert(:user)
+      another_user = insert(:user)
 
-      assert {:error, changeset} = Keywords.create_keyword(user, @invalid_attrs)
+      %Keyword{id: first_keyword_id} =
+        first_keyword = insert(:keyword, user: user, title: "first keyword")
 
-      assert "can't be blank" in errors_on(changeset).title
+      _first_keyword_lookup = insert(:keyword_lookup, keyword: first_keyword)
+
+      %Keyword{id: second_keyword_id} =
+        second_keyword = insert(:keyword, user: user, title: "second keyword")
+
+      _second_keyword_lookup = insert(:keyword_lookup, keyword: second_keyword)
+
+      %Keyword{id: third_keyword_id} =
+        third_keyword = insert(:keyword, user: user, title: "third keyword")
+
+      _third_keyword_lookup = insert(:keyword_lookup, keyword: third_keyword)
+
+      %Keyword{id: fourth_keyword_id} =
+        fourth_keyword = insert(:keyword, user: user, title: "fourth keyword")
+
+      _fourth_keyword_lookup = insert(:keyword_lookup, keyword: fourth_keyword)
+
+      %Keyword{id: fifth_keyword_id} =
+        fifth_keyword = insert(:keyword, user: user, title: "fifth keyword")
+
+      _fifth_keyword_lookup = insert(:keyword_lookup, keyword: fifth_keyword)
+
+      another_keyword = insert(:keyword, user: another_user, title: "another keyword")
+      _another_keyword_lookup = insert(:keyword_lookup, keyword: another_keyword)
+
+      keywords = Keywords.list_keywords(user, "")
+
+      assert length(keywords) == 5
+
+      assert Enum.map(keywords, fn keyword -> keyword.id end) == [
+               fifth_keyword_id,
+               fourth_keyword_id,
+               third_keyword_id,
+               second_keyword_id,
+               first_keyword_id
+             ]
+    end
+
+    test "given a user and a search query with `fi` value, returns a list of keywords belongs to the user and the search query sorted by ID in descending order" do
+      user = insert(:user)
+      another_user = insert(:user)
+
+      %Keyword{id: first_keyword_id} =
+        first_keyword = insert(:keyword, user: user, title: "first keyword")
+
+      _first_keyword_lookup = insert(:keyword_lookup, keyword: first_keyword)
+
+      %Keyword{id: _second_keyword_id} =
+        second_keyword = insert(:keyword, user: user, title: "second keyword")
+
+      _second_keyword_lookup = insert(:keyword_lookup, keyword: second_keyword)
+
+      %Keyword{id: _third_keyword_id} =
+        third_keyword = insert(:keyword, user: user, title: "third keyword")
+
+      _third_keyword_lookup = insert(:keyword_lookup, keyword: third_keyword)
+
+      %Keyword{id: _fourth_keyword_id} =
+        fourth_keyword = insert(:keyword, user: user, title: "fourth keyword")
+
+      _fourth_keyword_lookup = insert(:keyword_lookup, keyword: fourth_keyword)
+
+      %Keyword{id: fifth_keyword_id} =
+        fifth_keyword = insert(:keyword, user: user, title: "fifth keyword")
+
+      _fifth_keyword_lookup = insert(:keyword_lookup, keyword: fifth_keyword)
+
+      another_keyword = insert(:keyword, user: another_user, title: "another keyword")
+      _another_keyword_lookup = insert(:keyword_lookup, keyword: another_keyword)
+
+      keywords = Keywords.list_keywords(user, "fi")
+
+      assert length(keywords) == 2
+
+      assert Enum.map(keywords, fn keyword -> keyword.id end) == [
+               fifth_keyword_id,
+               first_keyword_id
+             ]
+    end
+
+    test "given a user and a search query with NO results, returns an empty list" do
+      user = insert(:user)
+      another_user = insert(:user)
+
+      %Keyword{id: _first_keyword_id} =
+        first_keyword = insert(:keyword, user: user, title: "first keyword")
+
+      _first_keyword_lookup = insert(:keyword_lookup, keyword: first_keyword)
+
+      %Keyword{id: _second_keyword_id} =
+        second_keyword = insert(:keyword, user: user, title: "second keyword")
+
+      _second_keyword_lookup = insert(:keyword_lookup, keyword: second_keyword)
+
+      %Keyword{id: _third_keyword_id} =
+        third_keyword = insert(:keyword, user: user, title: "third keyword")
+
+      _third_keyword_lookup = insert(:keyword_lookup, keyword: third_keyword)
+
+      %Keyword{id: _fourth_keyword_id} =
+        fourth_keyword = insert(:keyword, user: user, title: "fourth keyword")
+
+      _fourth_keyword_lookup = insert(:keyword_lookup, keyword: fourth_keyword)
+
+      %Keyword{id: _fifth_keyword_id} =
+        fifth_keyword = insert(:keyword, user: user, title: "fifth keyword")
+
+      _fifth_keyword_lookup = insert(:keyword_lookup, keyword: fifth_keyword)
+
+      another_keyword = insert(:keyword, user: another_user, title: "another keyword")
+      _another_keyword_lookup = insert(:keyword_lookup, keyword: another_keyword)
+
+      assert Keywords.list_keywords(user, "search query with no results") == []
+    end
+
+    test "given a user with NO keywords, returns an empty list" do
+      user = insert(:user)
+      another_user = insert(:user)
+
+      insert(:keyword, user: another_user, title: "another keyword")
+
+      assert Keywords.list_keywords(user, nil) == []
     end
 
     test "given a user is nil, raises FunctionClauseError" do
       user = nil
 
       assert_raise FunctionClauseError, fn ->
-        Keywords.create_keyword(user, @valid_attrs)
+        Keywords.list_keywords(user, nil)
+      end
+    end
+  end
+
+  describe "find_and_update_keyword/2" do
+    test "given a list of keywords and an updated keyword, returns a list of keywords with updated keyword" do
+      keyword = insert(:keyword, status: :new)
+      keywords = [keyword | insert_list(4, :keyword)]
+
+      assert Enum.member?(keywords, keyword) == true
+
+      %Keyword{id: updated_keyword_id, status: updated_keyword_status} =
+        Keywords.update_status!(keyword, :pending)
+
+      updated_keywords = Keywords.find_and_update_keyword(keywords, updated_keyword_id)
+
+      assert Enum.member?(updated_keywords, keyword) == false
+
+      intersected_keywords =
+        updated_keywords
+        |> MapSet.new()
+        |> MapSet.intersection(MapSet.new(keywords))
+        |> MapSet.to_list()
+
+      assert length(intersected_keywords) == 4
+
+      different_keywords =
+        updated_keywords
+        |> MapSet.new()
+        |> MapSet.difference(MapSet.new(keywords))
+        |> MapSet.to_list()
+
+      assert length(different_keywords) == 1
+
+      [different_keyword] = different_keywords
+
+      assert different_keyword.id == updated_keyword_id
+      assert different_keyword.status == updated_keyword_status
+    end
+
+    test "given a list of keywords and an updated keyword but does NOT belong to the current list, returns a list of keywords" do
+      keyword = insert(:keyword, status: :new)
+      keywords = insert_list(5, :keyword)
+
+      %Keyword{id: updated_keyword_id} = Keywords.update_status!(keyword, :pending)
+      updated_keywords = Keywords.find_and_update_keyword(keywords, updated_keyword_id)
+
+      assert keywords == updated_keywords
+    end
+
+    test "given an EMPTY list, returns an EMPTY list" do
+      %Keyword{id: keyword_id} = _keyword = insert(:keyword)
+
+      assert Keywords.find_and_update_keyword([], keyword_id) == []
+    end
+
+    test "given a list of keywords and an EMPTY keyword, raises FunctionClauseError" do
+      keywords = insert_list(5, :keyword)
+
+      assert_raise FunctionClauseError, fn ->
+        Keywords.find_and_update_keyword(keywords, nil)
+      end
+    end
+
+    test "given a list of keywords is nil, raises Protocol.UndefinedError" do
+      %Keyword{id: keyword_id} = _keyword = insert(:keyword)
+
+      assert_raise Protocol.UndefinedError, fn ->
+        Keywords.find_and_update_keyword(nil, keyword_id)
       end
     end
   end
 
   describe "create_keywords/2" do
-    @valid_attrs ["first keyword", "second keyword", "third keyword"]
-    @valid_and_empty_attrs ["first keyword", ""]
-    @invalid_attrs [
-      %{title: "first invalid keyword"},
-      %{title: "second invalid keyword"},
-      %{title: "third invalid keyword"}
-    ]
-
     test "given valid attributes, returns a number of keywords and a list of results" do
       %User{id: user_id} = user = insert(:user)
 
-      {number_of_keywords, records} = Keywords.create_keywords(user, @valid_attrs)
+      {:ok, {number_of_keywords, records}} =
+        Keywords.create_keywords(user, ["first keyword", "second keyword", "third keyword"])
 
       assert number_of_keywords == 3
 
@@ -107,30 +339,47 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
                "third keyword"
              ]) == true
 
-      assert Enum.map(keywords, fn keyword -> assert keyword.user_id == user_id end)
+      assert Enum.map(keywords, fn %Keyword{user_id: keyword_user_id} ->
+               assert keyword_user_id == user_id
+             end)
     end
 
-    test "given valid and empty attributes, returns :error" do
+    test "given a list of keywords containing an EMPTY value, returns {:error, :invalid_data}" do
       user = insert(:user)
 
-      assert Keywords.create_keywords(user, @valid_and_empty_attrs) == :error
+      assert Keywords.create_keywords(user, ["first keyword", "second keyword", ""]) ==
+               {:error, :invalid_data}
 
       assert Keywords.list_keywords(user) == []
     end
 
-    test "given INVALID attributes, returns :error" do
+    test "given a list of keywords containing an INVALID value, returns {:error, :invalid_data}" do
       user = insert(:user)
 
-      assert Keywords.create_keywords(user, @invalid_attrs) == :error
+      assert Keywords.create_keywords(user, [
+               "first keyword",
+               "second keyword",
+               %{}
+             ]) == {:error, :invalid_data}
 
       assert Keywords.list_keywords(user) == []
     end
 
-    test "given INVALID attribute type, raises FunctionClauseError" do
+    test "given EMPTY attributes, raises FunctionClauseError" do
       user = insert(:user)
 
       assert_raise FunctionClauseError, fn ->
-        Keywords.create_keywords(user, "invalid attribute type")
+        Keywords.create_keywords(user, nil)
+      end
+
+      assert Keywords.list_keywords(user) == []
+    end
+
+    test "given INVALID attributes, raises FunctionClauseError" do
+      user = insert(:user)
+
+      assert_raise FunctionClauseError, fn ->
+        Keywords.create_keywords(user, "invalid attribute")
       end
 
       assert Keywords.list_keywords(user) == []
@@ -140,7 +389,7 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
       user = nil
 
       assert_raise FunctionClauseError, fn ->
-        Keywords.create_keywords(user, @valid_attrs)
+        Keywords.create_keywords(user, ["first keyword", "second keyword", "third keyword"])
       end
     end
   end
@@ -182,6 +431,142 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
       assert_raise File.Error, fn ->
         Keywords.parse_csv!(path)
       end
+    end
+  end
+
+  describe "get_keyword!/1" do
+    test "given a valid keyword ID, returns the keyword" do
+      %Keyword{id: keyword_id} = insert(:keyword)
+
+      keyword = Keywords.get_keyword!(keyword_id)
+
+      assert keyword.id == keyword_id
+    end
+
+    test "given empty keyword ID, raises ArgumentError" do
+      assert_raise ArgumentError, fn ->
+        Keywords.get_keyword!(nil)
+      end
+    end
+  end
+
+  describe "get_keyword!/2" do
+    test "given a valid keyword ID, returns the keyword" do
+      %User{id: user_id} = user = insert(:user)
+      %Keyword{id: keyword_id} = keyword = insert(:keyword, user: user)
+
+      %KeywordLookup{id: keyword_lookup_id} =
+        _keyword_lookup = insert(:keyword_lookup, keyword: keyword)
+
+      keyword = Keywords.get_keyword!(user, keyword_id)
+
+      assert keyword.id == keyword_id
+      assert keyword.user_id == user_id
+      assert keyword.keyword_lookup.id == keyword_lookup_id
+    end
+
+    test "given a valid keyword ID but INVALID user ID, raises Ecto.NoResultsError" do
+      user = insert(:user)
+      another_user = insert(:user)
+      %Keyword{id: keyword_id} = keyword = insert(:keyword, user: user)
+      _keyword_lookup = insert(:keyword_lookup, keyword: keyword)
+
+      assert_raise Ecto.NoResultsError, fn ->
+        Keywords.get_keyword!(another_user, keyword_id)
+      end
+    end
+
+    test "given empty keyword ID, raises ArgumentError" do
+      user = insert(:user)
+
+      assert_raise ArgumentError, fn ->
+        Keywords.get_keyword!(user, nil)
+      end
+    end
+
+    test "given a user is nil, raises FunctionClauseError" do
+      user = insert(:user)
+      %Keyword{id: keyword_id} = keyword = insert(:keyword, user: user)
+      _keyword_lookup = insert(:keyword_lookup, keyword: keyword)
+
+      assert_raise FunctionClauseError, fn ->
+        Keywords.get_keyword!(nil, keyword_id)
+      end
+    end
+  end
+
+  describe "update_status!/2" do
+    test "given a keyword and a status, returns :ok with the updated keyword" do
+      %Keyword{status: keyword_status} = keyword = insert(:keyword, status: :new)
+
+      assert keyword_status == :new
+
+      assert %Keyword{status: updated_keyword_status} = Keywords.update_status!(keyword, :completed)
+
+      assert updated_keyword_status == :completed
+    end
+
+    test "given EMPTY keyword and a status, raises FunctionClauseError" do
+      assert_raise FunctionClauseError, fn ->
+        Keywords.update_status!(nil, :completed)
+      end
+    end
+
+    test "given a keyword and INVALID status, raises Ecto.ChangeError" do
+      %Keyword{status: keyword_status} = keyword = insert(:keyword, status: :new)
+
+      assert keyword_status == :new
+
+      assert_raise Ecto.ChangeError, fn ->
+        Keywords.update_status!(keyword, :invalid_status)
+      end
+    end
+  end
+
+  describe "subscribe_keyword_update/1" do
+    test "given the current process subscribes to the keyword update of the current user, receives {:updated, %Keyword{}}" do
+      user = insert(:user)
+      %Keyword{id: keyword_id} = keyword = insert(:keyword, user: user)
+      _keyword_lookup = insert(:keyword_lookup, keyword: keyword)
+
+      assert :ok = Keywords.subscribe_keyword_update(user)
+
+      Task.start(fn -> Keywords.broadcast_keyword_update(keyword) end)
+
+      assert_receive({:updated, %Keyword{id: ^keyword_id}})
+    end
+
+    test "given the current process subscribes to the keyword update of the another user, receives NOTHING" do
+      user = insert(:user)
+      another_user = insert(:user)
+      %Keyword{id: keyword_id} = keyword = insert(:keyword, user: user)
+      _keyword_lookup = insert(:keyword_lookup, keyword: keyword)
+
+      assert :ok = Keywords.subscribe_keyword_update(another_user)
+
+      Task.start(fn -> Keywords.broadcast_keyword_update(keyword) end)
+
+      refute_receive({:updated, %Keyword{id: ^keyword_id}})
+    end
+
+    test "given the current process does NOT subscribe to the keyword update, receives NOTHING" do
+      user = insert(:user)
+      %Keyword{id: keyword_id} = keyword = insert(:keyword, user: user)
+      _keyword_lookup = insert(:keyword_lookup, keyword: keyword)
+
+      Task.start(fn -> Keywords.broadcast_keyword_update(keyword) end)
+
+      refute_receive({:updated, %Keyword{id: ^keyword_id}})
+    end
+  end
+
+  describe "broadcast_keyword_update/1" do
+    test "given a keyword, returns :ok" do
+      user = insert(:user)
+      keyword = insert(:keyword, user: user)
+      insert(:keyword_lookup, keyword: keyword)
+
+      assert :ok = Keywords.broadcast_keyword_update(keyword)
     end
   end
 end

@@ -24,6 +24,8 @@ defmodule ElixirInternalCertification.DataCase do
 
       use Mimic
 
+      use Oban.Testing, repo: ElixirInternalCertification.Repo
+
       alias ElixirInternalCertification.Repo
 
       import Ecto

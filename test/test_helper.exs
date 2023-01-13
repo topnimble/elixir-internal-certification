@@ -6,6 +6,8 @@ Code.put_compiler_option(:warnings_as_errors, true)
 
 Mimic.copy(Ecto.Adapters.SQL)
 Mimic.copy(ElixirInternalCertification.Keyword.Keywords)
+Mimic.copy(ElixirInternalCertification.Fetcher.Client.Google)
+Mimic.copy(ElixirInternalCertification.Fetcher.Google)
 
 {:ok, _} = Application.ensure_all_started(:wallaby)
 
