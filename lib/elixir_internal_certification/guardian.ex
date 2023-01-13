@@ -5,5 +5,5 @@ defmodule ElixirInternalCertification.Guardian do
 
   def subject_for_token(resource, _claims), do: {:ok, to_string(resource.id)}
 
-  def resource_from_claims(claims), do: Accounts.get_user_by_id(claims["sub"])
+  def resource_from_claims(claims), do: Accounts.get_user_by_id!(claims["sub"])
 end

@@ -147,6 +147,25 @@ defmodule ElixirInternalCertification.Account.AccountsTest do
     end
   end
 
+  describe "get_user_by_id!/1" do
+    test "given a valid user ID, returns %User{}" do
+      %User{id: user_id} = insert(:user)
+      Accounts.get_user_by_id!(user_id)
+    end
+
+    test "given an INVALID user ID, raises Ecto.NoResultsError" do
+      assert_raise Ecto.NoResultsError, fn ->
+        Accounts.get_user_by_id!(-1)
+      end
+    end
+
+    test "given MISSING user ID, raises ArgumentError" do
+      assert_raise ArgumentError, fn ->
+        Accounts.get_user_by_id!(nil)
+      end
+    end
+  end
+
   describe "inspect/2" do
     test "given a password, returns inspected data WITHOUT password" do
       assert inspect(%User{password: "123456"}) =~ "password: \"123456\"" == false
