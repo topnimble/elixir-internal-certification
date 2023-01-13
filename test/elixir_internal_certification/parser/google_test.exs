@@ -5,7 +5,7 @@ defmodule ElixirInternalCertification.Parser.GoogleTest do
   alias ElixirInternalCertification.Parser.Google, as: GoogleParser
 
   describe "parse_lookup_result/1" do
-    test "given a search result HTML of the `google` query keyword with NO AdWords, returns parsed result" do
+    test "given a search result HTML of the `google` search query keyword with NO AdWords, returns parsed result" do
       use_cassette "google/keyword_with_no_adwords", match_requests_on: [:query] do
         {:ok, _status_code, _headers, body} = GoogleFetcher.search("google")
         result = GoogleParser.parse_lookup_result(body)
@@ -36,7 +36,7 @@ defmodule ElixirInternalCertification.Parser.GoogleTest do
       end
     end
 
-    test "given a search result HTML of the `nimble` query keyword with top AdWords, returns parsed result" do
+    test "given a search result HTML of the `nimble` search query keyword with top AdWords, returns parsed result" do
       use_cassette "google/keyword_with_top_adwords", match_requests_on: [:query] do
         {:ok, _status_code, _headers, body} = GoogleFetcher.search("nimble")
         result = GoogleParser.parse_lookup_result(body)
@@ -76,7 +76,7 @@ defmodule ElixirInternalCertification.Parser.GoogleTest do
       end
     end
 
-    test "given a search result HTML of the `hosting` query keyword with top and bottom AdWords, returns parsed result" do
+    test "given a search result HTML of the `hosting` search query keyword with top and bottom AdWords, returns parsed result" do
       use_cassette "google/keyword_with_top_and_bottom_adwords", match_requests_on: [:query] do
         {:ok, _status_code, _headers, body} = GoogleFetcher.search("hosting")
         result = GoogleParser.parse_lookup_result(body)

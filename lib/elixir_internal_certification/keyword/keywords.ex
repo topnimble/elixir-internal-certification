@@ -18,15 +18,15 @@ defmodule ElixirInternalCertification.Keyword.Keywords do
 
   @topic __MODULE__
 
-  # @doc """
-  # Returns the list of keywords.
+  def list_keywords(%User{} = user, search_query)
+      when is_binary(search_query) and search_query != "" do
+    user
+    |> KeywordQuery.list_keywords_by_user(search_query)
+    |> Repo.all()
+  end
 
-  # ## Examples
+  def list_keywords(%User{} = user, _search_query), do: list_keywords(user)
 
-  #     iex> list_keywords(%User{})
-  #     [%Keyword{}, ...]
-
-  # """
   def list_keywords(%User{} = user) do
     user
     |> KeywordQuery.list_keywords_by_user()
@@ -67,10 +67,20 @@ defmodule ElixirInternalCertification.Keyword.Keywords do
     end
   end
 
-  def update_status(%Keyword{} = keyword, status) do
+  def update_status!(%Keyword{} = keyword, status) do
     keyword
     |> Keyword.update_status_changeset(status)
-    |> Repo.update()
+    |> Repo.update!()
+  end
+
+  def find_and_update_keyword(keywords, updated_keyword_id) when is_integer(updated_keyword_id) do
+    Enum.map(keywords, fn %Keyword{id: keyword_id} = keyword ->
+      if keyword_id == updated_keyword_id do
+        Repo.reload(keyword)
+      else
+        keyword
+      end
+    end)
   end
 
   def subscribe_keyword_update(%User{id: user_id} = _user),
