@@ -4,6 +4,7 @@ defmodule ElixirInternalCertificationWeb.KeywordLive.Index do
   alias ElixirInternalCertification.Account.Schemas.User
   alias ElixirInternalCertification.Keyword.Keywords
   alias ElixirInternalCertification.Keyword.Schemas.Keyword
+  alias ElixirInternalCertificationWeb.LiveComponents.KeywordRowComponent
   alias ElixirInternalCertificationWeb.LiveHelpers
   alias Phoenix.LiveView.Socket
 
