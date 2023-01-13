@@ -3,8 +3,6 @@ defmodule ElixirInternalCertificationWeb.Api.V1.UserSessionView do
 
   def fields do
     [
-      :id,
-      :email,
       :token,
       :token_type
     ]
