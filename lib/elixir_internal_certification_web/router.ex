@@ -27,6 +27,7 @@ defmodule ElixirInternalCertificationWeb.Router do
   pipeline :authenticated_api do
     plug ElixirInternalCertificationWeb.AuthenticatedAccessPipeline
   end
+
   # coveralls-ignore-stop
 
   forward RouterHelper.health_path(), ElixirInternalCertificationWeb.HealthPlug

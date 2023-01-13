@@ -73,11 +73,16 @@ config :elixir_internal_certification, Oban,
 
 config :tesla, :adapter, Tesla.Adapter.Hackney
 
-config :elixir_internal_certification, ElixirInternalCertification.Guardian, issuer: "elixir_internal_certification"
+config :elixir_internal_certification, ElixirInternalCertification.Guardian,
+  issuer: "elixir_internal_certification"
 
-config :elixir_internal_certification, ElixirInternalCertificationWeb.AuthenticatedAccessPipeline, module: ElixirInternalCertification.Guardian, error_handler: ElixirInternalCertificationWeb.AuthErrorHandler
+config :elixir_internal_certification, ElixirInternalCertificationWeb.AuthenticatedAccessPipeline,
+  module: ElixirInternalCertification.Guardian,
+  error_handler: ElixirInternalCertificationWeb.AuthErrorHandler
 
-config :elixir_internal_certification, ElixirInternalCertificationWeb.UnauthenticatedAccessPipeline, module: ElixirInternalCertification.Guardian, error_handler: ElixirInternalCertificationWeb.AuthErrorHandler
+config :elixir_internal_certification, ElixirInternalCertificationWeb.UnauthenticatedAccessPipeline,
+  module: ElixirInternalCertification.Guardian,
+  error_handler: ElixirInternalCertificationWeb.AuthErrorHandler
 
 config :jsonapi, remove_links: true
 

@@ -22,5 +22,6 @@ defmodule ElixirInternalCertificationWeb.Api.V1.UserSessionController do
     end
   end
 
-  def create(conn, _params), do: AuthErrorHandler.auth_error(conn, {:unauthenticated, :missing_arguments}, [])
+  def create(conn, _params),
+    do: AuthErrorHandler.auth_error(conn, {:unauthenticated, :missing_arguments}, [])
 end

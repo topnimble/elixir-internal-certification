@@ -2,7 +2,7 @@ defmodule ElixirInternalCertification.Account.AccountsTest do
   use ElixirInternalCertification.DataCase, async: true
 
   alias ElixirInternalCertification.Account.Accounts
-  alias ElixirInternalCertification.Account.Schemas.{User, UserToken}
+  alias ElixirInternalCertification.Account.Schemas.{User, UserApiToken, UserToken}
 
   describe "get_user_by_email_and_password/2" do
     test "given valid email and password, returns the user" do
@@ -169,6 +169,10 @@ defmodule ElixirInternalCertification.Account.AccountsTest do
   describe "inspect/2" do
     test "given a password, returns inspected data WITHOUT password" do
       assert inspect(%User{password: "123456"}) =~ "password: \"123456\"" == false
+    end
+
+    test "given a token, returns inspected data WITHOUT token" do
+      assert inspect(%UserApiToken{token: "123456"}) =~ "token: \"123456\"" == false
     end
   end
 end
