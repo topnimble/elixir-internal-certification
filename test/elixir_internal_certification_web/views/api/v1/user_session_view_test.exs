@@ -6,9 +6,9 @@ defmodule ElixirInternalCertificationWeb.Api.V1.UserSessionViewTest do
   describe "fields/0" do
     test "returns a list of attribute fields" do
       assert UserSessionView.fields() == [
-        :token,
-        :token_type
-      ]
+               :token,
+               :token_type
+             ]
     end
   end
 end
