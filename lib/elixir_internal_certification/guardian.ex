@@ -5,7 +5,7 @@ defmodule ElixirInternalCertification.Guardian do
   alias ElixirInternalCertification.Account.Schemas.User
 
   def subject_for_token(%User{id: user_id} = _resource, _options), do: {:ok, to_string(user_id)}
-  def subject_for_token(_, _), do: {:error, :unhandled_resource_type}
+  def subject_for_token(_resource, _options), do: {:error, :unhandled_resource_type}
 
   def resource_from_claims(%{"sub" => sub} = _claims) do
     user_id = String.to_integer(sub)
@@ -18,5 +18,5 @@ defmodule ElixirInternalCertification.Guardian do
     end
   end
 
-  def resource_from_claims(_), do: {:error, :unhandled_resource_type}
+  def resource_from_claims(_claims), do: {:error, :unhandled_resource_type}
 end

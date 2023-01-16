@@ -1,8 +1,8 @@
 defmodule ElixirInternalCertification.GuardianTest do
   use ElixirInternalCertification.DataCase, async: true
 
-  alias ElixirInternalCertification.Guardian
   alias ElixirInternalCertification.Account.Schemas.User
+  alias ElixirInternalCertification.Guardian
 
   describe "subject_for_token/2" do
     test "given a user, returns :ok with stringified user ID" do

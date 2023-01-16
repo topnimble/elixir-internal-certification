@@ -8,6 +8,7 @@ Mimic.copy(Ecto.Adapters.SQL)
 Mimic.copy(ElixirInternalCertification.Keyword.Keywords)
 Mimic.copy(ElixirInternalCertification.Fetcher.Client.Google)
 Mimic.copy(ElixirInternalCertification.Fetcher.Google)
+Mimic.copy(ElixirInternalCertification.Guardian)
 
 {:ok, _} = Application.ensure_all_started(:wallaby)
 
