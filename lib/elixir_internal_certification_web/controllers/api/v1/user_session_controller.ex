@@ -16,10 +16,10 @@ defmodule ElixirInternalCertificationWeb.Api.V1.UserSessionController do
       |> put_status(:ok)
       |> render("show.json", %{data: user_api_token})
     else
-      AuthErrorHandler.auth_error(conn, {:unauthenticated, :invalid_email_or_password}, [])
+      AuthErrorHandler.auth_error(conn, {:unauthorized, :invalid_email_or_password}, [])
     end
   end
 
   def create(conn, _params),
-    do: AuthErrorHandler.auth_error(conn, {:unauthenticated, :missing_arguments}, [])
+    do: AuthErrorHandler.auth_error(conn, {:unprocessable_entity, :missing_arguments}, [])
 end

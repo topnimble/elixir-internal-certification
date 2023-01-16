@@ -44,7 +44,9 @@ defmodule ElixirInternalCertificationWeb.Api.V1.UserSessionControllerTest do
 
       conn = post(conn, Routes.api_v1_user_session_path(conn, :create), params)
 
-      assert json_response(conn, 401) == %{"message" => "unauthenticated"}
+      assert json_response(conn, 401) == %{
+               "errors" => [%{"code" => "unauthorized", "detail" => "invalid_email_or_password"}]
+             }
     end
 
     test "given an INVALID email and INVALID password", %{conn: conn} do
@@ -57,7 +59,9 @@ defmodule ElixirInternalCertificationWeb.Api.V1.UserSessionControllerTest do
 
       conn = post(conn, Routes.api_v1_user_session_path(conn, :create), params)
 
-      assert json_response(conn, 401) == %{"message" => "unauthenticated"}
+      assert json_response(conn, 401) == %{
+               "errors" => [%{"code" => "unauthorized", "detail" => "invalid_email_or_password"}]
+             }
     end
 
     test "given MISSING email and password", %{conn: conn} do
@@ -67,7 +71,9 @@ defmodule ElixirInternalCertificationWeb.Api.V1.UserSessionControllerTest do
 
       conn = post(conn, Routes.api_v1_user_session_path(conn, :create), params)
 
-      assert json_response(conn, 401) == %{"message" => "unauthenticated"}
+      assert json_response(conn, 422) == %{
+               "errors" => [%{"code" => "unprocessable_entity", "detail" => "missing_arguments"}]
+             }
     end
   end
 end

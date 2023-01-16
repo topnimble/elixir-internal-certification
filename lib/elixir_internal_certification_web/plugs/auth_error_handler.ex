@@ -1,14 +1,21 @@
 defmodule ElixirInternalCertificationWeb.AuthErrorHandler do
   @behaviour Guardian.Plug.ErrorHandler
 
+  use Phoenix.Controller
+
   import Plug.Conn
 
-  @impl Guardian.Plug.ErrorHandler
-  def auth_error(conn, {type, _reason}, _opts) do
-    body = Jason.encode!(%{message: to_string(type)})
+  alias ElixirInternalCertificationWeb.Api.ErrorView
 
+  @impl Guardian.Plug.ErrorHandler
+  def auth_error(conn, {type, reason}, _opts) do
     conn
-    |> put_resp_content_type("application/json")
-    |> send_resp(401, body)
+    |> put_status(type)
+    |> put_view(ErrorView)
+    |> render("error.json", %{
+      code: type,
+      detail: to_string(reason)
+    })
+    |> halt()
   end
 end
