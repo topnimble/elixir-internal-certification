@@ -150,7 +150,7 @@ defmodule ElixirInternalCertification.Account.AccountsTest do
   describe "get_user_by_id!/1" do
     test "given a valid user ID, returns %User{}" do
       %User{id: user_id} = insert(:user)
-      Accounts.get_user_by_id!(user_id)
+      assert %User{id: ^user_id} = Accounts.get_user_by_id!(user_id)
     end
 
     test "given an INVALID user ID, raises Ecto.NoResultsError" do
