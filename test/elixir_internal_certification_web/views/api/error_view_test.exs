@@ -9,13 +9,13 @@ defmodule ElixirInternalCertificationWeb.Api.ErrorViewTest do
     test "given an error with code and detail, renders error.json" do
       assert render(ErrorView, "error.json", %{
                code: :unprocessable_entity,
-               detail: "missing_arguments"
+               detail: "Missing arguments"
              }) ==
                %{
                  errors: [
                    %{
                      code: :unprocessable_entity,
-                     detail: "missing_arguments"
+                     detail: "Missing arguments"
                    }
                  ]
                }

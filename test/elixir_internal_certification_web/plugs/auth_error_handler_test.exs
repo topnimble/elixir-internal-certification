@@ -5,26 +5,26 @@ defmodule ElixirInternalCertificationWeb.AuthErrorHandlerTest do
 
   describe "auth_error/3" do
     test "given an unauthorized error, returns 401 status", %{conn: conn} do
-      conn = AuthErrorHandler.auth_error(conn, {:unauthorized, :invalid_email_or_password}, [])
+      conn = AuthErrorHandler.auth_error(conn, {:unauthorized, "Invalid email or password"}, [])
 
       assert json_response(conn, 401) == %{
                "errors" => [
                  %{
                    "code" => "unauthorized",
-                   "detail" => "invalid_email_or_password"
+                   "detail" => "Invalid email or password"
                  }
                ]
              }
     end
 
     test "given an unprocessable entity error, returns 422 status", %{conn: conn} do
-      conn = AuthErrorHandler.auth_error(conn, {:unprocessable_entity, :missing_arguments}, [])
+      conn = AuthErrorHandler.auth_error(conn, {:unprocessable_entity, "Missing arguments"}, [])
 
       assert json_response(conn, 422) == %{
                "errors" => [
                  %{
                    "code" => "unprocessable_entity",
-                   "detail" => "missing_arguments"
+                   "detail" => "Missing arguments"
                  }
                ]
              }
