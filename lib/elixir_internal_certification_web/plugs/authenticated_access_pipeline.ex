@@ -5,4 +5,5 @@ defmodule ElixirInternalCertificationWeb.AuthenticatedAccessPipeline do
   plug Guardian.Plug.VerifyHeader, claims: %{"typ" => "access"}, scheme: "Bearer"
   plug Guardian.Plug.EnsureAuthenticated
   plug Guardian.Plug.LoadResource
+  plug ElixirInternalCertificationWeb.SetCurrentUserPlug
 end
