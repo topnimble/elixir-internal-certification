@@ -1,6 +1,7 @@
 defmodule ElixirInternalCertificationWeb.Api.V1.UserSessionControllerTest do
   use ElixirInternalCertificationWeb.ConnCase, async: true
 
+  alias Ecto.ULID
   alias ElixirInternalCertification.Account.Schemas.User
   alias ElixirInternalCertification.Guardian
 
@@ -13,6 +14,8 @@ defmodule ElixirInternalCertificationWeb.Api.V1.UserSessionControllerTest do
         password: password
       }
 
+      expect(ULID, :generate, fn -> "01GQ45DK0QQEWQY6J01HV3BWQW" end)
+
       token = "123456"
       expect(Guardian, :encode_and_sign, fn _resource -> {:ok, token, %{}} end)
 
@@ -24,7 +27,7 @@ defmodule ElixirInternalCertificationWeb.Api.V1.UserSessionControllerTest do
                    "token" => token,
                    "token_type" => "Bearer"
                  },
-                 "id" => "",
+                 "id" => "01GQ45DK0QQEWQY6J01HV3BWQW",
                  "relationships" => %{},
                  "type" => "user_sessions"
                },

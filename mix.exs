@@ -45,6 +45,7 @@ defmodule ElixirInternalCertification.MixProject do
       {:dart_sass, "~> 0.5.1", [runtime: Mix.env() == :dev]},
       {:dialyxir, "~> 1.2.0", [only: [:dev], runtime: false]},
       {:ecto_sql, "~> 3.6"},
+      {:ecto_ulid, "~> 0.3.0"},
       {:esbuild, "~> 0.4", runtime: Mix.env() == :dev},
       {:ex_machina, "~> 2.7.0", [only: :test]},
       {:excoveralls, "~> 0.15.0", [only: :test]},

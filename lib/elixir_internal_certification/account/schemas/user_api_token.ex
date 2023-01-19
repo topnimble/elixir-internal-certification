@@ -1,6 +1,8 @@
 defmodule ElixirInternalCertification.Account.Schemas.UserApiToken do
   use Ecto.Schema
 
+  alias Ecto.ULID
+
   @default_token_type "Bearer"
 
   embedded_schema do
@@ -10,6 +12,7 @@ defmodule ElixirInternalCertification.Account.Schemas.UserApiToken do
 
   def new(%{token: token} = _attrs) do
     %__MODULE__{
+      id: ULID.generate(),
       token: token
     }
   end
