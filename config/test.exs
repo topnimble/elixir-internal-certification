@@ -47,3 +47,6 @@ config :phoenix, :plug_init_mode, :runtime
 config :exvcr,
   vcr_cassette_library_dir: "test/support/fixtures/vcr_cassettes",
   ignore_localhost: true
+
+config :elixir_internal_certification, ElixirInternalCertification.Guardian,
+  secret_key: "0OOHdKyBySwg/kOAuoAAqTe7vAjhaY6LyS6L1LM3CnX7avvBErW3ogcL+5e26abz"
