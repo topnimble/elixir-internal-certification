@@ -49,4 +49,4 @@ config :exvcr,
   ignore_localhost: true
 
 config :elixir_internal_certification, ElixirInternalCertification.Guardian,
-  secret_key: "RyXHyjJcFLKRSYDJ1CL8eUwcq7+j1xt5MUH5W+wqMi0aZR5QM9QAM9NYjtEepLCm"
+  secret_key: "0OOHdKyBySwg/kOAuoAAqTe7vAjhaY6LyS6L1LM3CnX7avvBErW3ogcL+5e26abz"
