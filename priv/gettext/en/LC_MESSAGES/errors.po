@@ -121,12 +121,12 @@ msgstr ""
 msgid "You have selected file with invalid data"
 msgstr ""
 
-#: lib/elixir_internal_certification_web/controllers/api/v1/user_session_controller.ex:23
+#: lib/elixir_internal_certification_web/controllers/api/v1/user_session_controller.ex:25
 #, elixir-autogen, elixir-format
 msgid "Invalid email or password"
 msgstr ""
 
-#: lib/elixir_internal_certification_web/controllers/api/v1/user_session_controller.ex:28
+#: lib/elixir_internal_certification_web/controllers/api/v1/user_session_controller.ex:35
 #, elixir-autogen, elixir-format
 msgid "Missing arguments"
 msgstr ""
