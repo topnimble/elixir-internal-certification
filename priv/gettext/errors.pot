@@ -127,3 +127,8 @@ msgstr ""
 #, elixir-autogen, elixir-format
 msgid "Missing arguments"
 msgstr ""
+
+#: lib/elixir_internal_certification_web/plugs/set_current_user_plug.ex:23
+#, elixir-autogen, elixir-format
+msgid "Unauthenticated"
+msgstr ""

@@ -1,6 +1,7 @@
 defmodule ElixirInternalCertificationWeb.SetCurrentUserPlug do
   @behaviour Plug
 
+  import ElixirInternalCertificationWeb.Gettext
   import Plug.Conn
 
   alias ElixirInternalCertification.Account.Schemas.User
@@ -18,7 +19,10 @@ defmodule ElixirInternalCertificationWeb.SetCurrentUserPlug do
 
       _ ->
         conn
-        |> AuthErrorHandler.auth_error({:unauthenticated, :unauthenticated}, [])
+        |> AuthErrorHandler.auth_error(
+          {:unauthenticated, dgettext("errors", "Unauthenticated")},
+          []
+        )
         |> halt()
     end
   end
