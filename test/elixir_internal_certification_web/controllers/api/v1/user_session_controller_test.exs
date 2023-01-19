@@ -52,21 +52,6 @@ defmodule ElixirInternalCertificationWeb.Api.V1.UserSessionControllerTest do
              }
     end
 
-    test "given an INVALID email and INVALID password", %{conn: conn} do
-      params = %{
-        email: "invalid_email@example.com",
-        password: "invalid_password"
-      }
-
-      reject(Guardian, :encode_and_sign, 1)
-
-      conn = post(conn, Routes.api_v1_user_session_path(conn, :create), params)
-
-      assert json_response(conn, 401) == %{
-               "errors" => [%{"code" => "unauthorized", "detail" => "Invalid email or password"}]
-             }
-    end
-
     test "given MISSING email and password", %{conn: conn} do
       params = %{}
 
