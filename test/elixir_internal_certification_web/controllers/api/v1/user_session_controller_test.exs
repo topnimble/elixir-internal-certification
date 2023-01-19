@@ -6,7 +6,7 @@ defmodule ElixirInternalCertificationWeb.Api.V1.UserSessionControllerTest do
   alias ElixirInternalCertification.Guardian
 
   describe "POST create/2" do
-    test "given a valid email and password, returns a user API token", %{conn: conn} do
+    test "given valid email and password, returns a user API token", %{conn: conn} do
       %User{email: email, password: password} = _user = insert(:user)
 
       params = %{
@@ -35,12 +35,12 @@ defmodule ElixirInternalCertificationWeb.Api.V1.UserSessionControllerTest do
              }
     end
 
-    test "given a valid email but INVALID password, returns 401", %{conn: conn} do
+    test "given a valid email but an INVALID password, returns 401", %{conn: conn} do
       %User{email: email, password: password} = _user = insert(:user)
 
       params = %{
         email: email,
-        password: password <> "_invalid"
+        password: "invalid_" <> password
       }
 
       reject(Guardian, :encode_and_sign, 1)
