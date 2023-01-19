@@ -23,6 +23,16 @@ defmodule ElixirInternalCertificationWeb.Api.V1.KeywordController do
     end
   end
 
+  def create(conn, _params) do
+    conn
+    |> put_status(:unprocessable_entity)
+    |> put_view(ErrorView)
+    |> render("error.json", %{
+      code: :unprocessable_entity,
+      detail: "Missing arguments"
+    })
+  end
+
   defp process_data(%{assigns: %{current_user: current_user}} = _conn, path) do
     with {:ok, keywords} <- Keywords.parse_csv!(path),
          {:ok, {_, records}} <- Keywords.create_keywords(current_user, keywords),
