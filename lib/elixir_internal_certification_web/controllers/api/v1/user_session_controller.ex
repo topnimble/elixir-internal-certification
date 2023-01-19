@@ -1,6 +1,8 @@
 defmodule ElixirInternalCertificationWeb.Api.V1.UserSessionController do
   use ElixirInternalCertificationWeb, :controller
 
+  import ElixirInternalCertificationWeb.Gettext
+
   alias ElixirInternalCertification.Account.Accounts
   alias ElixirInternalCertification.Account.Schemas.{User, UserApiToken}
   alias ElixirInternalCertification.Guardian

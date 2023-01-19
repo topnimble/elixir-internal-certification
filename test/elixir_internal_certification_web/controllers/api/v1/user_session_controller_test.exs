@@ -1,6 +1,8 @@
 defmodule ElixirInternalCertificationWeb.Api.V1.UserSessionControllerTest do
   use ElixirInternalCertificationWeb.ConnCase, async: true
 
+  import ElixirInternalCertificationWeb.Gettext
+
   alias Ecto.ULID
   alias ElixirInternalCertification.Account.Schemas.User
   alias ElixirInternalCertification.Guardian
