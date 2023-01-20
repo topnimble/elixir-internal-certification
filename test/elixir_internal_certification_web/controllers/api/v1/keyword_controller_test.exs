@@ -3,7 +3,6 @@ defmodule ElixirInternalCertificationWeb.Api.V1.KeywordControllerTest do
 
   import ElixirInternalCertificationWeb.Gettext
 
-  alias ElixirInternalCertification.Guardian
   alias ElixirInternalCertification.Keyword.Keywords
 
   @max_keywords_per_upload Application.compile_env!(
@@ -13,15 +12,7 @@ defmodule ElixirInternalCertificationWeb.Api.V1.KeywordControllerTest do
 
   @fixture_path "test/support/fixtures"
 
-  setup %{conn: conn} do
-    user = insert(:user)
-
-    {:ok, token, _} = Guardian.encode_and_sign(user, %{}, token_type: :access)
-
-    conn = put_req_header(conn, "authorization", "Bearer " <> token)
-
-    %{conn: conn, user: user}
-  end
+  setup [:register_and_log_in_user_with_token]
 
   describe "POST create/2" do
     test "given a valid CSV file, returns 200 status", %{conn: conn} do
