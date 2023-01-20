@@ -2,7 +2,7 @@ defmodule ElixirInternalCertification.Account.AccountsTest do
   use ElixirInternalCertification.DataCase, async: true
 
   alias ElixirInternalCertification.Account.Accounts
-  alias ElixirInternalCertification.Account.Schemas.{User, UserToken}
+  alias ElixirInternalCertification.Account.Schemas.{User, UserApiToken, UserToken}
 
   describe "get_user_by_email_and_password/2" do
     test "given valid email and password, returns the user" do
@@ -147,9 +147,32 @@ defmodule ElixirInternalCertification.Account.AccountsTest do
     end
   end
 
+  describe "get_user_by_id!/1" do
+    test "given a valid user ID, returns %User{}" do
+      %User{id: user_id} = insert(:user)
+      assert %User{id: ^user_id} = Accounts.get_user_by_id!(user_id)
+    end
+
+    test "given an INVALID user ID, raises Ecto.NoResultsError" do
+      assert_raise Ecto.NoResultsError, fn ->
+        Accounts.get_user_by_id!(-1)
+      end
+    end
+
+    test "given MISSING user ID, raises ArgumentError" do
+      assert_raise ArgumentError, fn ->
+        Accounts.get_user_by_id!(nil)
+      end
+    end
+  end
+
   describe "inspect/2" do
     test "given a password, returns inspected data WITHOUT password" do
       assert inspect(%User{password: "123456"}) =~ "password: \"123456\"" == false
+    end
+
+    test "given a token, returns inspected data WITHOUT token" do
+      assert inspect(%UserApiToken{token: "123456"}) =~ "token: \"123456\"" == false
     end
   end
 end

@@ -2,9 +2,25 @@
   <%= live_redirect("+ Upload file",
     to: Routes.upload_index_path(@socket, :index),
     type: "button",
-    class: "btn btn-primary mb-3"
+    class: "btn btn-primary mb-4"
   ) %>
 </div>
+
+<.form
+  let={f}
+  for={:search_form}
+  class="mb-3 search-form"
+  role="search"
+  phx-change="change_search_query"
+  phx-submit="submit_search_query"
+>
+  <%= search_input(f, :search_query,
+    class: "form-control",
+    placeholder: "Search...",
+    "aria-label": "Search",
+    value: @search_query
+  ) %>
+</.form>
 
 <table class="table table-hover">
   <thead>
