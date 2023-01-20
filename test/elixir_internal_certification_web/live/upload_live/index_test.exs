@@ -215,7 +215,12 @@ defmodule ElixirInternalCertificationWeb.UploadLive.IndexTest do
         |> element("#upload-form")
         |> render_submit()
 
-      assert result =~ dgettext("errors", "You have selected file with more than 1000 keywords")
+      assert result =~
+               dgettext(
+                 "errors",
+                 "You have selected file with more than %{max_keywords_per_upload} keywords",
+                 max_keywords_per_upload: @max_keywords_per_upload
+               )
 
       assert Keywords.list_keywords(user) == []
 

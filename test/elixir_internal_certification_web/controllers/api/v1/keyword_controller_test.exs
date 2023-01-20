@@ -4,6 +4,12 @@ defmodule ElixirInternalCertificationWeb.Api.V1.KeywordControllerTest do
   import ElixirInternalCertificationWeb.Gettext
 
   alias ElixirInternalCertification.Guardian
+  alias ElixirInternalCertification.Keyword.Keywords
+
+  @max_keywords_per_upload Application.compile_env!(
+                             :elixir_internal_certification,
+                             :max_keywords_per_upload
+                           )
 
   @fixture_path "test/support/fixtures"
 
@@ -46,6 +52,28 @@ defmodule ElixirInternalCertificationWeb.Api.V1.KeywordControllerTest do
                ],
                "included" => []
              } = json_response(conn, 200)
+    end
+
+    test "given a file with more than 1,000 keywords, returns 422 status", %{conn: conn} do
+      params = %{file: uploaded_file("/assets/keywords.csv")}
+
+      expect(Keywords, :create_keywords, fn _user, _keywords -> {:error, :too_many_keywords} end)
+
+      conn = post(conn, Routes.api_v1_keyword_path(conn, :create), params)
+
+      assert json_response(conn, 422) == %{
+               "errors" => [
+                 %{
+                   "code" => "unprocessable_entity",
+                   "detail" =>
+                     dgettext(
+                       "errors",
+                       "You have selected file with more than %{max_keywords_per_upload} keywords",
+                       max_keywords_per_upload: @max_keywords_per_upload
+                     )
+                 }
+               ]
+             }
     end
 
     test "given a file with INVALID data, returns 422 status", %{conn: conn} do

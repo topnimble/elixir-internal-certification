@@ -111,11 +111,13 @@ msgstr ""
 msgid "You have selected too many files"
 msgstr ""
 
+#: lib/elixir_internal_certification_web/controllers/api/v1/keyword_controller.ex:53
 #: lib/elixir_internal_certification_web/live/upload_live/index.ex:83
 #, elixir-autogen, elixir-format
 msgid "You have selected file with more than %{max_keywords_per_upload} keywords"
 msgstr ""
 
+#: lib/elixir_internal_certification_web/controllers/api/v1/keyword_controller.ex:60
 #: lib/elixir_internal_certification_web/live/upload_live/index.ex:90
 #, elixir-autogen, elixir-format
 msgid "You have selected file with invalid data"
