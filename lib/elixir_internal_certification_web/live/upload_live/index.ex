@@ -61,7 +61,7 @@ defmodule ElixirInternalCertificationWeb.UploadLive.Index do
          current_user <- LiveHelpers.get_current_user_from_socket(socket),
          {:ok, {_, records}} <- Keywords.create_keywords(current_user, keywords),
          scheduled_keyword_lookups <- Enum.map(records, &KeywordLookups.schedule_keyword_lookup/1) do
-      {:ok, {path, scheduled_keyword_lookups}}
+      {:ok, {path, records, scheduled_keyword_lookups}}
     else
       {:error, reason} -> {:postpone, {:error, reason}}
     end
