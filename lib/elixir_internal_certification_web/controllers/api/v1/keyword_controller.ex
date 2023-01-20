@@ -5,6 +5,11 @@ defmodule ElixirInternalCertificationWeb.Api.V1.KeywordController do
   alias ElixirInternalCertificationWeb.Api.ErrorView
   alias Plug.Upload
 
+  @max_keywords_per_upload Application.compile_env!(
+                             :elixir_internal_certification,
+                             :max_keywords_per_upload
+                           )
+
   def create(conn, %{"file" => %Upload{path: path} = _uploaded_file} = _params) do
     case process_data(conn, path) do
       {:ok, {_path, records, _scheduled_keyword_lookups}} ->
@@ -18,7 +23,7 @@ defmodule ElixirInternalCertificationWeb.Api.V1.KeywordController do
         |> put_view(ErrorView)
         |> render("error.json", %{
           code: :unprocessable_entity,
-          detail: reason
+          detail: error_to_string(reason)
         })
     end
   end
@@ -42,4 +47,15 @@ defmodule ElixirInternalCertificationWeb.Api.V1.KeywordController do
       {:error, reason} -> {:error, reason}
     end
   end
+
+  defp error_to_string(:too_many_keywords),
+    do:
+      dgettext(
+        "errors",
+        "You have selected file with more than %{max_keywords_per_upload} keywords",
+        max_keywords_per_upload: @max_keywords_per_upload
+      )
+
+  defp error_to_string(:invalid_data),
+    do: dgettext("errors", "You have selected file with invalid data")
 end

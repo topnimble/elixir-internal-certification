@@ -48,6 +48,21 @@ defmodule ElixirInternalCertificationWeb.Api.V1.KeywordControllerTest do
              } = json_response(conn, 200)
     end
 
+    test "given a file with INVALID data, returns 422 status", %{conn: conn} do
+      params = %{file: uploaded_file("/assets/invalid.csv")}
+
+      conn = post(conn, Routes.api_v1_keyword_path(conn, :create), params)
+
+      assert json_response(conn, 422) == %{
+               "errors" => [
+                 %{
+                   "code" => "unprocessable_entity",
+                   "detail" => dgettext("errors", "You have selected file with invalid data")
+                 }
+               ]
+             }
+    end
+
     test "given MISSING CSV file argument, returns 422 status", %{conn: conn} do
       params = %{}
 
