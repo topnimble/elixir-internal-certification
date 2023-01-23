@@ -4,7 +4,8 @@ defmodule ElixirInternalCertificationWeb.Api.V1.KeywordView do
   def fields do
     [
       :id,
-      :title
+      :title,
+      :status
     ]
   end
 end
