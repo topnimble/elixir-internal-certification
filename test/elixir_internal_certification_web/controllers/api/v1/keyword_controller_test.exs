@@ -48,7 +48,7 @@ defmodule ElixirInternalCertificationWeb.Api.V1.KeywordControllerTest do
     test "given a file with more than 1,000 keywords, returns 422 status", %{conn: conn} do
       params = %{file: uploaded_file("/assets/keywords.csv")}
 
-      expect(Keywords, :create_keywords, fn _user, _keywords -> {:error, :too_many_keywords} end)
+      expect(Keywords, :parse_csv!, fn _ -> {:error, :too_many_keywords} end)
 
       conn = post(conn, Routes.api_v1_keyword_path(conn, :create), params)
 
