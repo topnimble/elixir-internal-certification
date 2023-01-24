@@ -134,3 +134,8 @@ msgstr ""
 #, elixir-autogen, elixir-format
 msgid "Unauthenticated"
 msgstr ""
+
+#: lib/elixir_internal_certification_web/controllers/api/v1/keyword_controller.ex:37
+#, elixir-autogen, elixir-format
+msgid "Missing input file argument"
+msgstr ""
