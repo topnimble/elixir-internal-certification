@@ -33,16 +33,16 @@ defmodule ElixirInternalCertificationWeb.UploadLive.Index do
     file_uploading_response(socket, uploaded_files, errors)
   end
 
-  defp handle_file_uploading(socket),
-    do:
-      consume_uploaded_entries(socket, :keyword, fn %{path: path}, _entry ->
-        current_user = LiveHelpers.get_current_user_from_socket(socket)
+  defp handle_file_uploading(socket) do
+    current_user = LiveHelpers.get_current_user_from_socket(socket)
 
-        case DataHelper.process(current_user, path) do
-          {:ok, results} -> {:ok, results}
-          {:error, reason} -> {:postpone, {:error, reason}}
-        end
-      end)
+    consume_uploaded_entries(socket, :keyword, fn %{path: path}, _entry ->
+      case DataHelper.process(current_user, path) do
+        {:ok, results} -> {:ok, results}
+        {:error, reason} -> {:postpone, {:error, reason}}
+      end
+    end)
+  end
 
   defp extract_errors(uploaded_files) do
     uploaded_files
