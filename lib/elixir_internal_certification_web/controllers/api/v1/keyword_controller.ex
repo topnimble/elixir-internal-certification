@@ -2,7 +2,7 @@ defmodule ElixirInternalCertificationWeb.Api.V1.KeywordController do
   use ElixirInternalCertificationWeb, :controller
 
   alias ElixirInternalCertificationWeb.Api.ErrorView
-  alias ElixirInternalCertificationWeb.Helpers.DataHelper
+  alias ElixirInternalCertificationWeb.Helpers.KeywordHelper
   alias Plug.Upload
 
   @max_keywords_per_upload Application.compile_env!(
@@ -14,7 +14,7 @@ defmodule ElixirInternalCertificationWeb.Api.V1.KeywordController do
         %{assigns: %{current_user: current_user}} = conn,
         %{"file" => %Upload{path: path} = _uploaded_file} = _params
       ) do
-    case DataHelper.process(current_user, path) do
+    case KeywordHelper.process_upload(current_user, path) do
       {:ok, {_path, records, _scheduled_keyword_lookups}} ->
         conn
         |> put_status(:ok)

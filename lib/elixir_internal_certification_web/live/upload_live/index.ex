@@ -1,7 +1,7 @@
 defmodule ElixirInternalCertificationWeb.UploadLive.Index do
   use ElixirInternalCertificationWeb, :live_view
 
-  alias ElixirInternalCertificationWeb.Helpers.DataHelper
+  alias ElixirInternalCertificationWeb.Helpers.KeywordHelper
   alias ElixirInternalCertificationWeb.LiveHelpers
 
   @max_keywords_per_upload Application.compile_env!(
@@ -37,7 +37,7 @@ defmodule ElixirInternalCertificationWeb.UploadLive.Index do
     current_user = LiveHelpers.get_current_user_from_socket(socket)
 
     consume_uploaded_entries(socket, :keyword, fn %{path: path}, _entry ->
-      case DataHelper.process(current_user, path) do
+      case KeywordHelper.process_upload(current_user, path) do
         {:ok, results} -> {:ok, results}
         {:error, reason} -> {:postpone, {:error, reason}}
       end
