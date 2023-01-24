@@ -12,7 +12,7 @@ defmodule ElixirInternalCertificationWeb.Api.V1.KeywordController do
 
   def create(
         %{assigns: %{current_user: current_user}} = conn,
-        %{"file" => %Upload{path: path} = _uploaded_file} = _params
+        %{"file" => %Upload{path: path}} = _params
       ) do
     case KeywordHelper.process_upload(current_user, path) do
       {:ok, {_path, records, _scheduled_keyword_lookups}} ->
