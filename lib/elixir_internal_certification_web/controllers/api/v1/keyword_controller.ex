@@ -34,7 +34,7 @@ defmodule ElixirInternalCertificationWeb.Api.V1.KeywordController do
     |> put_view(ErrorView)
     |> render("error.json", %{
       code: :unprocessable_entity,
-      detail: "Missing arguments"
+      detail: dgettext("errors", "Missing input file argument")
     })
   end
 

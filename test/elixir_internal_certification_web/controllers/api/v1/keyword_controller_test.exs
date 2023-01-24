@@ -91,7 +91,7 @@ defmodule ElixirInternalCertificationWeb.Api.V1.KeywordControllerTest do
                "errors" => [
                  %{
                    "code" => "unprocessable_entity",
-                   "detail" => dgettext("errors", "Missing arguments")
+                   "detail" => dgettext("errors", "Missing input file argument")
                  }
                ]
              }
