@@ -5,9 +5,8 @@ defmodule ElixirInternalCertificationWeb.KeywordLive.IndexTest do
 
   alias ElixirInternalCertification.Keyword.Keywords
 
-  setup [:register_and_log_in_user]
-
   describe "LIVE /keywords" do
+    @tag :register_and_log_in_user
     test "lists all keywords", %{conn: conn, user: user} do
       another_user = insert(:user)
       insert(:keyword, user: user, title: "first keyword")
@@ -28,6 +27,7 @@ defmodule ElixirInternalCertificationWeb.KeywordLive.IndexTest do
       refute html =~ "another keyword"
     end
 
+    @tag :register_and_log_in_user
     test "given EMPTY search query in the URL params, lists all keywords", %{conn: conn, user: user} do
       insert(:keyword, user: user, title: "first keyword")
       insert(:keyword, user: user, title: "second keyword")
@@ -48,6 +48,7 @@ defmodule ElixirInternalCertificationWeb.KeywordLive.IndexTest do
       assert html =~ "fifth keyword"
     end
 
+    @tag :register_and_log_in_user
     test "given a search query in the URL params, lists matched keywords", %{conn: conn, user: user} do
       insert(:keyword, user: user, title: "first keyword")
       insert(:keyword, user: user, title: "second keyword")
@@ -68,6 +69,7 @@ defmodule ElixirInternalCertificationWeb.KeywordLive.IndexTest do
       refute html =~ "fourth keyword"
     end
 
+    @tag :register_and_log_in_user
     test "given a changed form, lists matched keywords", %{conn: conn, user: user} do
       insert(:keyword, user: user, title: "first keyword")
       insert(:keyword, user: user, title: "second keyword")
@@ -101,6 +103,7 @@ defmodule ElixirInternalCertificationWeb.KeywordLive.IndexTest do
       assert_patch(view, "/")
     end
 
+    @tag :register_and_log_in_user
     test "given a submitted form, lists matched keywords", %{conn: conn, user: user} do
       insert(:keyword, user: user, title: "first keyword")
       insert(:keyword, user: user, title: "second keyword")
@@ -135,9 +138,20 @@ defmodule ElixirInternalCertificationWeb.KeywordLive.IndexTest do
 
       assert_redirect(view_2, "/")
     end
+
+    test "given an unauthenticated user, redirects to the log in page", %{conn: conn} do
+      assert live(
+               conn,
+               Routes.keyword_index_path(ElixirInternalCertificationWeb.Endpoint, :index)
+             ) ==
+               {:error,
+                {:redirect,
+                 %{flash: %{"error" => "You must log in to access this page."}, to: "/users/log_in"}}}
+    end
   end
 
   describe "handle_info/2" do
+    @tag :register_and_log_in_user
     test "given the {:updated, %Keyword{}}, updates the keyword list", %{conn: conn, user: user} do
       keyword = insert(:keyword, user: user, status: :pending)
 

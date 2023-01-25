@@ -1,7 +1,7 @@
 defmodule ElixirInternalCertificationWeb.UploadLive.Index do
   use ElixirInternalCertificationWeb, :live_view
 
-  alias ElixirInternalCertification.Keyword.{KeywordLookups, Keywords}
+  alias ElixirInternalCertificationWeb.Helpers.KeywordHelper
   alias ElixirInternalCertificationWeb.LiveHelpers
 
   @max_keywords_per_upload Application.compile_env!(
@@ -33,11 +33,16 @@ defmodule ElixirInternalCertificationWeb.UploadLive.Index do
     file_uploading_response(socket, uploaded_files, errors)
   end
 
-  defp handle_file_uploading(socket),
-    do:
-      consume_uploaded_entries(socket, :keyword, fn %{path: path}, _entry ->
-        process_data(socket, path)
-      end)
+  defp handle_file_uploading(socket) do
+    current_user = LiveHelpers.get_current_user_from_socket(socket)
+
+    consume_uploaded_entries(socket, :keyword, fn %{path: path}, _entry ->
+      case KeywordHelper.process_upload(current_user, path) do
+        {:ok, results} -> {:ok, results}
+        {:error, reason} -> {:postpone, {:error, reason}}
+      end
+    end)
+  end
 
   defp extract_errors(uploaded_files) do
     uploaded_files
@@ -53,17 +58,6 @@ defmodule ElixirInternalCertificationWeb.UploadLive.Index do
        |> redirect(to: Routes.keyword_index_path(ElixirInternalCertificationWeb.Endpoint, :index))}
     else
       {:noreply, put_flash(socket, :error, Enum.join(errors, ", "))}
-    end
-  end
-
-  defp process_data(socket, path) do
-    with {:ok, keywords} <- Keywords.parse_csv!(path),
-         current_user <- LiveHelpers.get_current_user_from_socket(socket),
-         {:ok, {_, records}} <- Keywords.create_keywords(current_user, keywords),
-         scheduled_keyword_lookups <- Enum.map(records, &KeywordLookups.schedule_keyword_lookup/1) do
-      {:ok, {path, scheduled_keyword_lookups}}
-    else
-      {:error, reason} -> {:postpone, {:error, reason}}
     end
   end
 
