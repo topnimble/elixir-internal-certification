@@ -21,8 +21,7 @@ defmodule ElixirInternalCertificationWeb.Api.V1.KeywordControllerTest do
   end
 
   describe "POST create/2" do
-    @describetag :register_and_log_in_user_with_token
-
+    @tag :register_and_log_in_user_with_token
     test "given a valid CSV file, returns 200 status", %{conn: conn} do
       params = %{file: uploaded_file("/assets/keywords.csv")}
 
@@ -71,6 +70,7 @@ defmodule ElixirInternalCertificationWeb.Api.V1.KeywordControllerTest do
              } = json_response(conn, 200)
     end
 
+    @tag :register_and_log_in_user_with_token
     test "given a file with more than 1,000 keywords, returns 422 status", %{conn: conn} do
       params = %{file: uploaded_file("/assets/keywords.csv")}
 
@@ -93,6 +93,7 @@ defmodule ElixirInternalCertificationWeb.Api.V1.KeywordControllerTest do
              }
     end
 
+    @tag :register_and_log_in_user_with_token
     test "given a file with INVALID data, returns 422 status", %{conn: conn} do
       params = %{file: uploaded_file("/assets/invalid.csv")}
 
@@ -108,6 +109,7 @@ defmodule ElixirInternalCertificationWeb.Api.V1.KeywordControllerTest do
              }
     end
 
+    @tag :register_and_log_in_user_with_token
     test "given MISSING CSV file argument, returns 422 status", %{conn: conn} do
       params = %{}
 
@@ -122,10 +124,8 @@ defmodule ElixirInternalCertificationWeb.Api.V1.KeywordControllerTest do
                ]
              }
     end
-  end
 
-  describe "POST create/2 without Bearer Token" do
-    test "returns 401 status", %{conn: conn} do
+    test "given an unauthenticated user, returns 401 status", %{conn: conn} do
       conn = post(conn, Routes.api_v1_keyword_path(conn, :create))
 
       assert json_response(conn, 401) == %{
