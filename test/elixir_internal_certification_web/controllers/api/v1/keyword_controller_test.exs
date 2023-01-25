@@ -23,19 +23,37 @@ defmodule ElixirInternalCertificationWeb.Api.V1.KeywordControllerTest do
       assert %{
                "data" => [
                  %{
-                   "attributes" => %{"id" => _, "title" => "first keyword"},
+                   "attributes" => %{
+                     "id" => _,
+                     "inserted_at" => _,
+                     "status" => "new",
+                     "title" => "first keyword",
+                     "updated_at" => _
+                   },
                    "id" => _,
                    "relationships" => %{},
                    "type" => "keywords"
                  },
                  %{
-                   "attributes" => %{"id" => _, "title" => "second keyword"},
+                   "attributes" => %{
+                     "id" => _,
+                     "inserted_at" => _,
+                     "status" => "new",
+                     "title" => "second keyword",
+                     "updated_at" => _
+                   },
                    "id" => _,
                    "relationships" => %{},
                    "type" => "keywords"
                  },
                  %{
-                   "attributes" => %{"id" => _, "title" => "third keyword"},
+                   "attributes" => %{
+                     "id" => _,
+                     "inserted_at" => _,
+                     "status" => "new",
+                     "title" => "third keyword",
+                     "updated_at" => _
+                   },
                    "id" => _,
                    "relationships" => %{},
                    "type" => "keywords"

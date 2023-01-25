@@ -8,7 +8,9 @@ defmodule ElixirInternalCertificationWeb.Api.V1.KeywordViewTest do
       assert KeywordView.fields() == [
                :id,
                :title,
-               :status
+               :status,
+               :inserted_at,
+               :updated_at
              ]
     end
   end

@@ -5,7 +5,9 @@ defmodule ElixirInternalCertificationWeb.Api.V1.KeywordView do
     [
       :id,
       :title,
-      :status
+      :status,
+      :inserted_at,
+      :updated_at
     ]
   end
 end
