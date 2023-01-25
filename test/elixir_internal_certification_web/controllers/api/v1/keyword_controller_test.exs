@@ -12,14 +12,6 @@ defmodule ElixirInternalCertificationWeb.Api.V1.KeywordControllerTest do
 
   @fixture_path "test/support/fixtures"
 
-  setup context do
-    if context[:register_and_log_in_user_with_token] do
-      register_and_log_in_user_with_token(context)
-    else
-      :ok
-    end
-  end
-
   describe "POST create/2" do
     @tag :register_and_log_in_user_with_token
     test "given a valid CSV file, returns 200 status", %{conn: conn} do

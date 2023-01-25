@@ -8,14 +8,13 @@ defmodule ElixirInternalCertificationWeb.UploadLive.IndexTest do
   alias ElixirInternalCertification.Keyword.Schemas.Keyword
   alias ElixirInternalCertificationWorker.Google, as: GoogleWorker
 
-  setup [:register_and_log_in_user]
-
   @max_keywords_per_upload Application.compile_env!(
                              :elixir_internal_certification,
                              :max_keywords_per_upload
                            )
 
   describe "LIVE /" do
+    @tag :register_and_log_in_user
     test "given a valid submission of a CSV file containing keywords, uploads the keywords and redirects to the keyword page",
          %{
            conn: conn,
@@ -66,6 +65,7 @@ defmodule ElixirInternalCertificationWeb.UploadLive.IndexTest do
       end)
     end
 
+    @tag :register_and_log_in_user
     test "given a cancellation of a CSV file containing keywords, does NOT upload the keywords", %{
       conn: conn,
       user: user
@@ -102,6 +102,7 @@ defmodule ElixirInternalCertificationWeb.UploadLive.IndexTest do
       refute_enqueued(worker: GoogleWorker)
     end
 
+    @tag :register_and_log_in_user
     test "given INVALID file extension, displays the error", %{conn: conn, user: user} do
       {:ok, view, _html} =
         live(conn, Routes.upload_index_path(ElixirInternalCertificationWeb.Endpoint, :index))
@@ -129,6 +130,7 @@ defmodule ElixirInternalCertificationWeb.UploadLive.IndexTest do
       refute_enqueued(worker: GoogleWorker)
     end
 
+    @tag :register_and_log_in_user
     test "given too large file, displays the error", %{conn: conn, user: user} do
       {:ok, view, _html} =
         live(conn, Routes.upload_index_path(ElixirInternalCertificationWeb.Endpoint, :index))
@@ -157,6 +159,7 @@ defmodule ElixirInternalCertificationWeb.UploadLive.IndexTest do
       refute_enqueued(worker: GoogleWorker)
     end
 
+    @tag :register_and_log_in_user
     test "given more than 1 file, displays the error", %{conn: conn, user: user} do
       {:ok, view, _html} =
         live(conn, Routes.upload_index_path(ElixirInternalCertificationWeb.Endpoint, :index))
@@ -190,6 +193,7 @@ defmodule ElixirInternalCertificationWeb.UploadLive.IndexTest do
       refute_enqueued(worker: GoogleWorker)
     end
 
+    @tag :register_and_log_in_user
     test "given a file with more than 1,000 keywords, displays the error", %{conn: conn, user: user} do
       {:ok, view, _html} =
         live(conn, Routes.upload_index_path(ElixirInternalCertificationWeb.Endpoint, :index))
@@ -227,6 +231,7 @@ defmodule ElixirInternalCertificationWeb.UploadLive.IndexTest do
       refute_enqueued(worker: GoogleWorker)
     end
 
+    @tag :register_and_log_in_user
     test "given a file with INVALID data, displays the error", %{conn: conn, user: user} do
       {:ok, view, _html} =
         live(conn, Routes.upload_index_path(ElixirInternalCertificationWeb.Endpoint, :index))
@@ -252,6 +257,13 @@ defmodule ElixirInternalCertificationWeb.UploadLive.IndexTest do
       assert Keywords.list_keywords(user) == []
 
       refute_enqueued(worker: GoogleWorker)
+    end
+
+    test "given an unauthenticated user, redirects to the log in page", %{conn: conn} do
+      assert live(conn, Routes.upload_index_path(ElixirInternalCertificationWeb.Endpoint, :index)) ==
+               {:error,
+                {:redirect,
+                 %{flash: %{"error" => "You must log in to access this page."}, to: "/users/log_in"}}}
     end
   end
 end

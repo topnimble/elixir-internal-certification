@@ -5,9 +5,8 @@ defmodule ElixirInternalCertificationWeb.KeywordLive.ShowTest do
 
   alias ElixirInternalCertification.Keyword.Schemas.Keyword
 
-  setup [:register_and_log_in_user]
-
   describe "LIVE /keywords/:id" do
+    @tag :register_and_log_in_user
     test "shows the keyword of current user", %{conn: conn, user: user} do
       %Keyword{id: keyword_id} =
         keyword = insert(:keyword, user: user, title: "current user keyword")
@@ -47,6 +46,7 @@ defmodule ElixirInternalCertificationWeb.KeywordLive.ShowTest do
              ]
     end
 
+    @tag :register_and_log_in_user
     test "does NOT show the keyword of another user", %{conn: conn, user: _user} do
       another_user = insert(:user)
 
@@ -61,6 +61,18 @@ defmodule ElixirInternalCertificationWeb.KeywordLive.ShowTest do
           Routes.keyword_show_path(ElixirInternalCertificationWeb.Endpoint, :show, keyword_id)
         )
       end
+    end
+
+    test "given an unauthenticated user, redirects to the log in page", %{conn: conn} do
+      %Keyword{id: keyword_id} = insert(:keyword)
+
+      assert live(
+               conn,
+               Routes.keyword_show_path(ElixirInternalCertificationWeb.Endpoint, :show, keyword_id)
+             ) ==
+               {:error,
+                {:redirect,
+                 %{flash: %{"error" => "You must log in to access this page."}, to: "/users/log_in"}}}
     end
   end
 end

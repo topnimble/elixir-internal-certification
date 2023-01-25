@@ -46,7 +46,19 @@ defmodule ElixirInternalCertificationWeb.ConnCase do
 
   setup tags do
     ElixirInternalCertification.DataCase.setup_sandbox(tags)
-    {:ok, conn: Phoenix.ConnTest.build_conn()}
+
+    base_conn = Phoenix.ConnTest.build_conn()
+
+    cond do
+      tags[:register_and_log_in_user] ->
+        register_and_log_in_user(%{conn: base_conn})
+
+      tags[:register_and_log_in_user_with_token] ->
+        register_and_log_in_user_with_token(%{conn: base_conn})
+
+      true ->
+        {:ok, conn: base_conn}
+    end
   end
 
   @doc """
