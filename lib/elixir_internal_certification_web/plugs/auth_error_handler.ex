@@ -14,7 +14,7 @@ defmodule ElixirInternalCertificationWeb.AuthErrorHandler do
     |> put_view(ErrorView)
     |> render("error.json", %{
       code: type,
-      detail: to_string(reason)
+      detail: Phoenix.Naming.humanize(reason)
     })
     |> halt()
   end
@@ -25,7 +25,7 @@ defmodule ElixirInternalCertificationWeb.AuthErrorHandler do
     |> put_view(ErrorView)
     |> render("error.json", %{
       code: type,
-      detail: to_string(reason)
+      detail: Phoenix.Naming.humanize(reason)
     })
     |> halt()
   end

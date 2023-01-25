@@ -12,9 +12,17 @@ defmodule ElixirInternalCertificationWeb.Api.V1.KeywordControllerTest do
 
   @fixture_path "test/support/fixtures"
 
-  setup [:register_and_log_in_user_with_token]
+  setup context do
+    if context[:register_and_log_in_user_with_token] do
+      register_and_log_in_user_with_token(context)
+    else
+      :ok
+    end
+  end
 
   describe "POST create/2" do
+    @describetag :register_and_log_in_user_with_token
+
     test "given a valid CSV file, returns 200 status", %{conn: conn} do
       params = %{file: uploaded_file("/assets/keywords.csv")}
 
@@ -110,6 +118,21 @@ defmodule ElixirInternalCertificationWeb.Api.V1.KeywordControllerTest do
                  %{
                    "code" => "unprocessable_entity",
                    "detail" => dgettext("errors", "Missing input file argument")
+                 }
+               ]
+             }
+    end
+  end
+
+  describe "POST create/2 without Bearer Token" do
+    test "returns 401 status", %{conn: conn} do
+      conn = post(conn, Routes.api_v1_keyword_path(conn, :create))
+
+      assert json_response(conn, 401) == %{
+               "errors" => [
+                 %{
+                   "code" => "unauthenticated",
+                   "detail" => "Unauthenticated"
                  }
                ]
              }
