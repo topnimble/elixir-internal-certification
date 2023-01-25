@@ -260,12 +260,13 @@ defmodule ElixirInternalCertificationWeb.UploadLive.IndexTest do
     end
 
     test "given an unauthenticated user, redirects to the log in page", %{conn: conn} do
-      assert
-
-      live(conn, Routes.upload_index_path(ElixirInternalCertificationWeb.Endpoint, :index)) ==
-        {:error,
-         {:redirect,
-          %{flash: %{"error" => "You must log in to access this page."}, to: "/users/log_in"}}}
+      assert live(
+               conn,
+               Routes.upload_index_path(ElixirInternalCertificationWeb.Endpoint, :index)
+             ) ==
+               {:error,
+                {:redirect,
+                 %{flash: %{"error" => "You must log in to access this page."}, to: "/users/log_in"}}}
     end
   end
 end
