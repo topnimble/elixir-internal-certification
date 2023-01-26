@@ -134,6 +134,22 @@ defmodule ElixirInternalCertificationWeb.Api.V1.KeywordControllerTest do
              }
     end
 
+    @tag :register_and_log_in_user_with_token
+    test "given the current user has NO keywords, does NOT list keywords", %{
+      conn: conn,
+      user: _user
+    } do
+      another_user = insert(:user)
+      _another_keyword = insert(:keyword, user: another_user, title: "another keyword")
+
+      conn = get(conn, Routes.api_v1_keyword_path(conn, :index))
+
+      assert json_response(conn, 200) == %{
+               "data" => [],
+               "included" => []
+             }
+    end
+
     test "given an unauthenticated user, returns 401 status", %{conn: conn} do
       conn = get(conn, Routes.api_v1_keyword_path(conn, :index))
 
