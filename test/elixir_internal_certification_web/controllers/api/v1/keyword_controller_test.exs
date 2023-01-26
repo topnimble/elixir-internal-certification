@@ -19,19 +19,49 @@ defmodule ElixirInternalCertificationWeb.Api.V1.KeywordControllerTest do
       another_user = insert(:user)
 
       %Keyword{id: first_keyword_id} =
-        _first_keyword = insert(:keyword, user: user, title: "first keyword")
+        _first_keyword =
+        insert(:keyword,
+          user: user,
+          title: "first keyword",
+          inserted_at: ~N[2023-01-01 00:00:00],
+          updated_at: ~N[2023-01-01 00:00:00]
+        )
 
       %Keyword{id: second_keyword_id} =
-        _second_keyword = insert(:keyword, user: user, title: "second keyword")
+        _second_keyword =
+        insert(:keyword,
+          user: user,
+          title: "second keyword",
+          inserted_at: ~N[2023-01-01 00:00:00],
+          updated_at: ~N[2023-01-01 00:00:00]
+        )
 
       %Keyword{id: third_keyword_id} =
-        _third_keyword = insert(:keyword, user: user, title: "third keyword")
+        _third_keyword =
+        insert(:keyword,
+          user: user,
+          title: "third keyword",
+          inserted_at: ~N[2023-01-01 00:00:00],
+          updated_at: ~N[2023-01-01 00:00:00]
+        )
 
       %Keyword{id: fourth_keyword_id} =
-        _fourth_keyword = insert(:keyword, user: user, title: "fourth keyword")
+        _fourth_keyword =
+        insert(:keyword,
+          user: user,
+          title: "fourth keyword",
+          inserted_at: ~N[2023-01-01 00:00:00],
+          updated_at: ~N[2023-01-01 00:00:00]
+        )
 
       %Keyword{id: fifth_keyword_id} =
-        _fifth_keyword = insert(:keyword, user: user, title: "fifth keyword")
+        _fifth_keyword =
+        insert(:keyword,
+          user: user,
+          title: "fifth keyword",
+          inserted_at: ~N[2023-01-01 00:00:00],
+          updated_at: ~N[2023-01-01 00:00:00]
+        )
 
       _another_keyword = insert(:keyword, user: another_user, title: "another keyword")
 
@@ -44,8 +74,10 @@ defmodule ElixirInternalCertificationWeb.Api.V1.KeywordControllerTest do
                  %{
                    "attributes" => %{
                      "id" => fifth_keyword_id,
+                     "inserted_at" => "2023-01-01T00:00:00",
                      "status" => "new",
-                     "title" => "fifth keyword"
+                     "title" => "fifth keyword",
+                     "updated_at" => "2023-01-01T00:00:00"
                    },
                    "id" => to_string(fifth_keyword_id),
                    "relationships" => %{},
@@ -54,8 +86,10 @@ defmodule ElixirInternalCertificationWeb.Api.V1.KeywordControllerTest do
                  %{
                    "attributes" => %{
                      "id" => fourth_keyword_id,
+                     "inserted_at" => "2023-01-01T00:00:00",
                      "status" => "new",
-                     "title" => "fourth keyword"
+                     "title" => "fourth keyword",
+                     "updated_at" => "2023-01-01T00:00:00"
                    },
                    "id" => to_string(fourth_keyword_id),
                    "relationships" => %{},
@@ -64,8 +98,10 @@ defmodule ElixirInternalCertificationWeb.Api.V1.KeywordControllerTest do
                  %{
                    "attributes" => %{
                      "id" => third_keyword_id,
+                     "inserted_at" => "2023-01-01T00:00:00",
                      "status" => "new",
-                     "title" => "third keyword"
+                     "title" => "third keyword",
+                     "updated_at" => "2023-01-01T00:00:00"
                    },
                    "id" => to_string(third_keyword_id),
                    "relationships" => %{},
@@ -74,8 +110,10 @@ defmodule ElixirInternalCertificationWeb.Api.V1.KeywordControllerTest do
                  %{
                    "attributes" => %{
                      "id" => second_keyword_id,
+                     "inserted_at" => "2023-01-01T00:00:00",
                      "status" => "new",
-                     "title" => "second keyword"
+                     "title" => "second keyword",
+                     "updated_at" => "2023-01-01T00:00:00"
                    },
                    "id" => to_string(second_keyword_id),
                    "relationships" => %{},
@@ -84,8 +122,10 @@ defmodule ElixirInternalCertificationWeb.Api.V1.KeywordControllerTest do
                  %{
                    "attributes" => %{
                      "id" => first_keyword_id,
+                     "inserted_at" => "2023-01-01T00:00:00",
                      "status" => "new",
-                     "title" => "first keyword"
+                     "title" => "first keyword",
+                     "updated_at" => "2023-01-01T00:00:00"
                    },
                    "id" => to_string(first_keyword_id),
                    "relationships" => %{},
