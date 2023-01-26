@@ -12,11 +12,11 @@ defmodule ElixirInternalCertificationWeb.Api.V1.KeywordController do
                            )
 
   def index(%{assigns: %{current_user: current_user}} = conn, _params) do
-    records = Keywords.list_keywords(current_user)
+    keywords = Keywords.list_keywords(current_user)
 
     conn
     |> put_status(:ok)
-    |> render("index.json", %{data: records})
+    |> render("index.json", %{data: keywords})
   end
 
   def create(
