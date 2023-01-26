@@ -65,9 +65,7 @@ defmodule ElixirInternalCertificationWeb.Api.V1.KeywordControllerTest do
 
       _another_keyword = insert(:keyword, user: another_user, title: "another keyword")
 
-      params = %{}
-
-      conn = get(conn, Routes.api_v1_keyword_path(conn, :index), params)
+      conn = get(conn, Routes.api_v1_keyword_path(conn, :index))
 
       assert json_response(conn, 200) == %{
                "data" => [
@@ -133,6 +131,19 @@ defmodule ElixirInternalCertificationWeb.Api.V1.KeywordControllerTest do
                  }
                ],
                "included" => []
+             }
+    end
+
+    test "given an unauthenticated user, returns 401 status", %{conn: conn} do
+      conn = get(conn, Routes.api_v1_keyword_path(conn, :index))
+
+      assert json_response(conn, 401) == %{
+               "errors" => [
+                 %{
+                   "code" => "unauthenticated",
+                   "detail" => "Unauthenticated"
+                 }
+               ]
              }
     end
   end
