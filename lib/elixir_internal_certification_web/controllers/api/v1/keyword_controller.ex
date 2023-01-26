@@ -1,6 +1,7 @@
 defmodule ElixirInternalCertificationWeb.Api.V1.KeywordController do
   use ElixirInternalCertificationWeb, :controller
 
+  alias ElixirInternalCertification.Keyword.Keywords
   alias ElixirInternalCertificationWeb.Api.ErrorView
   alias ElixirInternalCertificationWeb.Helpers.KeywordHelper
   alias Plug.Upload
@@ -9,6 +10,14 @@ defmodule ElixirInternalCertificationWeb.Api.V1.KeywordController do
                              :elixir_internal_certification,
                              :max_keywords_per_upload
                            )
+
+  def index(%{assigns: %{current_user: current_user}} = conn, _params) do
+    records = Keywords.list_keywords(current_user)
+
+    conn
+    |> put_status(:ok)
+    |> render("index.json", %{data: records})
+  end
 
   def create(
         %{assigns: %{current_user: current_user}} = conn,
