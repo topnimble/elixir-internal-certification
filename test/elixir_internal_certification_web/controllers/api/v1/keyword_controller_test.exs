@@ -177,7 +177,6 @@ defmodule ElixirInternalCertificationWeb.Api.V1.KeywordControllerTest do
         )
 
       %KeywordLookup{id: keyword_lookup_id} =
-        _keyword_lookup =
         insert(:keyword_lookup,
           keyword: keyword,
           html: "<html></html>",
