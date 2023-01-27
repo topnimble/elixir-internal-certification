@@ -28,6 +28,20 @@ defmodule ElixirInternalCertificationWeb.KeywordLive.IndexTest do
     end
 
     @tag :register_and_log_in_user
+    test "given the current user has NO keywords, does NOT list keywords", %{
+      conn: conn,
+      user: _user
+    } do
+      another_user = insert(:user)
+      insert(:keyword, user: another_user, title: "another keyword")
+
+      {:ok, _view, html} =
+        live(conn, Routes.keyword_index_path(ElixirInternalCertificationWeb.Endpoint, :index))
+
+      refute html =~ "another keyword"
+    end
+
+    @tag :register_and_log_in_user
     test "given EMPTY search query in the URL params, lists all keywords", %{conn: conn, user: user} do
       insert(:keyword, user: user, title: "first keyword")
       insert(:keyword, user: user, title: "second keyword")

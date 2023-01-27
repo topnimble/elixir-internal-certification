@@ -4,6 +4,7 @@ defmodule ElixirInternalCertificationWeb.Api.V1.KeywordControllerTest do
   import ElixirInternalCertificationWeb.Gettext
 
   alias ElixirInternalCertification.Keyword.Keywords
+  alias ElixirInternalCertification.Keyword.Schemas.Keyword
 
   @max_keywords_per_upload Application.compile_env!(
                              :elixir_internal_certification,
@@ -11,6 +12,157 @@ defmodule ElixirInternalCertificationWeb.Api.V1.KeywordControllerTest do
                            )
 
   @fixture_path "test/support/fixtures"
+
+  describe "GET index/2" do
+    @tag :register_and_log_in_user_with_token
+    test "lists all keywords", %{conn: conn, user: user} do
+      another_user = insert(:user)
+
+      %Keyword{id: first_keyword_id} =
+        _first_keyword =
+        insert(:keyword,
+          user: user,
+          title: "first keyword",
+          inserted_at: ~N[2023-01-01 00:00:00],
+          updated_at: ~N[2023-01-01 00:00:00]
+        )
+
+      %Keyword{id: second_keyword_id} =
+        _second_keyword =
+        insert(:keyword,
+          user: user,
+          title: "second keyword",
+          inserted_at: ~N[2023-01-01 00:00:00],
+          updated_at: ~N[2023-01-01 00:00:00]
+        )
+
+      %Keyword{id: third_keyword_id} =
+        _third_keyword =
+        insert(:keyword,
+          user: user,
+          title: "third keyword",
+          inserted_at: ~N[2023-01-01 00:00:00],
+          updated_at: ~N[2023-01-01 00:00:00]
+        )
+
+      %Keyword{id: fourth_keyword_id} =
+        _fourth_keyword =
+        insert(:keyword,
+          user: user,
+          title: "fourth keyword",
+          inserted_at: ~N[2023-01-01 00:00:00],
+          updated_at: ~N[2023-01-01 00:00:00]
+        )
+
+      %Keyword{id: fifth_keyword_id} =
+        _fifth_keyword =
+        insert(:keyword,
+          user: user,
+          title: "fifth keyword",
+          inserted_at: ~N[2023-01-01 00:00:00],
+          updated_at: ~N[2023-01-01 00:00:00]
+        )
+
+      _another_keyword = insert(:keyword, user: another_user, title: "another keyword")
+
+      conn = get(conn, Routes.api_v1_keyword_path(conn, :index))
+
+      assert json_response(conn, 200) == %{
+               "data" => [
+                 %{
+                   "attributes" => %{
+                     "id" => fifth_keyword_id,
+                     "inserted_at" => "2023-01-01T00:00:00",
+                     "status" => "new",
+                     "title" => "fifth keyword",
+                     "updated_at" => "2023-01-01T00:00:00"
+                   },
+                   "id" => to_string(fifth_keyword_id),
+                   "relationships" => %{},
+                   "type" => "keywords"
+                 },
+                 %{
+                   "attributes" => %{
+                     "id" => fourth_keyword_id,
+                     "inserted_at" => "2023-01-01T00:00:00",
+                     "status" => "new",
+                     "title" => "fourth keyword",
+                     "updated_at" => "2023-01-01T00:00:00"
+                   },
+                   "id" => to_string(fourth_keyword_id),
+                   "relationships" => %{},
+                   "type" => "keywords"
+                 },
+                 %{
+                   "attributes" => %{
+                     "id" => third_keyword_id,
+                     "inserted_at" => "2023-01-01T00:00:00",
+                     "status" => "new",
+                     "title" => "third keyword",
+                     "updated_at" => "2023-01-01T00:00:00"
+                   },
+                   "id" => to_string(third_keyword_id),
+                   "relationships" => %{},
+                   "type" => "keywords"
+                 },
+                 %{
+                   "attributes" => %{
+                     "id" => second_keyword_id,
+                     "inserted_at" => "2023-01-01T00:00:00",
+                     "status" => "new",
+                     "title" => "second keyword",
+                     "updated_at" => "2023-01-01T00:00:00"
+                   },
+                   "id" => to_string(second_keyword_id),
+                   "relationships" => %{},
+                   "type" => "keywords"
+                 },
+                 %{
+                   "attributes" => %{
+                     "id" => first_keyword_id,
+                     "inserted_at" => "2023-01-01T00:00:00",
+                     "status" => "new",
+                     "title" => "first keyword",
+                     "updated_at" => "2023-01-01T00:00:00"
+                   },
+                   "id" => to_string(first_keyword_id),
+                   "relationships" => %{},
+                   "type" => "keywords"
+                 }
+               ],
+               "included" => []
+             }
+    end
+
+    @tag :register_and_log_in_user_with_token
+    test "given the current user has NO keywords, does NOT list keywords", %{
+      conn: conn,
+      user: _user
+    } do
+      another_user = insert(:user)
+      _another_keyword = insert(:keyword, user: another_user, title: "another keyword")
+
+      conn = get(conn, Routes.api_v1_keyword_path(conn, :index))
+
+      assert json_response(conn, 200) == %{
+               "data" => [],
+               "included" => []
+             }
+    end
+
+    test "given an unauthenticated user, returns 401 status", %{conn: conn} do
+      conn = get(conn, Routes.api_v1_keyword_path(conn, :index))
+
+      assert json_response(conn, 401) == %{
+               "errors" => [
+                 %{
+                   "code" => "unauthenticated",
+                   "detail" => "Unauthenticated"
+                 }
+               ]
+             }
+    end
+  end
 
   describe "POST create/2" do
     @tag :register_and_log_in_user_with_token
