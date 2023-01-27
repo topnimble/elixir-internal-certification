@@ -234,9 +234,16 @@ defmodule ElixirInternalCertificationWeb.Api.V1.KeywordControllerTest do
 
     @tag :register_and_log_in_user_with_token
     test "given non-existence keyword ID, returns 404 status", %{conn: conn, user: _user} do
-      assert_error_sent 404, fn ->
-        get(conn, Routes.api_v1_keyword_path(conn, :show, -1))
-      end
+      conn = get(conn, Routes.api_v1_keyword_path(conn, :show, -1))
+
+      assert json_response(conn, 404) == %{
+               "errors" => [
+                 %{
+                   "code" => "not_found",
+                   "detail" => dgettext("errors", "Not found")
+                 }
+               ]
+             }
     end
 
     @tag :register_and_log_in_user_with_token
@@ -248,9 +255,16 @@ defmodule ElixirInternalCertificationWeb.Api.V1.KeywordControllerTest do
 
       insert(:keyword_lookup, keyword: keyword)
 
-      assert_error_sent 404, fn ->
-        get(conn, Routes.api_v1_keyword_path(conn, :show, keyword_id))
-      end
+      conn = get(conn, Routes.api_v1_keyword_path(conn, :show, keyword_id))
+
+      assert json_response(conn, 404) == %{
+               "errors" => [
+                 %{
+                   "code" => "not_found",
+                   "detail" => dgettext("errors", "Not found")
+                 }
+               ]
+             }
     end
 
     test "given an unauthenticated user, returns 401 status", %{conn: conn} do

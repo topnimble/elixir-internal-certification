@@ -25,6 +25,15 @@ defmodule ElixirInternalCertificationWeb.Api.V1.KeywordController do
     conn
     |> put_status(:ok)
     |> render("show.json", %{data: keyword})
+  rescue
+    Ecto.NoResultsError ->
+      conn
+      |> put_status(:not_found)
+      |> put_view(ErrorView)
+      |> render("error.json", %{
+        code: :not_found,
+        detail: dgettext("errors", "Not found")
+      })
   end
 
   def create(

@@ -108,13 +108,13 @@ msgstr ""
 msgid "You have selected too many files"
 msgstr ""
 
-#: lib/elixir_internal_certification_web/controllers/api/v1/keyword_controller.ex:63
+#: lib/elixir_internal_certification_web/controllers/api/v1/keyword_controller.ex:72
 #: lib/elixir_internal_certification_web/live/upload_live/index.ex:77
 #, elixir-autogen, elixir-format
 msgid "You have selected file with more than %{max_keywords_per_upload} keywords"
 msgstr ""
 
-#: lib/elixir_internal_certification_web/controllers/api/v1/keyword_controller.ex:70
+#: lib/elixir_internal_certification_web/controllers/api/v1/keyword_controller.ex:79
 #: lib/elixir_internal_certification_web/live/upload_live/index.ex:84
 #, elixir-autogen, elixir-format
 msgid "You have selected file with invalid data"
@@ -135,7 +135,12 @@ msgstr ""
 msgid "Unauthenticated"
 msgstr ""
 
-#: lib/elixir_internal_certification_web/controllers/api/v1/keyword_controller.ex:57
+#: lib/elixir_internal_certification_web/controllers/api/v1/keyword_controller.ex:66
 #, elixir-autogen, elixir-format
 msgid "Missing input file argument"
+msgstr ""
+
+#: lib/elixir_internal_certification_web/controllers/api/v1/keyword_controller.ex:35
+#, elixir-autogen, elixir-format
+msgid "Not found"
 msgstr ""
