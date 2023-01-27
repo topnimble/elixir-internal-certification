@@ -33,6 +33,12 @@ defmodule ElixirInternalCertification.Keyword.Keywords do
     |> Repo.all()
   end
 
+  def list_keywords_using_url(%User{} = user, search_query_type, search_query) do
+    user
+    |> KeywordQuery.list_keywords_by_user_using_url(search_query_type, search_query)
+    |> Repo.all()
+  end
+
   def get_keyword!(id), do: Repo.get!(Keyword, id)
 
   def get_keyword!(%User{id: user_id} = _user, id) do
