@@ -4,7 +4,7 @@ defmodule ElixirInternalCertificationWeb.Api.V1.KeywordControllerTest do
   import ElixirInternalCertificationWeb.Gettext
 
   alias ElixirInternalCertification.Keyword.Keywords
-  alias ElixirInternalCertification.Keyword.Schemas.Keyword
+  alias ElixirInternalCertification.Keyword.Schemas.{Keyword, KeywordLookup}
 
   @max_keywords_per_upload Application.compile_env!(
                              :elixir_internal_certification,
@@ -152,6 +152,111 @@ defmodule ElixirInternalCertificationWeb.Api.V1.KeywordControllerTest do
 
     test "given an unauthenticated user, returns 401 status", %{conn: conn} do
       conn = get(conn, Routes.api_v1_keyword_path(conn, :index))
+
+      assert json_response(conn, 401) == %{
+               "errors" => [
+                 %{
+                   "code" => "unauthenticated",
+                   "detail" => "Unauthenticated"
+                 }
+               ]
+             }
+    end
+  end
+
+  describe "GET show/2" do
+    @tag :register_and_log_in_user_with_token
+    test "shows the keyword of current user", %{conn: conn, user: user} do
+      %Keyword{id: keyword_id} =
+        keyword =
+        insert(:keyword,
+          user: user,
+          title: "current user keyword",
+          inserted_at: ~N[2023-01-01 00:00:00],
+          updated_at: ~N[2023-01-01 00:00:00]
+        )
+
+      %KeywordLookup{id: keyword_lookup_id} =
+        _keyword_lookup =
+        insert(:keyword_lookup,
+          keyword: keyword,
+          html: "<html></html>",
+          number_of_adwords_advertisers: 6,
+          number_of_adwords_advertisers_top_position: 5,
+          urls_of_adwords_advertisers_top_position: ["https://nimblehq.co/"],
+          number_of_non_adwords: 16,
+          urls_of_non_adwords: ["https://www.google.com/"],
+          number_of_links: 1,
+          inserted_at: ~N[2023-01-01 00:00:00],
+          updated_at: ~N[2023-01-01 00:00:00]
+        )
+
+      conn = get(conn, Routes.api_v1_keyword_path(conn, :show, keyword_id))
+
+      assert json_response(conn, 200) == %{
+               "data" => %{
+                 "attributes" => %{
+                   "id" => keyword_id,
+                   "inserted_at" => "2023-01-01T00:00:00",
+                   "status" => "new",
+                   "title" => "current user keyword",
+                   "updated_at" => "2023-01-01T00:00:00"
+                 },
+                 "id" => to_string(keyword_id),
+                 "relationships" => %{
+                   "keyword_lookup" => %{
+                     "data" => %{"id" => to_string(keyword_lookup_id), "type" => "keyword_lookups"}
+                   }
+                 },
+                 "type" => "keywords"
+               },
+               "included" => [
+                 %{
+                   "attributes" => %{
+                     "html" => "<html></html>",
+                     "id" => keyword_lookup_id,
+                     "inserted_at" => "2023-01-01T00:00:00",
+                     "number_of_adwords_advertisers" => 6,
+                     "number_of_adwords_advertisers_top_position" => 5,
+                     "number_of_links" => 1,
+                     "number_of_non_adwords" => 16,
+                     "updated_at" => "2023-01-01T00:00:00",
+                     "urls_of_adwords_advertisers_top_position" => ["https://nimblehq.co/"],
+                     "urls_of_non_adwords" => ["https://www.google.com/"]
+                   },
+                   "id" => to_string(keyword_lookup_id),
+                   "relationships" => %{},
+                   "type" => "keyword_lookups"
+                 }
+               ]
+             }
+    end
+
+    @tag :register_and_log_in_user_with_token
+    test "given non-existence keyword ID, returns 404 status", %{conn: conn, user: _user} do
+      assert_error_sent 404, fn ->
+        get(conn, Routes.api_v1_keyword_path(conn, :show, -1))
+      end
+    end
+
+    @tag :register_and_log_in_user_with_token
+    test "given the keyword of another user, returns 404 status", %{conn: conn, user: _user} do
+      another_user = insert(:user)
+
+      %Keyword{id: keyword_id} =
+        keyword = insert(:keyword, user: another_user, title: "another user keyword")
+
+      insert(:keyword_lookup, keyword: keyword)
+
+      assert_error_sent 404, fn ->
+        get(conn, Routes.api_v1_keyword_path(conn, :show, keyword_id))
+      end
+    end
+
+    test "given an unauthenticated user, returns 401 status", %{conn: conn} do
+      %Keyword{id: keyword_id} = insert(:keyword)
+
+      conn = get(conn, Routes.api_v1_keyword_path(conn, :show, keyword_id))
 
       assert json_response(conn, 401) == %{
                "errors" => [

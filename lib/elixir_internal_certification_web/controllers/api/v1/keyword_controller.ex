@@ -19,6 +19,14 @@ defmodule ElixirInternalCertificationWeb.Api.V1.KeywordController do
     |> render("index.json", %{data: keywords})
   end
 
+  def show(%{assigns: %{current_user: current_user}} = conn, %{"id" => id} = _params) do
+    keyword = Keywords.get_keyword!(current_user, id)
+
+    conn
+    |> put_status(:ok)
+    |> render("show.json", %{data: keyword})
+  end
+
   def create(
         %{assigns: %{current_user: current_user}} = conn,
         %{"file" => %Upload{path: path}} = _params
