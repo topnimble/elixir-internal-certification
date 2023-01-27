@@ -9,13 +9,10 @@ defmodule ElixirInternalCertification.Guardian do
 
   def resource_from_claims(%{"sub" => sub} = _claims) do
     user_id = String.to_integer(sub)
-
-    try do
-      user = Accounts.get_user_by_id!(user_id)
-      {:ok, user}
-    rescue
-      Ecto.NoResultsError -> {:error, :invalid_claims}
-    end
+    user = Accounts.get_user_by_id!(user_id)
+    {:ok, user}
+  rescue
+    Ecto.NoResultsError -> {:error, :invalid_claims}
   end
 
   def resource_from_claims(_claims), do: {:error, :unhandled_resource_type}
