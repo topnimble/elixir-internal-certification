@@ -52,7 +52,7 @@ defmodule ElixirInternalCertificationWeb.Router do
     pipe_through [:api, :authenticated_api]
 
     scope "/v1", V1, as: :v1 do
-      resources "/keywords", KeywordController, only: [:index, :create]
+      resources "/keywords", KeywordController, only: [:index, :show, :create]
     end
   end
 

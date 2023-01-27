@@ -19,6 +19,23 @@ defmodule ElixirInternalCertificationWeb.Api.V1.KeywordController do
     |> render("index.json", %{data: keywords})
   end
 
+  def show(%{assigns: %{current_user: current_user}} = conn, %{"id" => id} = _params) do
+    keyword = Keywords.get_keyword!(current_user, id)
+
+    conn
+    |> put_status(:ok)
+    |> render("show.json", %{data: keyword})
+  rescue
+    Ecto.NoResultsError ->
+      conn
+      |> put_status(:not_found)
+      |> put_view(ErrorView)
+      |> render("error.json", %{
+        code: :not_found,
+        detail: dgettext("errors", "Not found")
+      })
+  end
+
   def create(
         %{assigns: %{current_user: current_user}} = conn,
         %{"file" => %Upload{path: path}} = _params
