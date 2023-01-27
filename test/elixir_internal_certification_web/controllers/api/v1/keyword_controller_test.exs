@@ -135,6 +135,202 @@ defmodule ElixirInternalCertificationWeb.Api.V1.KeywordControllerTest do
     end
 
     @tag :register_and_log_in_user_with_token
+    test "given EMPTY search query in the URL params, lists all keywords", %{conn: conn, user: user} do
+      %Keyword{id: first_keyword_id} =
+        _first_keyword =
+        insert(:keyword,
+          user: user,
+          title: "first keyword",
+          inserted_at: ~N[2023-01-01 00:00:00],
+          updated_at: ~N[2023-01-01 00:00:00]
+        )
+
+      %Keyword{id: second_keyword_id} =
+        _second_keyword =
+        insert(:keyword,
+          user: user,
+          title: "second keyword",
+          inserted_at: ~N[2023-01-01 00:00:00],
+          updated_at: ~N[2023-01-01 00:00:00]
+        )
+
+      %Keyword{id: third_keyword_id} =
+        _third_keyword =
+        insert(:keyword,
+          user: user,
+          title: "third keyword",
+          inserted_at: ~N[2023-01-01 00:00:00],
+          updated_at: ~N[2023-01-01 00:00:00]
+        )
+
+      %Keyword{id: fourth_keyword_id} =
+        _fourth_keyword =
+        insert(:keyword,
+          user: user,
+          title: "fourth keyword",
+          inserted_at: ~N[2023-01-01 00:00:00],
+          updated_at: ~N[2023-01-01 00:00:00]
+        )
+
+      %Keyword{id: fifth_keyword_id} =
+        _fifth_keyword =
+        insert(:keyword,
+          user: user,
+          title: "fifth keyword",
+          inserted_at: ~N[2023-01-01 00:00:00],
+          updated_at: ~N[2023-01-01 00:00:00]
+        )
+
+      conn = get(conn, Routes.api_v1_keyword_path(conn, :index, query: ""))
+
+      assert json_response(conn, 200) == %{
+               "data" => [
+                 %{
+                   "attributes" => %{
+                     "id" => fifth_keyword_id,
+                     "inserted_at" => "2023-01-01T00:00:00",
+                     "status" => "new",
+                     "title" => "fifth keyword",
+                     "updated_at" => "2023-01-01T00:00:00"
+                   },
+                   "id" => to_string(fifth_keyword_id),
+                   "relationships" => %{},
+                   "type" => "keywords"
+                 },
+                 %{
+                   "attributes" => %{
+                     "id" => fourth_keyword_id,
+                     "inserted_at" => "2023-01-01T00:00:00",
+                     "status" => "new",
+                     "title" => "fourth keyword",
+                     "updated_at" => "2023-01-01T00:00:00"
+                   },
+                   "id" => to_string(fourth_keyword_id),
+                   "relationships" => %{},
+                   "type" => "keywords"
+                 },
+                 %{
+                   "attributes" => %{
+                     "id" => third_keyword_id,
+                     "inserted_at" => "2023-01-01T00:00:00",
+                     "status" => "new",
+                     "title" => "third keyword",
+                     "updated_at" => "2023-01-01T00:00:00"
+                   },
+                   "id" => to_string(third_keyword_id),
+                   "relationships" => %{},
+                   "type" => "keywords"
+                 },
+                 %{
+                   "attributes" => %{
+                     "id" => second_keyword_id,
+                     "inserted_at" => "2023-01-01T00:00:00",
+                     "status" => "new",
+                     "title" => "second keyword",
+                     "updated_at" => "2023-01-01T00:00:00"
+                   },
+                   "id" => to_string(second_keyword_id),
+                   "relationships" => %{},
+                   "type" => "keywords"
+                 },
+                 %{
+                   "attributes" => %{
+                     "id" => first_keyword_id,
+                     "inserted_at" => "2023-01-01T00:00:00",
+                     "status" => "new",
+                     "title" => "first keyword",
+                     "updated_at" => "2023-01-01T00:00:00"
+                   },
+                   "id" => to_string(first_keyword_id),
+                   "relationships" => %{},
+                   "type" => "keywords"
+                 }
+               ],
+               "included" => []
+             }
+    end
+
+    @tag :register_and_log_in_user_with_token
+    test "given a search query in the URL params, lists matched keywords", %{conn: conn, user: user} do
+      %Keyword{id: first_keyword_id} =
+        _first_keyword =
+        insert(:keyword,
+          user: user,
+          title: "first keyword",
+          inserted_at: ~N[2023-01-01 00:00:00],
+          updated_at: ~N[2023-01-01 00:00:00]
+        )
+
+      %Keyword{id: _second_keyword_id} =
+        _second_keyword =
+        insert(:keyword,
+          user: user,
+          title: "second keyword",
+          inserted_at: ~N[2023-01-01 00:00:00],
+          updated_at: ~N[2023-01-01 00:00:00]
+        )
+
+      %Keyword{id: _third_keyword_id} =
+        _third_keyword =
+        insert(:keyword,
+          user: user,
+          title: "third keyword",
+          inserted_at: ~N[2023-01-01 00:00:00],
+          updated_at: ~N[2023-01-01 00:00:00]
+        )
+
+      %Keyword{id: _fourth_keyword_id} =
+        _fourth_keyword =
+        insert(:keyword,
+          user: user,
+          title: "fourth keyword",
+          inserted_at: ~N[2023-01-01 00:00:00],
+          updated_at: ~N[2023-01-01 00:00:00]
+        )
+
+      %Keyword{id: fifth_keyword_id} =
+        _fifth_keyword =
+        insert(:keyword,
+          user: user,
+          title: "fifth keyword",
+          inserted_at: ~N[2023-01-01 00:00:00],
+          updated_at: ~N[2023-01-01 00:00:00]
+        )
+
+      conn = get(conn, Routes.api_v1_keyword_path(conn, :index, query: "fi"))
+
+      assert json_response(conn, 200) == %{
+               "data" => [
+                 %{
+                   "attributes" => %{
+                     "id" => fifth_keyword_id,
+                     "inserted_at" => "2023-01-01T00:00:00",
+                     "status" => "new",
+                     "title" => "fifth keyword",
+                     "updated_at" => "2023-01-01T00:00:00"
+                   },
+                   "id" => to_string(fifth_keyword_id),
+                   "relationships" => %{},
+                   "type" => "keywords"
+                 },
+                 %{
+                   "attributes" => %{
+                     "id" => first_keyword_id,
+                     "inserted_at" => "2023-01-01T00:00:00",
+                     "status" => "new",
+                     "title" => "first keyword",
+                     "updated_at" => "2023-01-01T00:00:00"
+                   },
+                   "id" => to_string(first_keyword_id),
+                   "relationships" => %{},
+                   "type" => "keywords"
+                 }
+               ],
+               "included" => []
+             }
+    end
+
+    @tag :register_and_log_in_user_with_token
     test "given the current user has NO keywords, does NOT list keywords", %{
       conn: conn,
       user: _user

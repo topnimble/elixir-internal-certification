@@ -11,8 +11,10 @@ defmodule ElixirInternalCertificationWeb.Api.V1.KeywordController do
                              :max_keywords_per_upload
                            )
 
-  def index(%{assigns: %{current_user: current_user}} = conn, _params) do
-    keywords = Keywords.list_keywords(current_user)
+  def index(%{assigns: %{current_user: current_user}} = conn, params) do
+    search_query = params["query"]
+
+    keywords = Keywords.list_keywords(current_user, search_query)
 
     conn
     |> put_status(:ok)
