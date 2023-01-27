@@ -8,13 +8,24 @@ defmodule ElixirInternalCertificationWeb.AuthErrorHandler do
   alias ElixirInternalCertificationWeb.Api.ErrorView
 
   @impl Guardian.Plug.ErrorHandler
-  def auth_error(conn, {type, reason}, _opts) do
+  def auth_error(conn, {type, reason}, _opts) when type in [:unauthenticated, :unauthorized] do
     conn
-    |> put_status(type)
+    |> put_status(:unauthorized)
     |> put_view(ErrorView)
     |> render("error.json", %{
       code: type,
-      detail: to_string(reason)
+      detail: Phoenix.Naming.humanize(reason)
+    })
+    |> halt()
+  end
+
+  def auth_error(conn, {type, reason}, _opts) do
+    conn
+    |> put_status(:unprocessable_entity)
+    |> put_view(ErrorView)
+    |> render("error.json", %{
+      code: type,
+      detail: Phoenix.Naming.humanize(reason)
     })
     |> halt()
   end

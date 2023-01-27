@@ -20,6 +20,7 @@ defmodule ElixirInternalCertificationWeb.ConnCase do
   import ElixirInternalCertification.Factory
 
   alias ElixirInternalCertification.Account.Accounts
+  alias ElixirInternalCertification.Guardian
 
   using do
     quote do
@@ -45,7 +46,19 @@ defmodule ElixirInternalCertificationWeb.ConnCase do
 
   setup tags do
     ElixirInternalCertification.DataCase.setup_sandbox(tags)
-    {:ok, conn: Phoenix.ConnTest.build_conn()}
+
+    base_conn = Phoenix.ConnTest.build_conn()
+
+    cond do
+      tags[:register_and_log_in_user] ->
+        register_and_log_in_user(%{conn: base_conn})
+
+      tags[:register_and_log_in_user_with_token] ->
+        register_and_log_in_user_with_token(%{conn: base_conn})
+
+      true ->
+        {:ok, conn: base_conn}
+    end
   end
 
   @doc """
@@ -72,5 +85,15 @@ defmodule ElixirInternalCertificationWeb.ConnCase do
     conn
     |> Phoenix.ConnTest.init_test_session(%{})
     |> Plug.Conn.put_session(:user_token, token)
+  end
+
+  def register_and_log_in_user_with_token(%{conn: conn}) do
+    user = insert(:user)
+    %{conn: log_in_user_with_token(conn, user), user: user}
+  end
+
+  def log_in_user_with_token(conn, user) do
+    {:ok, token, _} = Guardian.encode_and_sign(user, %{}, token_type: :access)
+    Plug.Conn.put_req_header(conn, "authorization", "Bearer " <> token)
   end
 end
