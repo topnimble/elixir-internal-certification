@@ -33,12 +33,21 @@ defmodule ElixirInternalCertification.Keyword.Keywords do
     |> Repo.all()
   end
 
-  def list_keywords_using_url(%User{} = user, search_query, search_query_type, search_query_target) do
+  def list_keywords_using_url(
+        %User{} = user,
+        search_query,
+        search_query_type,
+        search_query_target,
+        number_of_occurrences,
+        symbol_notation
+      ) do
     user
     |> KeywordQuery.list_keywords_by_user_using_url(
       search_query,
       search_query_type,
-      search_query_target
+      search_query_target,
+      number_of_occurrences,
+      symbol_notation
     )
     |> Repo.all()
   end
