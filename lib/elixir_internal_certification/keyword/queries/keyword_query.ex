@@ -25,20 +25,21 @@ defmodule ElixirInternalCertification.Keyword.Queries.KeywordQuery do
 
   defp maybe_filter_by_search_query_using_url(query, nil, _search_query_type, _search_query_target), do: query
 
-  defp maybe_filter_by_search_query_using_url(query, search_query, "partial_match" = search_query_type, search_query_target) do
-    keyword_lookup_query = select(KeywordLookup, [kl], %{id: kl.id, keyword_id: kl.keyword_id, urls_of_adwords_advertisers_top_position: fragment("UNNEST(urls_of_adwords_advertisers_top_position)"), urls_of_non_adwords: fragment("UNNEST(urls_of_non_adwords)")})
-
+  defp maybe_filter_by_search_query_using_url(query, search_query, search_query_type, search_query_target) do
     query
-    |> join(:left, [k], kl in subquery(keyword_lookup_query), on: kl.keyword_id == k.id)
+    |> join_search_query(search_query_type)
     |> where_search_query(search_query, search_query_type, search_query_target)
     |> distinct(true)
   end
 
-  defp maybe_filter_by_search_query_using_url(query, search_query, "exact_match" = search_query_type, search_query_target) do
-    query
-    |> join(:left, [k], kl in assoc(k, :keyword_lookup))
-    |> where_search_query(search_query, search_query_type, search_query_target)
-    |> distinct(true)
+  defp join_search_query(query, "partial_match") do
+    keyword_lookup_query = select(KeywordLookup, [kl], %{id: kl.id, keyword_id: kl.keyword_id, urls_of_adwords_advertisers_top_position: fragment("UNNEST(urls_of_adwords_advertisers_top_position)"), urls_of_non_adwords: fragment("UNNEST(urls_of_non_adwords)")})
+
+    join(query, :left, [k], kl in subquery(keyword_lookup_query), on: kl.keyword_id == k.id)
+  end
+
+  defp join_search_query(query, "exact_match") do
+    join(query, :left, [k], kl in assoc(k, :keyword_lookup))
   end
 
   defp where_search_query(query, search_query, "partial_match", "all") do
