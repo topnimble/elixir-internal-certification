@@ -38,9 +38,7 @@ defmodule ElixirInternalCertification.Keyword.Queries.KeywordQuery do
     join(query, :left, [k], kl in subquery(keyword_lookup_query), on: kl.keyword_id == k.id)
   end
 
-  defp join_search_query(query, "exact_match") do
-    join(query, :left, [k], kl in assoc(k, :keyword_lookup))
-  end
+  defp join_search_query(query, "exact_match"), do: join(query, :left, [k], kl in assoc(k, :keyword_lookup))
 
   defp where_search_query(query, search_query, "partial_match", "all") do
     query
@@ -48,13 +46,9 @@ defmodule ElixirInternalCertification.Keyword.Queries.KeywordQuery do
     |> or_where([_k, kl], ilike(kl.urls_of_non_adwords, ^"%#{search_query}%"))
   end
 
-  defp where_search_query(query, search_query, "partial_match", "urls_of_adwords_advertisers_top_position") do
-    where(query, [_k, kl], ilike(kl.urls_of_adwords_advertisers_top_position, ^"%#{search_query}%"))
-  end
+  defp where_search_query(query, search_query, "partial_match", "urls_of_adwords_advertisers_top_position"), do: where(query, [_k, kl], ilike(kl.urls_of_adwords_advertisers_top_position, ^"%#{search_query}%"))
 
-  defp where_search_query(query, search_query, "partial_match", "urls_of_non_adwords") do
-    where(query, [_k, kl], ilike(kl.urls_of_non_adwords, ^"%#{search_query}%"))
-  end
+  defp where_search_query(query, search_query, "partial_match", "urls_of_non_adwords"), do: where(query, [_k, kl], ilike(kl.urls_of_non_adwords, ^"%#{search_query}%"))
 
   defp where_search_query(query, search_query, "exact_match", "all") do
     query
@@ -62,11 +56,7 @@ defmodule ElixirInternalCertification.Keyword.Queries.KeywordQuery do
     |> or_where([_k, kl], ^search_query in kl.urls_of_non_adwords)
   end
 
-  defp where_search_query(query, search_query, "exact_match", "urls_of_adwords_advertisers_top_position") do
-    where(query, [_k, kl], ^search_query in kl.urls_of_adwords_advertisers_top_position)
-  end
+  defp where_search_query(query, search_query, "exact_match", "urls_of_adwords_advertisers_top_position"), do: where(query, [_k, kl], ^search_query in kl.urls_of_adwords_advertisers_top_position)
 
-  defp where_search_query(query, search_query, "exact_match", "urls_of_non_adwords") do
-    where(query, [_k, kl], ^search_query in kl.urls_of_non_adwords)
-  end
+  defp where_search_query(query, search_query, "exact_match", "urls_of_non_adwords"), do: where(query, [_k, kl], ^search_query in kl.urls_of_non_adwords)
 end
