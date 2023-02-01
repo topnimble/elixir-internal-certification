@@ -11,10 +11,10 @@ defmodule ElixirInternalCertification.Keyword.Queries.KeywordQuery do
     |> order_by([k], desc: k.id)
   end
 
-  def list_keywords_by_user_using_url(%User{id: user_id} = _user, search_query_type, search_query) do
+  def list_keywords_by_user_using_url(%User{id: user_id} = _user, search_query, search_query_type, search_query_target) do
     Keyword
     |> where([k], k.user_id == ^user_id)
-    |> maybe_filter_by_search_query_using_url(search_query_type, search_query)
+    |> maybe_filter_by_search_query_using_url(search_query, search_query_type, search_query_target)
     |> order_by([k], desc: k.id)
   end
 
@@ -23,9 +23,9 @@ defmodule ElixirInternalCertification.Keyword.Queries.KeywordQuery do
   defp maybe_filter_by_search_query(query, search_query),
     do: where(query, [k], ilike(k.title, ^"%#{search_query}%"))
 
-  defp maybe_filter_by_search_query_using_url(query, _search_query_type, nil), do: query
+  defp maybe_filter_by_search_query_using_url(query, nil, _search_query_type, _search_query_target), do: query
 
-  defp maybe_filter_by_search_query_using_url(query, "partial_match", search_query) do
+  defp maybe_filter_by_search_query_using_url(query, search_query, "partial_match", _search_query_target) do
     keyword_lookup_query = select(KeywordLookup, [kl], %{id: kl.id, keyword_id: kl.keyword_id, urls_of_adwords_advertisers_top_position: fragment("UNNEST(urls_of_adwords_advertisers_top_position)"), urls_of_non_adwords: fragment("UNNEST(urls_of_non_adwords)")})
 
     query
@@ -35,7 +35,7 @@ defmodule ElixirInternalCertification.Keyword.Queries.KeywordQuery do
     |> distinct(true)
   end
 
-  defp maybe_filter_by_search_query_using_url(query, "exact_match", search_query) do
+  defp maybe_filter_by_search_query_using_url(query, search_query, "exact_match", _search_query_target) do
     query
     |> join(:left, [k], kl in assoc(k, :keyword_lookup))
     |> where([_k, kl], ^search_query in kl.urls_of_adwords_advertisers_top_position)
