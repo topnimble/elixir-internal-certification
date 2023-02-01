@@ -25,21 +25,47 @@ defmodule ElixirInternalCertification.Keyword.Queries.KeywordQuery do
 
   defp maybe_filter_by_search_query_using_url(query, nil, _search_query_type, _search_query_target), do: query
 
-  defp maybe_filter_by_search_query_using_url(query, search_query, "partial_match", _search_query_target) do
+  defp maybe_filter_by_search_query_using_url(query, search_query, "partial_match" = search_query_type, search_query_target) do
     keyword_lookup_query = select(KeywordLookup, [kl], %{id: kl.id, keyword_id: kl.keyword_id, urls_of_adwords_advertisers_top_position: fragment("UNNEST(urls_of_adwords_advertisers_top_position)"), urls_of_non_adwords: fragment("UNNEST(urls_of_non_adwords)")})
 
     query
     |> join(:left, [k], kl in subquery(keyword_lookup_query), on: kl.keyword_id == k.id)
-    |> where([_k, kl], ilike(kl.urls_of_adwords_advertisers_top_position, ^"%#{search_query}%"))
-    |> or_where([_k, kl], ilike(kl.urls_of_non_adwords, ^"%#{search_query}%"))
+    |> where_search_query(search_query, search_query_type, search_query_target)
     |> distinct(true)
   end
 
-  defp maybe_filter_by_search_query_using_url(query, search_query, "exact_match", _search_query_target) do
+  defp maybe_filter_by_search_query_using_url(query, search_query, "exact_match" = search_query_type, search_query_target) do
     query
     |> join(:left, [k], kl in assoc(k, :keyword_lookup))
+    |> where_search_query(search_query, search_query_type, search_query_target)
+    |> distinct(true)
+  end
+
+  defp where_search_query(query, search_query, "partial_match", "all") do
+    query
+    |> where([_k, kl], ilike(kl.urls_of_adwords_advertisers_top_position, ^"%#{search_query}%"))
+    |> or_where([_k, kl], ilike(kl.urls_of_non_adwords, ^"%#{search_query}%"))
+  end
+
+  defp where_search_query(query, search_query, "partial_match", "urls_of_adwords_advertisers_top_position") do
+    where(query, [_k, kl], ilike(kl.urls_of_adwords_advertisers_top_position, ^"%#{search_query}%"))
+  end
+
+  defp where_search_query(query, search_query, "partial_match", "urls_of_non_adwords") do
+    where(query, [_k, kl], ilike(kl.urls_of_non_adwords, ^"%#{search_query}%"))
+  end
+
+  defp where_search_query(query, search_query, "exact_match", "all") do
+    query
     |> where([_k, kl], ^search_query in kl.urls_of_adwords_advertisers_top_position)
     |> or_where([_k, kl], ^search_query in kl.urls_of_non_adwords)
-    |> distinct(true)
+  end
+
+  defp where_search_query(query, search_query, "exact_match", "urls_of_adwords_advertisers_top_position") do
+    where(query, [_k, kl], ^search_query in kl.urls_of_adwords_advertisers_top_position)
+  end
+
+  defp where_search_query(query, search_query, "exact_match", "urls_of_non_adwords") do
+    where(query, [_k, kl], ^search_query in kl.urls_of_non_adwords)
   end
 end
