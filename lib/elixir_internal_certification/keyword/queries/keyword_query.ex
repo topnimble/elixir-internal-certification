@@ -68,23 +68,99 @@ defmodule ElixirInternalCertification.Keyword.Queries.KeywordQuery do
     |> where([_k, kl], ^search_query in kl.urls_of_non_adwords)
   end
 
-  defp search_conditions(query, %AdvancedSearch{search_query: search_query, search_query_type: "occurrences" = search_query_type, search_query_target: "all", number_of_occurrences: number_of_occurrences}) do
+  defp search_conditions(query, %AdvancedSearch{search_query: search_query, search_query_type: "occurrences" = search_query_type, search_query_target: "all", symbol_notation: ">", number_of_occurrences: number_of_occurrences}) do
     query
     |> join_search_query(search_query_type)
     |> where([_k, _kl], fragment("array_length(string_to_array(urls_of_adwords_advertisers_top_position, ?), 1) - 1", ^search_query) > ^number_of_occurrences)
     |> or_where([_k, _kl], fragment("array_length(string_to_array(urls_of_non_adwords, ?), 1) - 1", ^search_query) > ^number_of_occurrences)
   end
 
-  defp search_conditions(query, %AdvancedSearch{search_query: search_query, search_query_type: "occurrences" = search_query_type, search_query_target: "urls_of_adwords_advertisers_top_position", number_of_occurrences: number_of_occurrences}) do
+  defp search_conditions(query, %AdvancedSearch{search_query: search_query, search_query_type: "occurrences" = search_query_type, search_query_target: "all", symbol_notation: ">=", number_of_occurrences: number_of_occurrences}) do
+    query
+    |> join_search_query(search_query_type)
+    |> where([_k, _kl], fragment("array_length(string_to_array(urls_of_adwords_advertisers_top_position, ?), 1) - 1", ^search_query) >= ^number_of_occurrences)
+    |> or_where([_k, _kl], fragment("array_length(string_to_array(urls_of_non_adwords, ?), 1) - 1", ^search_query) >= ^number_of_occurrences)
+  end
+
+  defp search_conditions(query, %AdvancedSearch{search_query: search_query, search_query_type: "occurrences" = search_query_type, search_query_target: "all", symbol_notation: "<", number_of_occurrences: number_of_occurrences}) do
+    query
+    |> join_search_query(search_query_type)
+    |> where([_k, _kl], fragment("array_length(string_to_array(urls_of_adwords_advertisers_top_position, ?), 1) - 1", ^search_query) < ^number_of_occurrences)
+    |> or_where([_k, _kl], fragment("array_length(string_to_array(urls_of_non_adwords, ?), 1) - 1", ^search_query) < ^number_of_occurrences)
+  end
+
+  defp search_conditions(query, %AdvancedSearch{search_query: search_query, search_query_type: "occurrences" = search_query_type, search_query_target: "all", symbol_notation: "<=", number_of_occurrences: number_of_occurrences}) do
+    query
+    |> join_search_query(search_query_type)
+    |> where([_k, _kl], fragment("array_length(string_to_array(urls_of_adwords_advertisers_top_position, ?), 1) - 1", ^search_query) <= ^number_of_occurrences)
+    |> or_where([_k, _kl], fragment("array_length(string_to_array(urls_of_non_adwords, ?), 1) - 1", ^search_query) <= ^number_of_occurrences)
+  end
+
+  defp search_conditions(query, %AdvancedSearch{search_query: search_query, search_query_type: "occurrences" = search_query_type, search_query_target: "all", symbol_notation: "=", number_of_occurrences: number_of_occurrences}) do
+    query
+    |> join_search_query(search_query_type)
+    |> where([_k, _kl], fragment("array_length(string_to_array(urls_of_adwords_advertisers_top_position, ?), 1) - 1", ^search_query) == ^number_of_occurrences)
+    |> or_where([_k, _kl], fragment("array_length(string_to_array(urls_of_non_adwords, ?), 1) - 1", ^search_query) == ^number_of_occurrences)
+  end
+
+  defp search_conditions(query, %AdvancedSearch{search_query: search_query, search_query_type: "occurrences" = search_query_type, search_query_target: "urls_of_adwords_advertisers_top_position", symbol_notation: ">", number_of_occurrences: number_of_occurrences}) do
     query
     |> join_search_query(search_query_type)
     |> where([_k, _kl], fragment("array_length(string_to_array(urls_of_adwords_advertisers_top_position, ?), 1) - 1", ^search_query) > ^number_of_occurrences)
   end
 
-  defp search_conditions(query, %AdvancedSearch{search_query: search_query, search_query_type: "occurrences" = search_query_type, search_query_target: "urls_of_non_adwords", number_of_occurrences: number_of_occurrences}) do
+  defp search_conditions(query, %AdvancedSearch{search_query: search_query, search_query_type: "occurrences" = search_query_type, search_query_target: "urls_of_adwords_advertisers_top_position", symbol_notation: ">=", number_of_occurrences: number_of_occurrences}) do
+    query
+    |> join_search_query(search_query_type)
+    |> where([_k, _kl], fragment("array_length(string_to_array(urls_of_adwords_advertisers_top_position, ?), 1) - 1", ^search_query) >= ^number_of_occurrences)
+  end
+
+  defp search_conditions(query, %AdvancedSearch{search_query: search_query, search_query_type: "occurrences" = search_query_type, search_query_target: "urls_of_adwords_advertisers_top_position", symbol_notation: "<", number_of_occurrences: number_of_occurrences}) do
+    query
+    |> join_search_query(search_query_type)
+    |> where([_k, _kl], fragment("array_length(string_to_array(urls_of_adwords_advertisers_top_position, ?), 1) - 1", ^search_query) < ^number_of_occurrences)
+  end
+
+  defp search_conditions(query, %AdvancedSearch{search_query: search_query, search_query_type: "occurrences" = search_query_type, search_query_target: "urls_of_adwords_advertisers_top_position", symbol_notation: "<=", number_of_occurrences: number_of_occurrences}) do
+    query
+    |> join_search_query(search_query_type)
+    |> where([_k, _kl], fragment("array_length(string_to_array(urls_of_adwords_advertisers_top_position, ?), 1) - 1", ^search_query) <= ^number_of_occurrences)
+  end
+
+  defp search_conditions(query, %AdvancedSearch{search_query: search_query, search_query_type: "occurrences" = search_query_type, search_query_target: "urls_of_adwords_advertisers_top_position", symbol_notation: "=", number_of_occurrences: number_of_occurrences}) do
+    query
+    |> join_search_query(search_query_type)
+    |> where([_k, _kl], fragment("array_length(string_to_array(urls_of_adwords_advertisers_top_position, ?), 1) - 1", ^search_query) == ^number_of_occurrences)
+  end
+
+  defp search_conditions(query, %AdvancedSearch{search_query: search_query, search_query_type: "occurrences" = search_query_type, search_query_target: "urls_of_non_adwords", symbol_notation: ">" , number_of_occurrences: number_of_occurrences}) do
     query
     |> join_search_query(search_query_type)
     |> where([_k, _kl], fragment("array_length(string_to_array(urls_of_non_adwords, ?), 1) - 1", ^search_query) > ^number_of_occurrences)
+  end
+
+  defp search_conditions(query, %AdvancedSearch{search_query: search_query, search_query_type: "occurrences" = search_query_type, search_query_target: "urls_of_non_adwords", symbol_notation: ">=" , number_of_occurrences: number_of_occurrences}) do
+    query
+    |> join_search_query(search_query_type)
+    |> where([_k, _kl], fragment("array_length(string_to_array(urls_of_non_adwords, ?), 1) - 1", ^search_query) >= ^number_of_occurrences)
+  end
+
+  defp search_conditions(query, %AdvancedSearch{search_query: search_query, search_query_type: "occurrences" = search_query_type, search_query_target: "urls_of_non_adwords", symbol_notation: "<" , number_of_occurrences: number_of_occurrences}) do
+    query
+    |> join_search_query(search_query_type)
+    |> where([_k, _kl], fragment("array_length(string_to_array(urls_of_non_adwords, ?), 1) - 1", ^search_query) < ^number_of_occurrences)
+  end
+
+  defp search_conditions(query, %AdvancedSearch{search_query: search_query, search_query_type: "occurrences" = search_query_type, search_query_target: "urls_of_non_adwords", symbol_notation: "<=" , number_of_occurrences: number_of_occurrences}) do
+    query
+    |> join_search_query(search_query_type)
+    |> where([_k, _kl], fragment("array_length(string_to_array(urls_of_non_adwords, ?), 1) - 1", ^search_query) <= ^number_of_occurrences)
+  end
+
+  defp search_conditions(query, %AdvancedSearch{search_query: search_query, search_query_type: "occurrences" = search_query_type, search_query_target: "urls_of_non_adwords", symbol_notation: "=" , number_of_occurrences: number_of_occurrences}) do
+    query
+    |> join_search_query(search_query_type)
+    |> where([_k, _kl], fragment("array_length(string_to_array(urls_of_non_adwords, ?), 1) - 1", ^search_query) == ^number_of_occurrences)
   end
 
   defp join_search_query(query, search_query_type) when search_query_type in ["partial_match", "occurrences"] do
