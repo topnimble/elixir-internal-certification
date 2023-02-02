@@ -150,13 +150,13 @@ defmodule ElixirInternalCertification.Keyword.Queries.KeywordQuery do
          search_query,
          "occurrences" = search_query_type,
          "all" = _search_query_target,
-         _number_of_occurrences,
+         number_of_occurrences,
          _symbol_notation
        ) do
     query
     |> join_search_query(search_query_type)
-    |> where([_k, _kl], fragment("array_length(string_to_array(urls_of_adwords_advertisers_top_position, ?), 1) - 1", ^search_query) > 1)
-    |> or_where([_k, _kl], fragment("array_length(string_to_array(urls_of_non_adwords, ?), 1) - 1", ^search_query) > 1)
+    |> where([_k, _kl], fragment("array_length(string_to_array(urls_of_adwords_advertisers_top_position, ?), 1) - 1", ^search_query) > ^number_of_occurrences)
+    |> or_where([_k, _kl], fragment("array_length(string_to_array(urls_of_non_adwords, ?), 1) - 1", ^search_query) > ^number_of_occurrences)
   end
 
   defp search_conditions(
@@ -164,12 +164,12 @@ defmodule ElixirInternalCertification.Keyword.Queries.KeywordQuery do
          search_query,
          "occurrences" = search_query_type,
          "urls_of_adwords_advertisers_top_position" = _search_query_target,
-         _number_of_occurrences,
+         number_of_occurrences,
          _symbol_notation
        ) do
     query
     |> join_search_query(search_query_type)
-    |> where([_k, _kl], fragment("array_length(string_to_array(urls_of_adwords_advertisers_top_position, ?), 1) - 1", ^search_query) > 1)
+    |> where([_k, _kl], fragment("array_length(string_to_array(urls_of_adwords_advertisers_top_position, ?), 1) - 1", ^search_query) > ^number_of_occurrences)
   end
 
   defp search_conditions(
@@ -177,12 +177,12 @@ defmodule ElixirInternalCertification.Keyword.Queries.KeywordQuery do
          search_query,
          "occurrences" = search_query_type,
          "urls_of_non_adwords" = _search_query_target,
-         _number_of_occurrences,
+         number_of_occurrences,
          _symbol_notation
        ) do
     query
     |> join_search_query(search_query_type)
-    |> where([_k, _kl], fragment("array_length(string_to_array(urls_of_non_adwords, ?), 1) - 1", ^search_query) > 1)
+    |> where([_k, _kl], fragment("array_length(string_to_array(urls_of_non_adwords, ?), 1) - 1", ^search_query) > ^number_of_occurrences)
   end
 
   defp join_search_query(query, search_query_type) when search_query_type in ["partial_match", "occurrences"] do
