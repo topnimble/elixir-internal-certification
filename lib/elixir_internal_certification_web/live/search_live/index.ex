@@ -38,7 +38,11 @@ defmodule ElixirInternalCertificationWeb.AdvancedSearchLive.Index do
          assign(socket, :keywords, Keywords.find_and_update_keyword(keywords, keyword_id))}
 
   @impl true
-  def handle_event("change_search_query", %{"search_form" => search_form} = _unsigned_params, socket) do
+  def handle_event(
+        "change_search_query",
+        %{"search_form" => search_form} = _unsigned_params,
+        socket
+      ) do
     url = generate_url_with_search_query(socket, search_form)
 
     socket = push_patch(socket, to: url)
@@ -46,7 +50,11 @@ defmodule ElixirInternalCertificationWeb.AdvancedSearchLive.Index do
   end
 
   @impl true
-  def handle_event("submit_search_query", %{"search_form" => search_form} = _unsigned_params, socket) do
+  def handle_event(
+        "submit_search_query",
+        %{"search_form" => search_form} = _unsigned_params,
+        socket
+      ) do
     url = generate_url_with_search_query(socket, search_form)
 
     socket = push_redirect(socket, to: url)
@@ -57,37 +65,56 @@ defmodule ElixirInternalCertificationWeb.AdvancedSearchLive.Index do
          socket,
          search_form
        ) do
-    Routes.advanced_search_index_path(socket, :index,
-      query: search_form["search_query"],
-      query_type: search_form["search_query_type"],
-      query_target: search_form["search_query_target"],
-      number_of_occurrences: search_form["number_of_occurrences"],
-      symbol_notation: search_form["symbol_notation"]
-    )
+    case search_form["search_query_type"] do
+      search_query_type when search_query_type in ["partial_match", "exact_match"] ->
+        Routes.advanced_search_index_path(socket, :index,
+          query: search_form["search_query"],
+          query_type: search_form["search_query_type"],
+          query_target: search_form["search_query_target"]
+        )
+
+      "occurrences" ->
+        Routes.advanced_search_index_path(socket, :index,
+          query: search_form["search_query"],
+          query_type: search_form["search_query_type"],
+          query_target: search_form["search_query_target"],
+          number_of_occurrences: search_form["number_of_occurrences"],
+          symbol_notation: search_form["symbol_notation"]
+        )
+
+      _ ->
+        Routes.advanced_search_index_path(socket, :index)
+    end
   end
 
   defp apply_action(socket, :index, params) do
     search_query = params["query"]
     search_query_type = params["query_type"]
     search_query_target = params["query_target"]
-    number_of_occurrences = case params["number_of_occurrences"] do
-      "" -> @default_number_of_occurrences
-      nil -> @default_number_of_occurrences
-      number_of_occurrences -> String.to_integer(number_of_occurrences)
-    end
-    symbol_notation = case params["symbol_notation"] do
-      "" -> @default_symbol_notation
-      nil -> @default_symbol_notation
-      symbol_notation -> symbol_notation
-    end
 
-    advanced_search_params = AdvancedSearch.new(%{
-      "search_query" => search_query,
-      "search_query_type" => search_query_type,
-      "search_query_target" => search_query_target,
-      "number_of_occurrences" => number_of_occurrences,
-      "symbol_notation" => symbol_notation
-    })
+    number_of_occurrences =
+      case params["number_of_occurrences"] do
+        number_of_occurrences when number_of_occurrences in [nil, ""] ->
+          @default_number_of_occurrences
+
+        number_of_occurrences ->
+          String.to_integer(number_of_occurrences)
+      end
+
+    symbol_notation =
+      case params["symbol_notation"] do
+        symbol_notation when symbol_notation in [nil, ""] -> @default_symbol_notation
+        symbol_notation -> symbol_notation
+      end
+
+    advanced_search_params =
+      AdvancedSearch.new(%{
+        "search_query" => search_query,
+        "search_query_type" => search_query_type,
+        "search_query_target" => search_query_target,
+        "number_of_occurrences" => number_of_occurrences,
+        "symbol_notation" => symbol_notation
+      })
 
     socket
     |> assign(:page_title, "Listing Keywords")
@@ -109,5 +136,6 @@ defmodule ElixirInternalCertificationWeb.AdvancedSearchLive.Index do
     )
   end
 
-  defp list_keywords(%User{} = user, params), do: Keywords.list_keywords_for_advanced_search(user, params)
+  defp list_keywords(%User{} = user, params),
+    do: Keywords.list_keywords_for_advanced_search(user, params)
 end
