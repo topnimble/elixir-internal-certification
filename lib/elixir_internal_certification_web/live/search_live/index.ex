@@ -8,6 +8,9 @@ defmodule ElixirInternalCertificationWeb.AdvancedSearchLive.Index do
   alias ElixirInternalCertificationWeb.LiveHelpers
   alias Phoenix.LiveView.Socket
 
+  @default_number_of_occurrences 0
+  @default_symbol_notation ">"
+
   @impl true
   def mount(_params, session, socket) do
     socket = LiveHelpers.set_current_user_to_socket(socket, session)
@@ -68,11 +71,15 @@ defmodule ElixirInternalCertificationWeb.AdvancedSearchLive.Index do
     search_query_type = params["query_type"]
     search_query_target = params["query_target"]
     number_of_occurrences = case params["number_of_occurrences"] do
-      "" -> 0
-      nil -> 0
+      "" -> @default_number_of_occurrences
+      nil -> @default_number_of_occurrences
       number_of_occurrences -> String.to_integer(number_of_occurrences)
     end
-    symbol_notation = params["symbol_notation"]
+    symbol_notation = case params["symbol_notation"] do
+      "" -> @default_symbol_notation
+      nil -> @default_symbol_notation
+      symbol_notation -> symbol_notation
+    end
 
     advanced_search_params = AdvancedSearch.new(%{
       "search_query" => search_query,
