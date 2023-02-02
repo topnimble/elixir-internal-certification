@@ -1,0 +1,96 @@
+<div class="mb-4">
+  <%= live_redirect("< Back", to: Routes.keyword_index_path(@socket, :index)) %>
+</div>
+
+<h1>Advanced search</h1>
+
+<.form
+  let={f}
+  for={:search_form}
+  class="mb-3 search-form"
+  role="search"
+  phx-change="change_search_query"
+  phx-submit="submit_search_query"
+>
+  <%= label f, :search_query_target, "Find" %>
+
+  <span class="input-group">
+    <%= select(
+      f,
+      :search_query_target,
+      [
+        "All URLs": "all",
+        "URLs of AdWords advertisers top position": "urls_of_adwords_advertisers_top_position",
+        "URLs of non AdWords": "urls_of_non_adwords"
+      ],
+      class: "form-select",
+      selected: @search_query_target
+    ) %>
+  </span>
+
+  <%= label f, :search_query_type, "which" %>
+
+  <div class="input-group">
+    <%= select(
+      f,
+      :search_query_type,
+      [
+        "partially match": "partial_match",
+        "exactly match": "exact_match",
+        "have occurrences of": "occurrences"
+      ],
+      class: "form-select",
+      selected: @search_query_type
+    ) %>
+    <%= search_input(f, :search_query,
+      class: "form-control",
+      placeholder: "string",
+      "aria-label": "Search",
+      value: @search_query
+    ) %>
+
+    <%= if @search_query_type == "occurrences" do %>
+      <%= select(
+        f,
+        :symbol_notation,
+        [
+          >: ">",
+          >=: ">=",
+          <: "<",
+          <=: "<=",
+          =: "="
+        ],
+        class: "form-select",
+        selected: @symbol_notation
+      ) %>
+
+      <%= number_input(f, :number_of_occurrences,
+        class: "form-control",
+        placeholder: "number of occurrences",
+        value: @number_of_occurrences,
+        min: 0
+      ) %>
+
+      <span class="input-group-text">times</span>
+    <% end %>
+  </div>
+
+  <button class="btn btn-primary mt-3" type="submit">Search</button>
+</.form>
+
+<div class="mb-2"><strong>Found <%= @number_of_url_results %> URLs from <%= length(@keywords) %> keywords</strong></div>
+
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th>Keyword</th>
+      <th width="9%"></th>
+      <th width="6%"></th>
+    </tr>
+  </thead>
+  <tbody id="keywords">
+    <%= for keyword <- @keywords do %>
+      <.live_component module={KeywordRowComponent} id={keyword.id} keyword={keyword} />
+    <% end %>
+  </tbody>
+</table>
