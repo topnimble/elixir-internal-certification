@@ -382,6 +382,8 @@ defmodule ElixirInternalCertification.Keyword.Queries.KeywordQuery do
     )
   end
 
+  defp search_conditions(query, _advanced_search_params), do: query
+
   defp join_search_query(query, search_query_type)
        when search_query_type in ["partial_match", "occurrences"] do
     keyword_lookup_query =
