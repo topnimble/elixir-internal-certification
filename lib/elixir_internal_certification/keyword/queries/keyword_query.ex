@@ -70,11 +70,11 @@ defmodule ElixirInternalCertification.Keyword.Queries.KeywordQuery do
          search_query,
          "partial_match" = search_query_type,
          "all" = _search_query_target,
-         number_of_occurrences,
+         _number_of_occurrences,
          _symbol_notation
        ) do
     query
-    |> join_search_query(search_query, search_query_type, number_of_occurrences)
+    |> join_search_query(search_query_type)
     |> where([_k, kl], ilike(kl.urls_of_adwords_advertisers_top_position, ^"%#{search_query}%"))
     |> or_where([_k, kl], ilike(kl.urls_of_non_adwords, ^"%#{search_query}%"))
   end
@@ -84,11 +84,11 @@ defmodule ElixirInternalCertification.Keyword.Queries.KeywordQuery do
          search_query,
          "partial_match" = search_query_type,
          "urls_of_adwords_advertisers_top_position" = _search_query_target,
-         number_of_occurrences,
+         _number_of_occurrences,
          _symbol_notation
        ) do
     query
-    |> join_search_query(search_query, search_query_type, number_of_occurrences)
+    |> join_search_query(search_query_type)
     |> where([_k, kl], ilike(kl.urls_of_adwords_advertisers_top_position, ^"%#{search_query}%"))
   end
 
@@ -97,11 +97,11 @@ defmodule ElixirInternalCertification.Keyword.Queries.KeywordQuery do
          search_query,
          "partial_match" = search_query_type,
          "urls_of_non_adwords" = _search_query_target,
-         number_of_occurrences,
+         _number_of_occurrences,
          _symbol_notation
        ) do
     query
-    |> join_search_query(search_query, search_query_type, number_of_occurrences)
+    |> join_search_query(search_query_type)
     |> where([_k, kl], ilike(kl.urls_of_non_adwords, ^"%#{search_query}%"))
   end
 
@@ -110,11 +110,11 @@ defmodule ElixirInternalCertification.Keyword.Queries.KeywordQuery do
          search_query,
          "exact_match" = search_query_type,
          "all" = _search_query_target,
-         number_of_occurrences,
+         _number_of_occurrences,
          _symbol_notation
        ) do
     query
-    |> join_search_query(search_query, search_query_type, number_of_occurrences)
+    |> join_search_query(search_query_type)
     |> where([_k, kl], ^search_query in kl.urls_of_adwords_advertisers_top_position)
     |> or_where([_k, kl], ^search_query in kl.urls_of_non_adwords)
   end
@@ -124,11 +124,11 @@ defmodule ElixirInternalCertification.Keyword.Queries.KeywordQuery do
          search_query,
          "exact_match" = search_query_type,
          "urls_of_adwords_advertisers_top_position" = _search_query_target,
-         number_of_occurrences,
+         _number_of_occurrences,
          _symbol_notation
        ) do
     query
-    |> join_search_query(search_query, search_query_type, number_of_occurrences)
+    |> join_search_query(search_query_type)
     |> where([_k, kl], ^search_query in kl.urls_of_adwords_advertisers_top_position)
   end
 
@@ -137,15 +137,55 @@ defmodule ElixirInternalCertification.Keyword.Queries.KeywordQuery do
          search_query,
          "exact_match" = search_query_type,
          "urls_of_non_adwords" = _search_query_target,
-         number_of_occurrences,
+         _number_of_occurrences,
          _symbol_notation
        ) do
     query
-    |> join_search_query(search_query, search_query_type, number_of_occurrences)
+    |> join_search_query(search_query_type)
     |> where([_k, kl], ^search_query in kl.urls_of_non_adwords)
   end
 
-  defp join_search_query(query, _search_query, "partial_match", _number_of_occurrences) do
+  defp search_conditions(
+         query,
+         search_query,
+         "occurrences" = search_query_type,
+         "all" = _search_query_target,
+         _number_of_occurrences,
+         _symbol_notation
+       ) do
+    query
+    |> join_search_query(search_query_type)
+    |> where([_k, _kl], fragment("array_length(string_to_array(urls_of_adwords_advertisers_top_position, ?), 1) - 1", ^search_query) > 1)
+    |> or_where([_k, _kl], fragment("array_length(string_to_array(urls_of_non_adwords, ?), 1) - 1", ^search_query) > 1)
+  end
+
+  defp search_conditions(
+         query,
+         search_query,
+         "occurrences" = search_query_type,
+         "urls_of_adwords_advertisers_top_position" = _search_query_target,
+         _number_of_occurrences,
+         _symbol_notation
+       ) do
+    query
+    |> join_search_query(search_query_type)
+    |> where([_k, _kl], fragment("array_length(string_to_array(urls_of_adwords_advertisers_top_position, ?), 1) - 1", ^search_query) > 1)
+  end
+
+  defp search_conditions(
+         query,
+         search_query,
+         "occurrences" = search_query_type,
+         "urls_of_non_adwords" = _search_query_target,
+         _number_of_occurrences,
+         _symbol_notation
+       ) do
+    query
+    |> join_search_query(search_query_type)
+    |> where([_k, _kl], fragment("array_length(string_to_array(urls_of_non_adwords, ?), 1) - 1", ^search_query) > 1)
+  end
+
+  defp join_search_query(query, search_query_type) when search_query_type in ["partial_match", "occurrences"] do
     keyword_lookup_query =
       select(KeywordLookup, [kl], %{
         id: kl.id,
@@ -158,6 +198,6 @@ defmodule ElixirInternalCertification.Keyword.Queries.KeywordQuery do
     join(query, :left, [k], kl in subquery(keyword_lookup_query), on: kl.keyword_id == k.id)
   end
 
-  defp join_search_query(query, _search_query, "exact_match", _number_of_occurrences),
+  defp join_search_query(query, "exact_match"),
     do: join(query, :left, [k], kl in assoc(k, :keyword_lookup))
 end
