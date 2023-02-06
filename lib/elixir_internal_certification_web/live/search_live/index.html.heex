@@ -12,7 +12,7 @@
   phx-change="change_search_query"
   phx-submit="submit_search_query"
 >
-  <%= label f, :search_query_target, "Find" %>
+  <%= label(f, :search_query_target, "Find") %>
 
   <span class="input-group">
     <%= select(
@@ -28,7 +28,7 @@
     ) %>
   </span>
 
-  <%= label f, :search_query_type, "which" %>
+  <%= label(f, :search_query_type, "which") %>
 
   <div class="input-group">
     <%= select(
