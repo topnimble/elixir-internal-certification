@@ -5,10 +5,18 @@ defmodule ElixirInternalCertification.Keyword.KeywordLookups do
   import Ecto.Query, warn: false
 
   alias ElixirInternalCertification.Repo
+  alias ElixirInternalCertification.Keyword.Queries.KeywordLookupQuery
   alias ElixirInternalCertification.Keyword.Schemas.{Keyword, KeywordLookup}
   alias ElixirInternalCertificationWorker.Google, as: GoogleWorker
 
   @average_number_of_seconds_between_each_lookup 5
+
+  def get_number_of_url_results(user, advanced_search_params),
+    do:
+      Repo.aggregate(
+        KeywordLookupQuery.from_advanced_search_params(user, advanced_search_params),
+        :count
+      )
 
   def schedule_keyword_lookup(%Keyword{id: keyword_id} = _keyword) do
     number_of_seconds = randomize_number_of_seconds_based_on_pending_jobs()

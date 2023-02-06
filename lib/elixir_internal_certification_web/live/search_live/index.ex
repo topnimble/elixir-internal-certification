@@ -2,7 +2,7 @@ defmodule ElixirInternalCertificationWeb.AdvancedSearchLive.Index do
   use ElixirInternalCertificationWeb, :live_view
 
   alias ElixirInternalCertification.Account.Schemas.User
-  alias ElixirInternalCertification.Keyword.Keywords
+  alias ElixirInternalCertification.Keyword.{KeywordLookups, Keywords}
   alias ElixirInternalCertification.Keyword.Schemas.{AdvancedSearch, Keyword}
   alias ElixirInternalCertificationWeb.LiveComponents.KeywordRowComponent
   alias ElixirInternalCertificationWeb.LiveHelpers
@@ -124,6 +124,7 @@ defmodule ElixirInternalCertificationWeb.AdvancedSearchLive.Index do
     |> assign(:number_of_occurrences, number_of_occurrences)
     |> assign(:symbol_notation, symbol_notation)
     |> assign_keywords(advanced_search_params)
+    |> assign_number_of_url_results(advanced_search_params)
   end
 
   defp assign_keywords(socket, params) do
@@ -136,6 +137,19 @@ defmodule ElixirInternalCertificationWeb.AdvancedSearchLive.Index do
     )
   end
 
+  defp assign_number_of_url_results(socket, params) do
+    assign(
+      socket,
+      :number_of_url_results,
+      socket
+      |> LiveHelpers.get_current_user_from_socket()
+      |> get_number_of_url_results(params)
+    )
+  end
+
   defp list_keywords(%User{} = user, params),
     do: Keywords.list_keywords_for_advanced_search(user, params)
+
+  defp get_number_of_url_results(%User{} = user, params),
+    do: KeywordLookups.get_number_of_url_results(user, params)
 end
