@@ -78,7 +78,11 @@
   <button class="btn btn-primary mt-3" type="submit">Search</button>
 </.form>
 
-<div class="mb-2"><strong>Found URLs from <%= length(@keywords) %> keywords</strong></div>
+<div class="mb-2">
+  <strong>
+    Found <%= @number_of_url_results %> URLs from <%= length(@keywords) %> keywords
+  </strong>
+</div>
 
 <table class="table table-hover">
   <thead>
