@@ -4,9 +4,9 @@ defmodule ElixirInternalCertification.Keyword.KeywordLookups do
   """
   import Ecto.Query, warn: false
 
-  alias ElixirInternalCertification.Repo
   alias ElixirInternalCertification.Keyword.Queries.KeywordLookupQuery
   alias ElixirInternalCertification.Keyword.Schemas.{Keyword, KeywordLookup}
+  alias ElixirInternalCertification.Repo
   alias ElixirInternalCertificationWorker.Google, as: GoogleWorker
 
   @average_number_of_seconds_between_each_lookup 5
