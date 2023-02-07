@@ -22,17 +22,19 @@ defmodule ElixirInternalCertification.Keyword.Queries.KeywordLookupQuery do
            search_query_target: "all"
          }
        ) do
-    first_query = condition_query(query, %AdvancedSearch{
-      search_query: search_query,
-      search_query_type: search_query_type,
-      search_query_target: "urls_of_adwords_advertisers_top_position"
-    })
+    first_query =
+      condition_query(query, %AdvancedSearch{
+        search_query: search_query,
+        search_query_type: search_query_type,
+        search_query_target: "urls_of_adwords_advertisers_top_position"
+      })
 
-    second_query = condition_query(query, %AdvancedSearch{
-      search_query: search_query,
-      search_query_type: search_query_type,
-      search_query_target: "urls_of_non_adwords"
-    })
+    second_query =
+      condition_query(query, %AdvancedSearch{
+        search_query: search_query,
+        search_query_type: search_query_type,
+        search_query_target: "urls_of_non_adwords"
+      })
 
     union_all(first_query, ^second_query)
   end
@@ -62,17 +64,19 @@ defmodule ElixirInternalCertification.Keyword.Queries.KeywordLookupQuery do
          search_query_type: "exact_match" = search_query_type,
          search_query_target: "all"
        }) do
-    first_query = condition_query(query, %AdvancedSearch{
-      search_query: search_query,
-      search_query_type: search_query_type,
-      search_query_target: "urls_of_adwords_advertisers_top_position"
-    })
+    first_query =
+      condition_query(query, %AdvancedSearch{
+        search_query: search_query,
+        search_query_type: search_query_type,
+        search_query_target: "urls_of_adwords_advertisers_top_position"
+      })
 
-    second_query = condition_query(query, %AdvancedSearch{
-      search_query: search_query,
-      search_query_type: search_query_type,
-      search_query_target: "urls_of_non_adwords"
-    })
+    second_query =
+      condition_query(query, %AdvancedSearch{
+        search_query: search_query,
+        search_query_type: search_query_type,
+        search_query_target: "urls_of_non_adwords"
+      })
 
     union_all(first_query, ^second_query)
   end
@@ -104,21 +108,23 @@ defmodule ElixirInternalCertification.Keyword.Queries.KeywordLookupQuery do
          symbol_notation: symbol_notation,
          number_of_occurrences: number_of_occurrences
        }) do
-    first_query = condition_query(query, %AdvancedSearch{
-      search_query: search_query,
-      search_query_type: search_query_type,
-      search_query_target: "urls_of_adwords_advertisers_top_position",
-      symbol_notation: symbol_notation,
-      number_of_occurrences: number_of_occurrences
-    })
+    first_query =
+      condition_query(query, %AdvancedSearch{
+        search_query: search_query,
+        search_query_type: search_query_type,
+        search_query_target: "urls_of_adwords_advertisers_top_position",
+        symbol_notation: symbol_notation,
+        number_of_occurrences: number_of_occurrences
+      })
 
-    second_query = condition_query(query, %AdvancedSearch{
-      search_query: search_query,
-      search_query_type: search_query_type,
-      search_query_target: "urls_of_non_adwords",
-      symbol_notation: symbol_notation,
-      number_of_occurrences: number_of_occurrences
-    })
+    second_query =
+      condition_query(query, %AdvancedSearch{
+        search_query: search_query,
+        search_query_type: search_query_type,
+        search_query_target: "urls_of_non_adwords",
+        symbol_notation: symbol_notation,
+        number_of_occurrences: number_of_occurrences
+      })
 
     union_all(first_query, ^second_query)
   end
