@@ -554,5 +554,18 @@ defmodule ElixirInternalCertification.Keyword.Queries.KeywordLookupQuery do
     )
   end
 
-  defp condition_query(query, _advanced_search_params), do: query
+  defp condition_query(query, _advanced_search_params) do
+    query
+    |> with_cte("keyword_lookup_cte",
+      as:
+        fragment(
+          "select id, unnest(urls_of_adwords_advertisers_top_position) as url_of_adwords_advertisers_top_position, unnest(urls_of_non_adwords) as url_of_non_adwords from keyword_lookups"
+        )
+    )
+    |> join(:left, [kl], klc in "keyword_lookup_cte", on: klc.id == kl.id)
+    |> select_merge([kl], %{
+      url_of_adwords_advertisers_top_position: fragment("url_of_adwords_advertisers_top_position"),
+      url_of_non_adwords: fragment("url_of_non_adwords")
+    })
+  end
 end
