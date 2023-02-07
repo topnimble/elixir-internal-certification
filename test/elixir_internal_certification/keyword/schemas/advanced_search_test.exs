@@ -17,7 +17,7 @@ defmodule ElixirInternalCertification.Account.Schemas.AdvancedSearchTest do
                "symbol_notation" => ">"
              }) == %AdvancedSearch{
                id: "01GQ45DK0QQEWQY6J01HV3BWQW",
-               search_query: "fi",
+               search_query: "nimblehq.co",
                search_query_type: "partial_match",
                search_query_target: "all",
                number_of_occurrences: 0,
