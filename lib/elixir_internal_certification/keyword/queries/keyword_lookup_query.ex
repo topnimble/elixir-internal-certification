@@ -14,64 +14,46 @@ defmodule ElixirInternalCertification.Keyword.Queries.KeywordLookupQuery do
     |> condition_query(advanced_search_params)
   end
 
-  defp condition_query(query, %AdvancedSearch{
-         search_query: search_query,
-         search_query_type: "partial_match",
-         search_query_target: "all"
-       }) do
-    query
-    |> with_cte("keyword_lookup_cte",
-      as:
-        fragment(
-          "select id, unnest(urls_of_adwords_advertisers_top_position) as url_of_adwords_advertisers_top_position, unnest(urls_of_non_adwords) as url_of_non_adwords from keyword_lookups"
-        )
-    )
-    |> join(:left, [kl], klc in "keyword_lookup_cte", on: klc.id == kl.id)
-    |> select_merge([kl], %{
-      url_of_adwords_advertisers_top_position: fragment("url_of_adwords_advertisers_top_position"),
-      url_of_non_adwords: fragment("url_of_non_adwords")
+  defp condition_query(
+         query,
+         %AdvancedSearch{
+           search_query: search_query,
+           search_query_type: "partial_match" = search_query_type,
+           search_query_target: "all"
+         }
+       ) do
+    first_query = condition_query(query, %AdvancedSearch{
+      search_query: search_query,
+      search_query_type: search_query_type,
+      search_query_target: "urls_of_adwords_advertisers_top_position"
     })
-    |> where([kl], ilike(fragment("url_of_adwords_advertisers_top_position"), ^"%#{search_query}%"))
-    |> or_where([kl], ilike(fragment("url_of_non_adwords"), ^"%#{search_query}%"))
+
+    second_query = condition_query(query, %AdvancedSearch{
+      search_query: search_query,
+      search_query_type: search_query_type,
+      search_query_target: "urls_of_non_adwords"
+    })
+
+    union_all(first_query, ^second_query)
   end
 
   defp condition_query(query, %AdvancedSearch{
          search_query: search_query,
          search_query_type: "partial_match",
-         search_query_target: "urls_of_adwords_advertisers_top_position"
+         search_query_target: "urls_of_adwords_advertisers_top_position" = search_query_target
        }) do
     query
-    |> with_cte("keyword_lookup_cte",
-      as:
-        fragment(
-          "select id, unnest(urls_of_adwords_advertisers_top_position) as url_of_adwords_advertisers_top_position, unnest(urls_of_non_adwords) as url_of_non_adwords from keyword_lookups"
-        )
-    )
-    |> join(:left, [kl], klc in "keyword_lookup_cte", on: klc.id == kl.id)
-    |> select_merge([kl], %{
-      url_of_adwords_advertisers_top_position: fragment("url_of_adwords_advertisers_top_position"),
-      url_of_non_adwords: fragment("url_of_non_adwords")
-    })
+    |> unnest_urls(search_query_target)
     |> where([kl], ilike(fragment("url_of_adwords_advertisers_top_position"), ^"%#{search_query}%"))
   end
 
   defp condition_query(query, %AdvancedSearch{
          search_query: search_query,
          search_query_type: "partial_match",
-         search_query_target: "urls_of_non_adwords"
+         search_query_target: "urls_of_non_adwords" = search_query_target
        }) do
     query
-    |> with_cte("keyword_lookup_cte",
-      as:
-        fragment(
-          "select id, unnest(urls_of_adwords_advertisers_top_position) as url_of_adwords_advertisers_top_position, unnest(urls_of_non_adwords) as url_of_non_adwords from keyword_lookups"
-        )
-    )
-    |> join(:left, [kl], klc in "keyword_lookup_cte", on: klc.id == kl.id)
-    |> select_merge([kl], %{
-      url_of_adwords_advertisers_top_position: fragment("url_of_adwords_advertisers_top_position"),
-      url_of_non_adwords: fragment("url_of_non_adwords")
-    })
+    |> unnest_urls(search_query_target)
     |> where([kl], ilike(fragment("url_of_non_adwords"), ^"%#{search_query}%"))
   end
 
@@ -101,34 +83,43 @@ defmodule ElixirInternalCertification.Keyword.Queries.KeywordLookupQuery do
 
   defp condition_query(query, %AdvancedSearch{
          search_query: search_query,
-         search_query_type: "occurrences",
+         search_query_type: "occurrences" = search_query_type,
          search_query_target: "all",
+         symbol_notation: ">" = symbol_notation,
+         number_of_occurrences: number_of_occurrences
+       }) do
+    first_query = condition_query(query, %AdvancedSearch{
+      search_query: search_query,
+      search_query_type: search_query_type,
+      search_query_target: "urls_of_adwords_advertisers_top_position",
+      symbol_notation: symbol_notation,
+      number_of_occurrences: number_of_occurrences
+    })
+
+    second_query = condition_query(query, %AdvancedSearch{
+      search_query: search_query,
+      search_query_type: search_query_type,
+      search_query_target: "urls_of_non_adwords",
+      symbol_notation: symbol_notation,
+      number_of_occurrences: number_of_occurrences
+    })
+
+    union_all(first_query, ^second_query)
+  end
+
+  defp condition_query(query, %AdvancedSearch{
+         search_query: search_query,
+         search_query_type: "occurrences",
+         search_query_target: "urls_of_adwords_advertisers_top_position" = search_query_target,
          symbol_notation: ">",
          number_of_occurrences: number_of_occurrences
        }) do
     query
-    |> with_cte("keyword_lookup_cte",
-      as:
-        fragment(
-          "select id, unnest(urls_of_adwords_advertisers_top_position) as url_of_adwords_advertisers_top_position, unnest(urls_of_non_adwords) as url_of_non_adwords from keyword_lookups"
-        )
-    )
-    |> join(:left, [kl], klc in "keyword_lookup_cte", on: klc.id == kl.id)
-    |> select_merge([kl], %{
-      url_of_adwords_advertisers_top_position: fragment("url_of_adwords_advertisers_top_position"),
-      url_of_non_adwords: fragment("url_of_non_adwords")
-    })
+    |> unnest_urls(search_query_target)
     |> where(
       [kl],
       fragment(
         "array_length(string_to_array(url_of_adwords_advertisers_top_position, ?), 1) - 1",
-        ^search_query
-      ) > ^number_of_occurrences
-    )
-    |> or_where(
-      [kl],
-      fragment(
-        "array_length(string_to_array(url_of_non_adwords, ?), 1) - 1",
         ^search_query
       ) > ^number_of_occurrences
     )
@@ -137,33 +128,16 @@ defmodule ElixirInternalCertification.Keyword.Queries.KeywordLookupQuery do
   defp condition_query(query, %AdvancedSearch{
          search_query: search_query,
          search_query_type: "occurrences",
-         search_query_target: "all",
+         search_query_target: "urls_of_adwords_advertisers_top_position" = search_query_target,
          symbol_notation: ">=",
          number_of_occurrences: number_of_occurrences
        }) do
     query
-    |> with_cte("keyword_lookup_cte",
-      as:
-        fragment(
-          "select id, unnest(urls_of_adwords_advertisers_top_position) as url_of_adwords_advertisers_top_position, unnest(urls_of_non_adwords) as url_of_non_adwords from keyword_lookups"
-        )
-    )
-    |> join(:left, [kl], klc in "keyword_lookup_cte", on: klc.id == kl.id)
-    |> select_merge([kl], %{
-      url_of_adwords_advertisers_top_position: fragment("url_of_adwords_advertisers_top_position"),
-      url_of_non_adwords: fragment("url_of_non_adwords")
-    })
+    |> unnest_urls(search_query_target)
     |> where(
       [kl],
       fragment(
         "array_length(string_to_array(url_of_adwords_advertisers_top_position, ?), 1) - 1",
-        ^search_query
-      ) >= ^number_of_occurrences
-    )
-    |> or_where(
-      [kl],
-      fragment(
-        "array_length(string_to_array(url_of_non_adwords, ?), 1) - 1",
         ^search_query
       ) >= ^number_of_occurrences
     )
@@ -172,33 +146,16 @@ defmodule ElixirInternalCertification.Keyword.Queries.KeywordLookupQuery do
   defp condition_query(query, %AdvancedSearch{
          search_query: search_query,
          search_query_type: "occurrences",
-         search_query_target: "all",
+         search_query_target: "urls_of_adwords_advertisers_top_position" = search_query_target,
          symbol_notation: "<",
          number_of_occurrences: number_of_occurrences
        }) do
     query
-    |> with_cte("keyword_lookup_cte",
-      as:
-        fragment(
-          "select id, unnest(urls_of_adwords_advertisers_top_position) as url_of_adwords_advertisers_top_position, unnest(urls_of_non_adwords) as url_of_non_adwords from keyword_lookups"
-        )
-    )
-    |> join(:left, [kl], klc in "keyword_lookup_cte", on: klc.id == kl.id)
-    |> select_merge([kl], %{
-      url_of_adwords_advertisers_top_position: fragment("url_of_adwords_advertisers_top_position"),
-      url_of_non_adwords: fragment("url_of_non_adwords")
-    })
+    |> unnest_urls(search_query_target)
     |> where(
       [kl],
       fragment(
         "array_length(string_to_array(url_of_adwords_advertisers_top_position, ?), 1) - 1",
-        ^search_query
-      ) < ^number_of_occurrences
-    )
-    |> or_where(
-      [kl],
-      fragment(
-        "array_length(string_to_array(url_of_non_adwords, ?), 1) - 1",
         ^search_query
       ) < ^number_of_occurrences
     )
@@ -207,33 +164,16 @@ defmodule ElixirInternalCertification.Keyword.Queries.KeywordLookupQuery do
   defp condition_query(query, %AdvancedSearch{
          search_query: search_query,
          search_query_type: "occurrences",
-         search_query_target: "all",
+         search_query_target: "urls_of_adwords_advertisers_top_position" = search_query_target,
          symbol_notation: "<=",
          number_of_occurrences: number_of_occurrences
        }) do
     query
-    |> with_cte("keyword_lookup_cte",
-      as:
-        fragment(
-          "select id, unnest(urls_of_adwords_advertisers_top_position) as url_of_adwords_advertisers_top_position, unnest(urls_of_non_adwords) as url_of_non_adwords from keyword_lookups"
-        )
-    )
-    |> join(:left, [kl], klc in "keyword_lookup_cte", on: klc.id == kl.id)
-    |> select_merge([kl], %{
-      url_of_adwords_advertisers_top_position: fragment("url_of_adwords_advertisers_top_position"),
-      url_of_non_adwords: fragment("url_of_non_adwords")
-    })
+    |> unnest_urls(search_query_target)
     |> where(
       [kl],
       fragment(
         "array_length(string_to_array(url_of_adwords_advertisers_top_position, ?), 1) - 1",
-        ^search_query
-      ) <= ^number_of_occurrences
-    )
-    |> or_where(
-      [kl],
-      fragment(
-        "array_length(string_to_array(url_of_non_adwords, ?), 1) - 1",
         ^search_query
       ) <= ^number_of_occurrences
     )
@@ -242,169 +182,12 @@ defmodule ElixirInternalCertification.Keyword.Queries.KeywordLookupQuery do
   defp condition_query(query, %AdvancedSearch{
          search_query: search_query,
          search_query_type: "occurrences",
-         search_query_target: "all",
+         search_query_target: "urls_of_adwords_advertisers_top_position" = search_query_target,
          symbol_notation: "=",
          number_of_occurrences: number_of_occurrences
        }) do
     query
-    |> with_cte("keyword_lookup_cte",
-      as:
-        fragment(
-          "select id, unnest(urls_of_adwords_advertisers_top_position) as url_of_adwords_advertisers_top_position, unnest(urls_of_non_adwords) as url_of_non_adwords from keyword_lookups"
-        )
-    )
-    |> join(:left, [kl], klc in "keyword_lookup_cte", on: klc.id == kl.id)
-    |> select_merge([kl], %{
-      url_of_adwords_advertisers_top_position: fragment("url_of_adwords_advertisers_top_position"),
-      url_of_non_adwords: fragment("url_of_non_adwords")
-    })
-    |> where(
-      [kl],
-      fragment(
-        "array_length(string_to_array(url_of_adwords_advertisers_top_position, ?), 1) - 1",
-        ^search_query
-      ) == ^number_of_occurrences
-    )
-    |> or_where(
-      [kl],
-      fragment(
-        "array_length(string_to_array(url_of_non_adwords, ?), 1) - 1",
-        ^search_query
-      ) == ^number_of_occurrences
-    )
-  end
-
-  defp condition_query(query, %AdvancedSearch{
-         search_query: search_query,
-         search_query_type: "occurrences",
-         search_query_target: "urls_of_adwords_advertisers_top_position",
-         symbol_notation: ">",
-         number_of_occurrences: number_of_occurrences
-       }) do
-    query
-    |> with_cte("keyword_lookup_cte",
-      as:
-        fragment(
-          "select id, unnest(urls_of_adwords_advertisers_top_position) as url_of_adwords_advertisers_top_position, unnest(urls_of_non_adwords) as url_of_non_adwords from keyword_lookups"
-        )
-    )
-    |> join(:left, [kl], klc in "keyword_lookup_cte", on: klc.id == kl.id)
-    |> select_merge([kl], %{
-      url_of_adwords_advertisers_top_position: fragment("url_of_adwords_advertisers_top_position"),
-      url_of_non_adwords: fragment("url_of_non_adwords")
-    })
-    |> where(
-      [kl],
-      fragment(
-        "array_length(string_to_array(url_of_adwords_advertisers_top_position, ?), 1) - 1",
-        ^search_query
-      ) > ^number_of_occurrences
-    )
-  end
-
-  defp condition_query(query, %AdvancedSearch{
-         search_query: search_query,
-         search_query_type: "occurrences",
-         search_query_target: "urls_of_adwords_advertisers_top_position",
-         symbol_notation: ">=",
-         number_of_occurrences: number_of_occurrences
-       }) do
-    query
-    |> with_cte("keyword_lookup_cte",
-      as:
-        fragment(
-          "select id, unnest(urls_of_adwords_advertisers_top_position) as url_of_adwords_advertisers_top_position, unnest(urls_of_non_adwords) as url_of_non_adwords from keyword_lookups"
-        )
-    )
-    |> join(:left, [kl], klc in "keyword_lookup_cte", on: klc.id == kl.id)
-    |> select_merge([kl], %{
-      url_of_adwords_advertisers_top_position: fragment("url_of_adwords_advertisers_top_position"),
-      url_of_non_adwords: fragment("url_of_non_adwords")
-    })
-    |> where(
-      [kl],
-      fragment(
-        "array_length(string_to_array(url_of_adwords_advertisers_top_position, ?), 1) - 1",
-        ^search_query
-      ) >= ^number_of_occurrences
-    )
-  end
-
-  defp condition_query(query, %AdvancedSearch{
-         search_query: search_query,
-         search_query_type: "occurrences",
-         search_query_target: "urls_of_adwords_advertisers_top_position",
-         symbol_notation: "<",
-         number_of_occurrences: number_of_occurrences
-       }) do
-    query
-    |> with_cte("keyword_lookup_cte",
-      as:
-        fragment(
-          "select id, unnest(urls_of_adwords_advertisers_top_position) as url_of_adwords_advertisers_top_position, unnest(urls_of_non_adwords) as url_of_non_adwords from keyword_lookups"
-        )
-    )
-    |> join(:left, [kl], klc in "keyword_lookup_cte", on: klc.id == kl.id)
-    |> select_merge([kl], %{
-      url_of_adwords_advertisers_top_position: fragment("url_of_adwords_advertisers_top_position"),
-      url_of_non_adwords: fragment("url_of_non_adwords")
-    })
-    |> where(
-      [kl],
-      fragment(
-        "array_length(string_to_array(url_of_adwords_advertisers_top_position, ?), 1) - 1",
-        ^search_query
-      ) < ^number_of_occurrences
-    )
-  end
-
-  defp condition_query(query, %AdvancedSearch{
-         search_query: search_query,
-         search_query_type: "occurrences",
-         search_query_target: "urls_of_adwords_advertisers_top_position",
-         symbol_notation: "<=",
-         number_of_occurrences: number_of_occurrences
-       }) do
-    query
-    |> with_cte("keyword_lookup_cte",
-      as:
-        fragment(
-          "select id, unnest(urls_of_adwords_advertisers_top_position) as url_of_adwords_advertisers_top_position, unnest(urls_of_non_adwords) as url_of_non_adwords from keyword_lookups"
-        )
-    )
-    |> join(:left, [kl], klc in "keyword_lookup_cte", on: klc.id == kl.id)
-    |> select_merge([kl], %{
-      url_of_adwords_advertisers_top_position: fragment("url_of_adwords_advertisers_top_position"),
-      url_of_non_adwords: fragment("url_of_non_adwords")
-    })
-    |> where(
-      [kl],
-      fragment(
-        "array_length(string_to_array(url_of_adwords_advertisers_top_position, ?), 1) - 1",
-        ^search_query
-      ) <= ^number_of_occurrences
-    )
-  end
-
-  defp condition_query(query, %AdvancedSearch{
-         search_query: search_query,
-         search_query_type: "occurrences",
-         search_query_target: "urls_of_adwords_advertisers_top_position",
-         symbol_notation: "=",
-         number_of_occurrences: number_of_occurrences
-       }) do
-    query
-    |> with_cte("keyword_lookup_cte",
-      as:
-        fragment(
-          "select id, unnest(urls_of_adwords_advertisers_top_position) as url_of_adwords_advertisers_top_position, unnest(urls_of_non_adwords) as url_of_non_adwords from keyword_lookups"
-        )
-    )
-    |> join(:left, [kl], klc in "keyword_lookup_cte", on: klc.id == kl.id)
-    |> select_merge([kl], %{
-      url_of_adwords_advertisers_top_position: fragment("url_of_adwords_advertisers_top_position"),
-      url_of_non_adwords: fragment("url_of_non_adwords")
-    })
+    |> unnest_urls(search_query_target)
     |> where(
       [kl],
       fragment(
@@ -417,22 +200,12 @@ defmodule ElixirInternalCertification.Keyword.Queries.KeywordLookupQuery do
   defp condition_query(query, %AdvancedSearch{
          search_query: search_query,
          search_query_type: "occurrences",
-         search_query_target: "urls_of_non_adwords",
+         search_query_target: "urls_of_non_adwords" = search_query_target,
          symbol_notation: ">",
          number_of_occurrences: number_of_occurrences
        }) do
     query
-    |> with_cte("keyword_lookup_cte",
-      as:
-        fragment(
-          "select id, unnest(urls_of_adwords_advertisers_top_position) as url_of_adwords_advertisers_top_position, unnest(urls_of_non_adwords) as url_of_non_adwords from keyword_lookups"
-        )
-    )
-    |> join(:left, [kl], klc in "keyword_lookup_cte", on: klc.id == kl.id)
-    |> select_merge([kl], %{
-      url_of_adwords_advertisers_top_position: fragment("url_of_adwords_advertisers_top_position"),
-      url_of_non_adwords: fragment("url_of_non_adwords")
-    })
+    |> unnest_urls(search_query_target)
     |> where(
       [kl],
       fragment(
@@ -445,22 +218,12 @@ defmodule ElixirInternalCertification.Keyword.Queries.KeywordLookupQuery do
   defp condition_query(query, %AdvancedSearch{
          search_query: search_query,
          search_query_type: "occurrences",
-         search_query_target: "urls_of_non_adwords",
+         search_query_target: "urls_of_non_adwords" = search_query_target,
          symbol_notation: ">=",
          number_of_occurrences: number_of_occurrences
        }) do
     query
-    |> with_cte("keyword_lookup_cte",
-      as:
-        fragment(
-          "select id, unnest(urls_of_adwords_advertisers_top_position) as url_of_adwords_advertisers_top_position, unnest(urls_of_non_adwords) as url_of_non_adwords from keyword_lookups"
-        )
-    )
-    |> join(:left, [kl], klc in "keyword_lookup_cte", on: klc.id == kl.id)
-    |> select_merge([kl], %{
-      url_of_adwords_advertisers_top_position: fragment("url_of_adwords_advertisers_top_position"),
-      url_of_non_adwords: fragment("url_of_non_adwords")
-    })
+    |> unnest_urls(search_query_target)
     |> where(
       [kl],
       fragment(
@@ -473,22 +236,12 @@ defmodule ElixirInternalCertification.Keyword.Queries.KeywordLookupQuery do
   defp condition_query(query, %AdvancedSearch{
          search_query: search_query,
          search_query_type: "occurrences",
-         search_query_target: "urls_of_non_adwords",
+         search_query_target: "urls_of_non_adwords" = search_query_target,
          symbol_notation: "<",
          number_of_occurrences: number_of_occurrences
        }) do
     query
-    |> with_cte("keyword_lookup_cte",
-      as:
-        fragment(
-          "select id, unnest(urls_of_adwords_advertisers_top_position) as url_of_adwords_advertisers_top_position, unnest(urls_of_non_adwords) as url_of_non_adwords from keyword_lookups"
-        )
-    )
-    |> join(:left, [kl], klc in "keyword_lookup_cte", on: klc.id == kl.id)
-    |> select_merge([kl], %{
-      url_of_adwords_advertisers_top_position: fragment("url_of_adwords_advertisers_top_position"),
-      url_of_non_adwords: fragment("url_of_non_adwords")
-    })
+    |> unnest_urls(search_query_target)
     |> where(
       [kl],
       fragment(
@@ -501,22 +254,12 @@ defmodule ElixirInternalCertification.Keyword.Queries.KeywordLookupQuery do
   defp condition_query(query, %AdvancedSearch{
          search_query: search_query,
          search_query_type: "occurrences",
-         search_query_target: "urls_of_non_adwords",
+         search_query_target: "urls_of_non_adwords" = search_query_target,
          symbol_notation: "<=",
          number_of_occurrences: number_of_occurrences
        }) do
     query
-    |> with_cte("keyword_lookup_cte",
-      as:
-        fragment(
-          "select id, unnest(urls_of_adwords_advertisers_top_position) as url_of_adwords_advertisers_top_position, unnest(urls_of_non_adwords) as url_of_non_adwords from keyword_lookups"
-        )
-    )
-    |> join(:left, [kl], klc in "keyword_lookup_cte", on: klc.id == kl.id)
-    |> select_merge([kl], %{
-      url_of_adwords_advertisers_top_position: fragment("url_of_adwords_advertisers_top_position"),
-      url_of_non_adwords: fragment("url_of_non_adwords")
-    })
+    |> unnest_urls(search_query_target)
     |> where(
       [kl],
       fragment(
@@ -529,22 +272,12 @@ defmodule ElixirInternalCertification.Keyword.Queries.KeywordLookupQuery do
   defp condition_query(query, %AdvancedSearch{
          search_query: search_query,
          search_query_type: "occurrences",
-         search_query_target: "urls_of_non_adwords",
+         search_query_target: "urls_of_non_adwords" = search_query_target,
          symbol_notation: "=",
          number_of_occurrences: number_of_occurrences
        }) do
     query
-    |> with_cte("keyword_lookup_cte",
-      as:
-        fragment(
-          "select id, unnest(urls_of_adwords_advertisers_top_position) as url_of_adwords_advertisers_top_position, unnest(urls_of_non_adwords) as url_of_non_adwords from keyword_lookups"
-        )
-    )
-    |> join(:left, [kl], klc in "keyword_lookup_cte", on: klc.id == kl.id)
-    |> select_merge([kl], %{
-      url_of_adwords_advertisers_top_position: fragment("url_of_adwords_advertisers_top_position"),
-      url_of_non_adwords: fragment("url_of_non_adwords")
-    })
+    |> unnest_urls(search_query_target)
     |> where(
       [kl],
       fragment(
@@ -560,6 +293,36 @@ defmodule ElixirInternalCertification.Keyword.Queries.KeywordLookupQuery do
       as:
         fragment(
           "select id, unnest(urls_of_adwords_advertisers_top_position) as url_of_adwords_advertisers_top_position, unnest(urls_of_non_adwords) as url_of_non_adwords from keyword_lookups"
+        )
+    )
+    |> join(:left, [kl], klc in "keyword_lookup_cte", on: klc.id == kl.id)
+    |> select_merge([kl], %{
+      url_of_adwords_advertisers_top_position: fragment("url_of_adwords_advertisers_top_position"),
+      url_of_non_adwords: fragment("url_of_non_adwords")
+    })
+  end
+
+  defp unnest_urls(query, "urls_of_adwords_advertisers_top_position" = _search_query_target) do
+    query
+    |> with_cte("keyword_lookup_cte",
+      as:
+        fragment(
+          "select id, unnest(urls_of_adwords_advertisers_top_position) as url_of_adwords_advertisers_top_position, null as url_of_non_adwords from keyword_lookups"
+        )
+    )
+    |> join(:left, [kl], klc in "keyword_lookup_cte", on: klc.id == kl.id)
+    |> select_merge([kl], %{
+      url_of_adwords_advertisers_top_position: fragment("url_of_adwords_advertisers_top_position"),
+      url_of_non_adwords: fragment("url_of_non_adwords")
+    })
+  end
+
+  defp unnest_urls(query, "urls_of_non_adwords" = _search_query_target) do
+    query
+    |> with_cte("keyword_lookup_cte",
+      as:
+        fragment(
+          "select id, null as url_of_adwords_advertisers_top_position, unnest(urls_of_non_adwords) as url_of_non_adwords from keyword_lookups"
         )
     )
     |> join(:left, [kl], klc in "keyword_lookup_cte", on: klc.id == kl.id)

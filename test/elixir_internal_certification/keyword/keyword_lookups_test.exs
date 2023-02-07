@@ -168,7 +168,7 @@ defmodule ElixirInternalCertification.Keyword.KeywordLookupsTest do
       assert KeywordLookups.get_number_of_url_results(user, advanced_search_params) == 3
     end
 
-    test "given a `www` search query with occurrences type, all target, `<` symbol notation and 2 number of occurences, returns 3",
+    test "given a `www` search query with occurrences type, all target, `<` symbol notation and 1 number of occurences, returns 8",
          %{
            user: user
          } do
@@ -177,13 +177,13 @@ defmodule ElixirInternalCertification.Keyword.KeywordLookupsTest do
         search_query_type: "occurrences",
         search_query_target: "all",
         symbol_notation: "<",
-        number_of_occurrences: 2
+        number_of_occurrences: 1
       }
 
-      assert KeywordLookups.get_number_of_url_results(user, advanced_search_params) == 3
+      assert KeywordLookups.get_number_of_url_results(user, advanced_search_params) == 8
     end
 
-    test "given a `www` search query with occurrences type, all target, `<=` symbol notation and 1 number of occurences, returns 3",
+    test "given a `www` search query with occurrences type, all target, `<=` symbol notation and 0 number of occurences, returns 8",
          %{
            user: user
          } do
@@ -192,10 +192,10 @@ defmodule ElixirInternalCertification.Keyword.KeywordLookupsTest do
         search_query_type: "occurrences",
         search_query_target: "all",
         symbol_notation: "<=",
-        number_of_occurrences: 1
+        number_of_occurrences: 0
       }
 
-      assert KeywordLookups.get_number_of_url_results(user, advanced_search_params) == 3
+      assert KeywordLookups.get_number_of_url_results(user, advanced_search_params) == 8
     end
 
     test "given a `www` search query with occurrences type, all target, `=` symbol notation and 1 number of occurences, returns 3",
@@ -243,7 +243,7 @@ defmodule ElixirInternalCertification.Keyword.KeywordLookupsTest do
       assert KeywordLookups.get_number_of_url_results(user, advanced_search_params) == 1
     end
 
-    test "given a `www` search query with occurrences type, URLs of AdWords advertisers top position target, `<` symbol notation and 2 number of occurences, returns 1",
+    test "given a `www` search query with occurrences type, URLs of AdWords advertisers top position target, `<` symbol notation and 1 number of occurences, returns 3",
          %{
            user: user
          } do
@@ -252,13 +252,13 @@ defmodule ElixirInternalCertification.Keyword.KeywordLookupsTest do
         search_query_type: "occurrences",
         search_query_target: "urls_of_adwords_advertisers_top_position",
         symbol_notation: "<",
-        number_of_occurrences: 2
+        number_of_occurrences: 1
       }
 
-      assert KeywordLookups.get_number_of_url_results(user, advanced_search_params) == 1
+      assert KeywordLookups.get_number_of_url_results(user, advanced_search_params) == 3
     end
 
-    test "given a `www` search query with occurrences type, URLs of AdWords advertisers top position target, `<=` symbol notation and 1 number of occurences, returns 1",
+    test "given a `www` search query with occurrences type, URLs of AdWords advertisers top position target, `<=` symbol notation and 0 number of occurences, returns 3",
          %{
            user: user
          } do
@@ -267,10 +267,10 @@ defmodule ElixirInternalCertification.Keyword.KeywordLookupsTest do
         search_query_type: "occurrences",
         search_query_target: "urls_of_adwords_advertisers_top_position",
         symbol_notation: "<=",
-        number_of_occurrences: 1
+        number_of_occurrences: 0
       }
 
-      assert KeywordLookups.get_number_of_url_results(user, advanced_search_params) == 1
+      assert KeywordLookups.get_number_of_url_results(user, advanced_search_params) == 3
     end
 
     test "given a `www` search query with occurrences type, URLs of AdWords advertisers top position target, `=` symbol notation and 1 number of occurences, returns 1",
@@ -318,7 +318,7 @@ defmodule ElixirInternalCertification.Keyword.KeywordLookupsTest do
       assert KeywordLookups.get_number_of_url_results(user, advanced_search_params) == 2
     end
 
-    test "given a `www` search query with occurrences type, URLs of non AdWords target, `<` symbol notation and 2 number of occurences, returns 2",
+    test "given a `www` search query with occurrences type, URLs of non AdWords target, `<` symbol notation and 1 number of occurences, returns 5",
          %{
            user: user
          } do
@@ -327,13 +327,13 @@ defmodule ElixirInternalCertification.Keyword.KeywordLookupsTest do
         search_query_type: "occurrences",
         search_query_target: "urls_of_non_adwords",
         symbol_notation: "<",
-        number_of_occurrences: 2
+        number_of_occurrences: 1
       }
 
-      assert KeywordLookups.get_number_of_url_results(user, advanced_search_params) == 2
+      assert KeywordLookups.get_number_of_url_results(user, advanced_search_params) == 5
     end
 
-    test "given a `www` search query with occurrences type, URLs of non AdWords target, `<=` symbol notation and 1 number of occurences, returns 2",
+    test "given a `www` search query with occurrences type, URLs of non AdWords target, `<=` symbol notation and 0 number of occurences, returns 5",
          %{
            user: user
          } do
@@ -342,10 +342,10 @@ defmodule ElixirInternalCertification.Keyword.KeywordLookupsTest do
         search_query_type: "occurrences",
         search_query_target: "urls_of_non_adwords",
         symbol_notation: "<=",
-        number_of_occurrences: 1
+        number_of_occurrences: 0
       }
 
-      assert KeywordLookups.get_number_of_url_results(user, advanced_search_params) == 2
+      assert KeywordLookups.get_number_of_url_results(user, advanced_search_params) == 5
     end
 
     test "given a `www` search query with occurrences type, URLs of non AdWords target, `=` symbol notation and 1 number of occurences, returns 2",
