@@ -59,27 +59,43 @@ defmodule ElixirInternalCertification.Keyword.Queries.KeywordLookupQuery do
 
   defp condition_query(query, %AdvancedSearch{
          search_query: search_query,
-         search_query_type: "exact_match",
+         search_query_type: "exact_match" = search_query_type,
          search_query_target: "all"
        }) do
-    query
-    |> where([kl], ^search_query in kl.urls_of_adwords_advertisers_top_position)
-    |> or_where([kl], ^search_query in kl.urls_of_non_adwords)
+    first_query = condition_query(query, %AdvancedSearch{
+      search_query: search_query,
+      search_query_type: search_query_type,
+      search_query_target: "urls_of_adwords_advertisers_top_position"
+    })
+
+    second_query = condition_query(query, %AdvancedSearch{
+      search_query: search_query,
+      search_query_type: search_query_type,
+      search_query_target: "urls_of_non_adwords"
+    })
+
+    union_all(first_query, ^second_query)
   end
 
   defp condition_query(query, %AdvancedSearch{
          search_query: search_query,
          search_query_type: "exact_match",
-         search_query_target: "urls_of_adwords_advertisers_top_position"
-       }),
-       do: where(query, [kl], ^search_query in kl.urls_of_adwords_advertisers_top_position)
+         search_query_target: "urls_of_adwords_advertisers_top_position" = search_query_target
+       }) do
+    query
+    |> unnest_urls(search_query_target)
+    |> where([kl], fragment("url_of_adwords_advertisers_top_position") == ^search_query)
+  end
 
   defp condition_query(query, %AdvancedSearch{
          search_query: search_query,
          search_query_type: "exact_match",
-         search_query_target: "urls_of_non_adwords"
-       }),
-       do: where(query, [kl], ^search_query in kl.urls_of_non_adwords)
+         search_query_target: "urls_of_non_adwords" = search_query_target
+       }) do
+    query
+    |> unnest_urls(search_query_target)
+    |> where([kl], fragment("url_of_non_adwords") == ^search_query)
+  end
 
   defp condition_query(query, %AdvancedSearch{
          search_query: search_query,
