@@ -85,7 +85,7 @@ defmodule ElixirInternalCertification.Keyword.Queries.KeywordLookupQuery do
          search_query: search_query,
          search_query_type: "occurrences" = search_query_type,
          search_query_target: "all",
-         symbol_notation: ">" = symbol_notation,
+         symbol_notation: symbol_notation,
          number_of_occurrences: number_of_occurrences
        }) do
     first_query = condition_query(query, %AdvancedSearch{
