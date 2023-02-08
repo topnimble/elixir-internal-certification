@@ -34,6 +34,33 @@ defmodule ElixirInternalCertification.Keyword.KeywordLookupsTest do
         urls_of_non_adwords: ["https://elixir-lang.org/", "https://elixir-lang.org/"]
       )
 
+      another_user = insert(:user)
+      another_user_first_keyword = insert(:keyword, user: another_user)
+
+      insert(:keyword_lookup,
+        keyword: another_user_first_keyword,
+        urls_of_adwords_advertisers_top_position: ["https://elixir-lang.org/"],
+        urls_of_non_adwords: [
+          "https://elixir-lang.org/",
+          "https://elixir-lang.org/getting-started/introduction.html",
+          "https://elixirforum.com/",
+          "https://www.phoenixframework.org/",
+          "https://www.phoenixframework.org/blog"
+        ]
+      )
+
+      another_user_second_keyword = insert(:keyword, user: another_user)
+
+      insert(:keyword_lookup,
+        keyword: another_user_second_keyword,
+        urls_of_adwords_advertisers_top_position: [
+          "https://elixir-lang.org/",
+          "https://elixir-lang.org/getting-started/introduction.html",
+          "https://www.phoenixframework.org/"
+        ],
+        urls_of_non_adwords: ["https://elixir-lang.org/", "https://elixir-lang.org/"]
+      )
+
       %{user: user}
     end
 
