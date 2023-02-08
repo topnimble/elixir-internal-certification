@@ -28,15 +28,8 @@ defmodule ElixirInternalCertification.Keyword.Queries.KeywordQuery do
 
   defp from_advanced_search_params(
          query,
-         %User{id: user_id} = _user,
-         %AdvancedSearch{search_query: nil} = _advanced_search_params
-       ),
-       do: where(query, [k], k.user_id == ^user_id)
-
-  defp from_advanced_search_params(
-         query,
          %User{id: user_id} = user,
-         advanced_search_params
+         %AdvancedSearch{} = advanced_search_params
        ) do
     keyword_lookup_query =
       KeywordLookupQuery.from_advanced_search_params(user, advanced_search_params)

@@ -309,14 +309,6 @@ defmodule ElixirInternalCertification.Keyword.Queries.KeywordLookupQuery do
     )
   end
 
-  defp condition_query(query, _advanced_search_params) do
-    first_query = unnest_urls(query, "urls_of_adwords_advertisers_top_position")
-
-    second_query = unnest_urls(query, "urls_of_non_adwords")
-
-    union_all(first_query, ^second_query)
-  end
-
   defp unnest_urls(query, "urls_of_adwords_advertisers_top_position" = _search_query_target) do
     query
     |> with_cte("keyword_lookup_cte",

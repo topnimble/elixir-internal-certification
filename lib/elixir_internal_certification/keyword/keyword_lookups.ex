@@ -4,14 +4,17 @@ defmodule ElixirInternalCertification.Keyword.KeywordLookups do
   """
   import Ecto.Query, warn: false
 
+  alias ElixirInternalCertification.Account.Schemas.User
   alias ElixirInternalCertification.Keyword.Queries.KeywordLookupQuery
-  alias ElixirInternalCertification.Keyword.Schemas.{Keyword, KeywordLookup}
+  alias ElixirInternalCertification.Keyword.Schemas.{AdvancedSearch, Keyword, KeywordLookup}
   alias ElixirInternalCertification.Repo
   alias ElixirInternalCertificationWorker.Google, as: GoogleWorker
 
   @average_number_of_seconds_between_each_lookup 5
 
-  def get_number_of_url_results(user, advanced_search_params),
+  def get_number_of_url_results(%User{} = _user, nil = _advanced_search_params), do: 0
+  def get_number_of_url_results(%User{} = _user, %AdvancedSearch{search_query: nil} = _advanced_search_params), do: 0
+  def get_number_of_url_results(%User{} = user, %AdvancedSearch{} = advanced_search_params),
     do:
       Repo.aggregate(
         KeywordLookupQuery.from_advanced_search_params(user, advanced_search_params),

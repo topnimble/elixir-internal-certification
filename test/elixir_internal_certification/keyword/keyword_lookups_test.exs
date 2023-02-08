@@ -390,10 +390,46 @@ defmodule ElixirInternalCertification.Keyword.KeywordLookupsTest do
       assert KeywordLookups.get_number_of_url_results(user, advanced_search_params) == 2
     end
 
-    test "given NO advanced search params, returns 11", %{user: user} do
-      advanced_search_params = nil
+    test "given a user and a nil value, returns 0", %{user: user} do
+      assert KeywordLookups.get_number_of_url_results(user, nil) == 0
+    end
+
+    test "given a user and a search query with nil value, returns 0", %{user: user} do
+      advanced_search_params = %AdvancedSearch{
+        search_query: nil,
+        search_query_type: nil,
+        search_query_target: nil
+      }
+
+      assert KeywordLookups.get_number_of_url_results(user, advanced_search_params) == 0
+    end
+
+    test "given a user and a search query with empty string, returns 11", %{user: user} do
+      advanced_search_params = %AdvancedSearch{
+        search_query: "",
+        search_query_type: "partial_match",
+        search_query_target: "all"
+      }
 
       assert KeywordLookups.get_number_of_url_results(user, advanced_search_params) == 11
+    end
+
+    test "given a user and a search query with NO results", %{user: user} do
+      advanced_search_params = %AdvancedSearch{
+        search_query: "search query with no results",
+        search_query_type: "partial_match",
+        search_query_target: "all"
+      }
+
+      assert KeywordLookups.get_number_of_url_results(user, advanced_search_params) == 0
+    end
+
+    test "given a user is nil, raises FunctionClauseError" do
+      user = nil
+
+      assert_raise FunctionClauseError, fn ->
+        KeywordLookups.get_number_of_url_results(user, nil)
+      end
     end
   end
 
