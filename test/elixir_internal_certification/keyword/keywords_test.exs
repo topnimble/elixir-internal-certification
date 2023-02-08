@@ -246,7 +246,7 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
   end
 
   describe "list_keywords_for_advanced_search/2" do
-    test "given a user and a search query with `www` value, returns a list of keywords belongs to the user and the search query sorted by ID in descending order" do
+    test "given a user and a search query with `www` value and partial match type, returns a list of keywords belongs to the user and the search query sorted by ID in descending order" do
       user = insert(:user)
       another_user = insert(:user)
 
@@ -302,6 +302,144 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
       advanced_search_params = %AdvancedSearch{
         search_query: "www",
         search_query_type: "partial_match",
+        search_query_target: "all"
+      }
+
+      keywords = Keywords.list_keywords_for_advanced_search(user, advanced_search_params)
+
+      assert length(keywords) == 2
+
+      assert Enum.map(keywords, fn keyword -> keyword.id end) == [
+               fifth_keyword_id,
+               first_keyword_id
+             ]
+    end
+
+    test "given a user and a search query with `www` value and exact match type, returns a list of keywords belongs to the user and the search query sorted by ID in descending order" do
+      user = insert(:user)
+      another_user = insert(:user)
+
+      %Keyword{id: first_keyword_id} =
+        first_keyword = insert(:keyword, user: user, title: "first keyword")
+
+      _first_keyword_lookup =
+        insert(:keyword_lookup,
+          keyword: first_keyword,
+          urls_of_adwords_advertisers_top_position: ["https://elixir-lang.org/"],
+          urls_of_non_adwords: [
+            "https://elixir-lang.org/",
+            "https://elixir-lang.org/getting-started/introduction.html",
+            "https://elixirforum.com/",
+            "https://www.phoenixframework.org/",
+            "https://www.phoenixframework.org/blog"
+          ]
+        )
+
+      %Keyword{id: _second_keyword_id} =
+        second_keyword = insert(:keyword, user: user, title: "second keyword")
+
+      _second_keyword_lookup = insert(:keyword_lookup, keyword: second_keyword)
+
+      %Keyword{id: _third_keyword_id} =
+        third_keyword = insert(:keyword, user: user, title: "third keyword")
+
+      _third_keyword_lookup = insert(:keyword_lookup, keyword: third_keyword)
+
+      %Keyword{id: _fourth_keyword_id} =
+        fourth_keyword = insert(:keyword, user: user, title: "fourth keyword")
+
+      _fourth_keyword_lookup = insert(:keyword_lookup, keyword: fourth_keyword)
+
+      %Keyword{id: fifth_keyword_id} =
+        fifth_keyword = insert(:keyword, user: user, title: "fifth keyword")
+
+      _fifth_keyword_lookup =
+        insert(:keyword_lookup,
+          keyword: fifth_keyword,
+          keyword: fifth_keyword,
+          urls_of_adwords_advertisers_top_position: [
+            "https://elixir-lang.org/",
+            "https://elixir-lang.org/getting-started/introduction.html",
+            "https://www.phoenixframework.org/"
+          ],
+          urls_of_non_adwords: ["https://elixir-lang.org/", "https://elixir-lang.org/"]
+        )
+
+      another_keyword = insert(:keyword, user: another_user, title: "another keyword")
+      _another_keyword_lookup = insert(:keyword_lookup, keyword: another_keyword)
+
+      advanced_search_params = %AdvancedSearch{
+        search_query: "https://www.phoenixframework.org/",
+        search_query_type: "exact_match",
+        search_query_target: "all"
+      }
+
+      keywords = Keywords.list_keywords_for_advanced_search(user, advanced_search_params)
+
+      assert length(keywords) == 2
+
+      assert Enum.map(keywords, fn keyword -> keyword.id end) == [
+               fifth_keyword_id,
+               first_keyword_id
+             ]
+    end
+
+    test "given a user and a search query with `www` value and occurrences type, returns a list of keywords belongs to the user and the search query sorted by ID in descending order" do
+      user = insert(:user)
+      another_user = insert(:user)
+
+      %Keyword{id: first_keyword_id} =
+        first_keyword = insert(:keyword, user: user, title: "first keyword")
+
+      _first_keyword_lookup =
+        insert(:keyword_lookup,
+          keyword: first_keyword,
+          urls_of_adwords_advertisers_top_position: ["https://elixir-lang.org/"],
+          urls_of_non_adwords: [
+            "https://elixir-lang.org/",
+            "https://elixir-lang.org/getting-started/introduction.html",
+            "https://elixirforum.com/",
+            "https://www.phoenixframework.org/",
+            "https://www.phoenixframework.org/blog"
+          ]
+        )
+
+      %Keyword{id: _second_keyword_id} =
+        second_keyword = insert(:keyword, user: user, title: "second keyword")
+
+      _second_keyword_lookup = insert(:keyword_lookup, keyword: second_keyword)
+
+      %Keyword{id: _third_keyword_id} =
+        third_keyword = insert(:keyword, user: user, title: "third keyword")
+
+      _third_keyword_lookup = insert(:keyword_lookup, keyword: third_keyword)
+
+      %Keyword{id: _fourth_keyword_id} =
+        fourth_keyword = insert(:keyword, user: user, title: "fourth keyword")
+
+      _fourth_keyword_lookup = insert(:keyword_lookup, keyword: fourth_keyword)
+
+      %Keyword{id: fifth_keyword_id} =
+        fifth_keyword = insert(:keyword, user: user, title: "fifth keyword")
+
+      _fifth_keyword_lookup =
+        insert(:keyword_lookup,
+          keyword: fifth_keyword,
+          keyword: fifth_keyword,
+          urls_of_adwords_advertisers_top_position: [
+            "https://elixir-lang.org/",
+            "https://elixir-lang.org/getting-started/introduction.html",
+            "https://www.phoenixframework.org/"
+          ],
+          urls_of_non_adwords: ["https://elixir-lang.org/", "https://elixir-lang.org/"]
+        )
+
+      another_keyword = insert(:keyword, user: another_user, title: "another keyword")
+      _another_keyword_lookup = insert(:keyword_lookup, keyword: another_keyword)
+
+      advanced_search_params = %AdvancedSearch{
+        search_query: "www",
+        search_query_type: "occurrences",
         search_query_target: "all"
       }
 

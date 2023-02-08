@@ -3,10 +3,9 @@ defmodule ElixirInternalCertificationWeb.AdvancedSearchLive.Index do
 
   alias ElixirInternalCertification.Account.Schemas.User
   alias ElixirInternalCertification.Keyword.{KeywordLookups, Keywords}
-  alias ElixirInternalCertification.Keyword.Schemas.{AdvancedSearch, Keyword}
+  alias ElixirInternalCertification.Keyword.Schemas.AdvancedSearch
   alias ElixirInternalCertificationWeb.LiveComponents.KeywordRowComponent
   alias ElixirInternalCertificationWeb.LiveHelpers
-  alias Phoenix.LiveView.Socket
 
   @default_number_of_occurrences 0
   @default_symbol_notation ">"
@@ -15,27 +14,12 @@ defmodule ElixirInternalCertificationWeb.AdvancedSearchLive.Index do
   def mount(_params, session, socket) do
     socket = LiveHelpers.set_current_user_to_socket(socket, session)
 
-    if connected?(socket) do
-      socket
-      |> LiveHelpers.get_current_user_from_socket()
-      |> Keywords.subscribe_keyword_update()
-    end
-
     {:ok, socket}
   end
 
   @impl true
   def handle_params(params, _url, socket),
     do: {:noreply, apply_action(socket, socket.assigns.live_action, params)}
-
-  @impl true
-  def handle_info(
-        {:updated, %Keyword{id: keyword_id} = _keyword} = _message,
-        %Socket{assigns: %{keywords: keywords}} = socket
-      ),
-      do:
-        {:noreply,
-         assign(socket, :keywords, Keywords.find_and_update_keyword(keywords, keyword_id))}
 
   @impl true
   def handle_event(
@@ -81,9 +65,6 @@ defmodule ElixirInternalCertificationWeb.AdvancedSearchLive.Index do
           number_of_occurrences: search_form["number_of_occurrences"],
           symbol_notation: search_form["symbol_notation"]
         )
-
-      _ ->
-        Routes.advanced_search_index_path(socket, :index)
     end
   end
 
