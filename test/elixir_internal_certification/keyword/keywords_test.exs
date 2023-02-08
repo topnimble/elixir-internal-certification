@@ -253,15 +253,18 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
       %Keyword{id: first_keyword_id} =
         first_keyword = insert(:keyword, user: user, title: "first keyword")
 
-      _first_keyword_lookup = insert(:keyword_lookup, keyword: first_keyword,
-        urls_of_adwords_advertisers_top_position: ["https://elixir-lang.org/"],
-        urls_of_non_adwords: [
-          "https://elixir-lang.org/",
-          "https://elixir-lang.org/getting-started/introduction.html",
-          "https://elixirforum.com/",
-          "https://www.phoenixframework.org/",
-          "https://www.phoenixframework.org/blog"
-        ])
+      _first_keyword_lookup =
+        insert(:keyword_lookup,
+          keyword: first_keyword,
+          urls_of_adwords_advertisers_top_position: ["https://elixir-lang.org/"],
+          urls_of_non_adwords: [
+            "https://elixir-lang.org/",
+            "https://elixir-lang.org/getting-started/introduction.html",
+            "https://elixirforum.com/",
+            "https://www.phoenixframework.org/",
+            "https://www.phoenixframework.org/blog"
+          ]
+        )
 
       %Keyword{id: _second_keyword_id} =
         second_keyword = insert(:keyword, user: user, title: "second keyword")
@@ -281,15 +284,17 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
       %Keyword{id: fifth_keyword_id} =
         fifth_keyword = insert(:keyword, user: user, title: "fifth keyword")
 
-      _fifth_keyword_lookup = insert(:keyword_lookup, keyword: fifth_keyword,
-        keyword: fifth_keyword,
-        urls_of_adwords_advertisers_top_position: [
-          "https://elixir-lang.org/",
-          "https://elixir-lang.org/getting-started/introduction.html",
-          "https://www.phoenixframework.org/"
-        ],
-        urls_of_non_adwords: ["https://elixir-lang.org/", "https://elixir-lang.org/"]
-      )
+      _fifth_keyword_lookup =
+        insert(:keyword_lookup,
+          keyword: fifth_keyword,
+          keyword: fifth_keyword,
+          urls_of_adwords_advertisers_top_position: [
+            "https://elixir-lang.org/",
+            "https://elixir-lang.org/getting-started/introduction.html",
+            "https://www.phoenixframework.org/"
+          ],
+          urls_of_non_adwords: ["https://elixir-lang.org/", "https://elixir-lang.org/"]
+        )
 
       another_keyword = insert(:keyword, user: another_user, title: "another keyword")
       _another_keyword_lookup = insert(:keyword_lookup, keyword: another_keyword)

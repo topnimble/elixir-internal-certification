@@ -13,7 +13,13 @@ defmodule ElixirInternalCertification.Keyword.KeywordLookups do
   @average_number_of_seconds_between_each_lookup 5
 
   def get_number_of_url_results(%User{} = _user, nil = _advanced_search_params), do: 0
-  def get_number_of_url_results(%User{} = _user, %AdvancedSearch{search_query: nil} = _advanced_search_params), do: 0
+
+  def get_number_of_url_results(
+        %User{} = _user,
+        %AdvancedSearch{search_query: nil} = _advanced_search_params
+      ),
+      do: 0
+
   def get_number_of_url_results(%User{} = user, %AdvancedSearch{} = advanced_search_params),
     do:
       Repo.aggregate(

@@ -34,7 +34,13 @@ defmodule ElixirInternalCertification.Keyword.Keywords do
   end
 
   def list_keywords_for_advanced_search(%User{} = _user, nil = _search_params), do: []
-  def list_keywords_for_advanced_search(%User{} = _user, %AdvancedSearch{search_query: nil} = _search_params), do: []
+
+  def list_keywords_for_advanced_search(
+        %User{} = _user,
+        %AdvancedSearch{search_query: nil} = _search_params
+      ),
+      do: []
+
   def list_keywords_for_advanced_search(%User{} = user, %AdvancedSearch{} = search_params) do
     user
     |> KeywordQuery.list_keywords_by_user_for_advanced_search(search_params)
