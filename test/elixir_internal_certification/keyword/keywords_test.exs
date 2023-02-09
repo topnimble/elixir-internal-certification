@@ -487,8 +487,6 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
 
       keywords = Keywords.list_keywords_for_advanced_search(user, nil)
 
-      assert length(keywords) == 0
-
       assert keywords == []
     end
 
@@ -531,8 +529,6 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
       }
 
       keywords = Keywords.list_keywords_for_advanced_search(user, advanced_search_params)
-
-      assert length(keywords) == 0
 
       assert keywords == []
     end

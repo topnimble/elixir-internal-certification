@@ -249,6 +249,26 @@ defmodule ElixirInternalCertificationWeb.Features.Keywords.SearchKeywordListTest
     |> refute_has(Query.text("second keyword"))
     |> refute_has(Query.text("third keyword"))
     |> refute_has(Query.text("fourth keyword"))
+    |> find(Query.css(".search-form"), fn form ->
+      form
+      |> click(Query.option("exactly match"))
+      |> fill_in(Query.text_field("string"), with: "https://www.phoenixframework.org/")
+    end)
+    |> assert_has(Query.text("first keyword"))
+    |> refute_has(Query.text("second keyword"))
+    |> refute_has(Query.text("third keyword"))
+    |> refute_has(Query.text("fourth keyword"))
+    |> refute_has(Query.text("fifth keyword"))
+    |> find(Query.css(".search-form"), fn form ->
+      form
+      |> click(Query.option("have occurrences of"))
+      |> fill_in(Query.text_field("string"), with: "www")
+    end)
+    |> assert_has(Query.text("first keyword"))
+    |> assert_has(Query.text("fifth keyword"))
+    |> refute_has(Query.text("second keyword"))
+    |> refute_has(Query.text("third keyword"))
+    |> refute_has(Query.text("fourth keyword"))
   end
 
   feature "given a user submits a search form, lists matched keywords", %{session: session} do
@@ -280,7 +300,29 @@ defmodule ElixirInternalCertificationWeb.Features.Keywords.SearchKeywordListTest
     |> find(Query.css(".search-form"), fn form ->
       form
       |> fill_in(Query.text_field("string"), with: "www")
-      |> send_keys([:enter])
+      |> click(Query.button("Search"))
+    end)
+    |> assert_has(Query.text("first keyword"))
+    |> assert_has(Query.text("fifth keyword"))
+    |> refute_has(Query.text("second keyword"))
+    |> refute_has(Query.text("third keyword"))
+    |> refute_has(Query.text("fourth keyword"))
+    |> find(Query.css(".search-form"), fn form ->
+      form
+      |> click(Query.option("exactly match"))
+      |> fill_in(Query.text_field("string"), with: "https://www.phoenixframework.org/")
+      |> click(Query.button("Search"))
+    end)
+    |> assert_has(Query.text("first keyword"))
+    |> refute_has(Query.text("second keyword"))
+    |> refute_has(Query.text("third keyword"))
+    |> refute_has(Query.text("fourth keyword"))
+    |> refute_has(Query.text("fifth keyword"))
+    |> find(Query.css(".search-form"), fn form ->
+      form
+      |> click(Query.option("have occurrences of"))
+      |> fill_in(Query.text_field("string"), with: "www")
+      |> click(Query.button("Search"))
     end)
     |> assert_has(Query.text("first keyword"))
     |> assert_has(Query.text("fifth keyword"))

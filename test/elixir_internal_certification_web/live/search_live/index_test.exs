@@ -258,16 +258,16 @@ defmodule ElixirInternalCertificationWeb.SearchLive.IndexTest do
       refute rendered_view =~ "third keyword"
       refute rendered_view =~ "fourth keyword"
 
-      search_query = "https://www.phoenixframework.org/"
-      search_query_type = "exact_match"
-      search_query_target = "all"
+      search_query_2 = "https://www.phoenixframework.org/"
+      search_query_type_2 = "exact_match"
+      search_query_target_2 = "all"
 
       view
       |> form(".search-form", %{
         "search_form" => %{
-          "search_query" => search_query,
-          "search_query_type" => search_query_type,
-          "search_query_target" => search_query_target
+          "search_query" => search_query_2,
+          "search_query_type" => search_query_type_2,
+          "search_query_target" => search_query_target_2
         }
       })
       |> render_change()
@@ -277,24 +277,24 @@ defmodule ElixirInternalCertificationWeb.SearchLive.IndexTest do
         "/advanced_searches?query=https%3A%2F%2Fwww.phoenixframework.org%2F&query_type=exact_match&query_target=all"
       )
 
-      rendered_view = render(view)
+      rendered_view_2 = render(view)
 
-      assert rendered_view =~ "first keyword"
-      refute rendered_view =~ "second keyword"
-      refute rendered_view =~ "third keyword"
-      refute rendered_view =~ "fourth keyword"
-      refute rendered_view =~ "fifth keyword"
+      assert rendered_view_2 =~ "first keyword"
+      refute rendered_view_2 =~ "second keyword"
+      refute rendered_view_2 =~ "third keyword"
+      refute rendered_view_2 =~ "fourth keyword"
+      refute rendered_view_2 =~ "fifth keyword"
 
-      search_query = "www"
-      search_query_type = "occurrences"
-      search_query_target = "all"
+      search_query_3 = "www"
+      search_query_type_3 = "occurrences"
+      search_query_target_3 = "all"
 
       view
       |> form(".search-form", %{
         "search_form" => %{
-          "search_query" => search_query,
-          "search_query_type" => search_query_type,
-          "search_query_target" => search_query_target
+          "search_query" => search_query_3,
+          "search_query_type" => search_query_type_3,
+          "search_query_target" => search_query_target_3
         }
       })
       |> render_change()
@@ -304,13 +304,13 @@ defmodule ElixirInternalCertificationWeb.SearchLive.IndexTest do
         "/advanced_searches?query=www&query_type=occurrences&query_target=all&number_of_occurrences=0&symbol_notation=%3E"
       )
 
-      rendered_view = render(view)
+      rendered_view_3 = render(view)
 
-      assert rendered_view =~ "first keyword"
-      assert rendered_view =~ "fifth keyword"
-      refute rendered_view =~ "second keyword"
-      refute rendered_view =~ "third keyword"
-      refute rendered_view =~ "fourth keyword"
+      assert rendered_view_3 =~ "first keyword"
+      assert rendered_view_3 =~ "fifth keyword"
+      refute rendered_view_3 =~ "second keyword"
+      refute rendered_view_3 =~ "third keyword"
+      refute rendered_view_3 =~ "fourth keyword"
     end
 
     @tag :register_and_log_in_user
@@ -370,17 +370,17 @@ defmodule ElixirInternalCertificationWeb.SearchLive.IndexTest do
       refute rendered_view_2 =~ "third keyword"
       refute rendered_view_2 =~ "fourth keyword"
 
-      search_query = "https://www.phoenixframework.org/"
-      search_query_type = "exact_match"
-      search_query_target = "all"
+      search_query_2 = "https://www.phoenixframework.org/"
+      search_query_type_2 = "exact_match"
+      search_query_target_2 = "all"
 
       {:ok, view_3, _html_3} =
         view_2
         |> form(".search-form", %{
           "search_form" => %{
-            "search_query" => search_query,
-            "search_query_type" => search_query_type,
-            "search_query_target" => search_query_target
+            "search_query" => search_query_2,
+            "search_query_type" => search_query_type_2,
+            "search_query_target" => search_query_target_2
           }
         })
         |> render_submit()
@@ -399,17 +399,17 @@ defmodule ElixirInternalCertificationWeb.SearchLive.IndexTest do
       refute rendered_view_3 =~ "fourth keyword"
       refute rendered_view_3 =~ "fifth keyword"
 
-      search_query = "www"
-      search_query_type = "occurrences"
-      search_query_target = "all"
+      search_query_3 = "www"
+      search_query_type_3 = "occurrences"
+      search_query_target_3 = "all"
 
       {:ok, view_4, _html_4} =
         view_3
         |> form(".search-form", %{
           "search_form" => %{
-            "search_query" => search_query,
-            "search_query_type" => search_query_type,
-            "search_query_target" => search_query_target
+            "search_query" => search_query_3,
+            "search_query_type" => search_query_type_3,
+            "search_query_target" => search_query_target_3
           }
         })
         |> render_submit()
