@@ -44,7 +44,9 @@ defmodule ElixirInternalCertificationWeb.Features.Keywords.SearchKeywordListTest
     |> assert_has(Query.text("fifth keyword"))
   end
 
-  feature "given a query and partial match type in the URL params, lists matched keywords", %{session: session} do
+  feature "given a query and partial match type in the URL params, lists matched keywords", %{
+    session: session
+  } do
     user = insert(:user)
     another_user = insert(:user)
 
@@ -87,7 +89,9 @@ defmodule ElixirInternalCertificationWeb.Features.Keywords.SearchKeywordListTest
     |> refute_has(Query.text("fourth keyword"))
   end
 
-  feature "given a query and exact match type in the URL params, lists matched keywords", %{session: session} do
+  feature "given a query and exact match type in the URL params, lists matched keywords", %{
+    session: session
+  } do
     user = insert(:user)
     another_user = insert(:user)
 
@@ -130,7 +134,9 @@ defmodule ElixirInternalCertificationWeb.Features.Keywords.SearchKeywordListTest
     |> refute_has(Query.text("fifth keyword"))
   end
 
-  feature "given a query and occurrences type in the URL params, lists matched keywords", %{session: session} do
+  feature "given a query and occurrences type in the URL params, lists matched keywords", %{
+    session: session
+  } do
     user = insert(:user)
     another_user = insert(:user)
 

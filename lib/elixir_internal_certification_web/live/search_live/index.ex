@@ -62,8 +62,9 @@ defmodule ElixirInternalCertificationWeb.AdvancedSearchLive.Index do
           query: search_form["search_query"],
           query_type: search_form["search_query_type"],
           query_target: search_form["search_query_target"],
-          number_of_occurrences: search_form["number_of_occurrences"],
-          symbol_notation: search_form["symbol_notation"]
+          number_of_occurrences:
+            search_form["number_of_occurrences"] || @default_number_of_occurrences,
+          symbol_notation: search_form["symbol_notation"] || @default_symbol_notation
         )
     end
   end
@@ -72,28 +73,20 @@ defmodule ElixirInternalCertificationWeb.AdvancedSearchLive.Index do
     search_query = params["query"]
     search_query_type = params["query_type"]
     search_query_target = params["query_target"]
-
-    number_of_occurrences =
-      case params["number_of_occurrences"] do
-        number_of_occurrences when number_of_occurrences in [nil, ""] ->
-          @default_number_of_occurrences
-
-        number_of_occurrences ->
-          String.to_integer(number_of_occurrences)
-      end
-
-    symbol_notation =
-      case params["symbol_notation"] do
-        symbol_notation when symbol_notation in [nil, ""] -> @default_symbol_notation
-        symbol_notation -> symbol_notation
-      end
+    number_of_occurrences = params["number_of_occurrences"]
+    symbol_notation = params["symbol_notation"]
 
     advanced_search_params =
       AdvancedSearch.new(%{
         "search_query" => search_query,
         "search_query_type" => search_query_type,
         "search_query_target" => search_query_target,
-        "number_of_occurrences" => number_of_occurrences,
+        "number_of_occurrences" =>
+          if number_of_occurrences do
+            String.to_integer(number_of_occurrences)
+          else
+            number_of_occurrences
+          end,
         "symbol_notation" => symbol_notation
       })
 
