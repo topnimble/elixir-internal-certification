@@ -440,7 +440,9 @@ defmodule ElixirInternalCertification.Keyword.KeywordsTest do
       advanced_search_params = %AdvancedSearch{
         search_query: "www",
         search_query_type: "occurrences",
-        search_query_target: "all"
+        search_query_target: "all",
+        symbol_notation: ">",
+        number_of_occurrences: 0
       }
 
       keywords = Keywords.list_keywords_for_advanced_search(user, advanced_search_params)
