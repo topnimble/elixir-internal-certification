@@ -251,7 +251,9 @@ defmodule ElixirInternalCertificationWeb.Features.Keywords.SearchKeywordListTest
     |> refute_has(Query.text("fourth keyword"))
     |> find(Query.css(".search-form"), fn form ->
       form
-      |> click(Query.option("exactly match"))
+      |> find(Query.select("search_form[search_query_type]"), fn select ->
+        click(select, Query.option("exactly match"))
+      end)
       |> fill_in(Query.text_field("string"), with: "https://www.phoenixframework.org/")
     end)
     |> assert_has(Query.text("first keyword"))
@@ -261,7 +263,9 @@ defmodule ElixirInternalCertificationWeb.Features.Keywords.SearchKeywordListTest
     |> refute_has(Query.text("fifth keyword"))
     |> find(Query.css(".search-form"), fn form ->
       form
-      |> click(Query.option("have occurrences of"))
+      |> find(Query.select("search_form[search_query_type]"), fn select ->
+        click(select, Query.option("have occurrences of"))
+      end)
       |> fill_in(Query.text_field("string"), with: "www")
     end)
     |> assert_has(Query.text("first keyword"))
@@ -309,7 +313,9 @@ defmodule ElixirInternalCertificationWeb.Features.Keywords.SearchKeywordListTest
     |> refute_has(Query.text("fourth keyword"))
     |> find(Query.css(".search-form"), fn form ->
       form
-      |> click(Query.option("exactly match"))
+      |> find(Query.select("search_form[search_query_type]"), fn select ->
+        click(select, Query.option("exactly match"))
+      end)
       |> fill_in(Query.text_field("string"), with: "https://www.phoenixframework.org/")
       |> click(Query.button("Search"))
     end)
@@ -320,7 +326,9 @@ defmodule ElixirInternalCertificationWeb.Features.Keywords.SearchKeywordListTest
     |> refute_has(Query.text("fifth keyword"))
     |> find(Query.css(".search-form"), fn form ->
       form
-      |> click(Query.option("have occurrences of"))
+      |> find(Query.select("search_form[search_query_type]"), fn select ->
+        click(select, Query.option("have occurrences of"))
+      end)
       |> fill_in(Query.text_field("string"), with: "www")
       |> click(Query.button("Search"))
     end)
