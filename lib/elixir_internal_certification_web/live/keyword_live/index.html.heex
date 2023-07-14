@@ -22,6 +22,10 @@
   ) %>
 </.form>
 
+<div class="d-flex justify-content-end">
+  <%= live_redirect("Advanced search", to: Routes.advanced_search_index_path(@socket, :index)) %>
+</div>
+
 <table class="table table-hover">
   <thead>
     <tr>

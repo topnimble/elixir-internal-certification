@@ -7,7 +7,7 @@ defmodule ElixirInternalCertification.Keyword.Keywords do
 
   alias ElixirInternalCertification.Account.Schemas.User
   alias ElixirInternalCertification.Keyword.Queries.KeywordQuery
-  alias ElixirInternalCertification.Keyword.Schemas.Keyword
+  alias ElixirInternalCertification.Keyword.Schemas.{AdvancedSearch, Keyword}
   alias ElixirInternalCertification.Repo
   alias NimbleCSV.RFC4180, as: CSV
 
@@ -30,6 +30,20 @@ defmodule ElixirInternalCertification.Keyword.Keywords do
   def list_keywords(%User{} = user) do
     user
     |> KeywordQuery.list_keywords_by_user()
+    |> Repo.all()
+  end
+
+  def list_keywords_for_advanced_search(%User{} = _user, nil = _search_params), do: []
+
+  def list_keywords_for_advanced_search(
+        %User{} = _user,
+        %AdvancedSearch{search_query: nil} = _search_params
+      ),
+      do: []
+
+  def list_keywords_for_advanced_search(%User{} = user, %AdvancedSearch{} = search_params) do
+    user
+    |> KeywordQuery.list_keywords_by_user_for_advanced_search(search_params)
     |> Repo.all()
   end
 
