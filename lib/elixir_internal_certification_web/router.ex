@@ -38,6 +38,7 @@ defmodule ElixirInternalCertificationWeb.Router do
     live "/", KeywordLive.Index, :index
     live "/keywords/:id", KeywordLive.Show, :show
     live "/uploads", UploadLive.Index, :index
+    live "/advanced_searches", AdvancedSearchLive.Index, :index
   end
 
   scope "/api", ElixirInternalCertificationWeb.Api, as: :api do
